@@ -1,33 +1,26 @@
 package de.chille.mds.plugin.views;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.part.*;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
+import java.util.ArrayList;
+import java.util.Vector;
 
-import de.chille.mds.plugin.MDSPlugin;
-import de.chille.mds.plugin.MDSPluginConstants;
-import de.chille.mds.soap.MDSAssociationBean;
-import de.chille.mds.soap.MDSAssociationEndBean;
-import de.chille.mds.soap.MDSClassBean;
-import de.chille.mds.soap.MDSGeneralizationBean;
-import de.chille.mds.soap.MDSModelBean;
-import de.chille.mds.soap.MDSObjectBean;
-import de.chille.mds.soap.MDSRepositoryBean;
-import de.chille.mds.soap.SOAPClientImpl;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.swt.SWT;
-import java.util.*;
+import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.action.*;
+import org.eclipse.jface.dialogs.*;
+import org.eclipse.jface.resource.*;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.swt.*;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.*;
+
+import org.eclipse.ui.part.*;
+
+import de.chille.mds.plugin.*;
+import de.chille.mds.plugin.MDSPluginConstants;
+import de.chille.mds.plugin.dialogs.CreateModelDialog;
+//import de.chille.mds.plugin.tree.*;
+import de.chille.mds.soap.*;
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -50,7 +43,7 @@ import org.eclipse.core.runtime.IAdaptable;
 public class BrowserView extends ViewPart {
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
-	private Action createRepository;
+	private Action createRepository, createModel;
 	private Action action2;
 	private Action doubleClickAction;
 
@@ -226,8 +219,13 @@ public class BrowserView extends ViewPart {
 			SOAPClientImpl.setEndPoint(
 				MDSPlugin.getDefault().getPreferenceStore().getString(
 					MDSPluginConstants.P_ENDPOINT));
-			Vector repositories =
-				(Vector) SOAPClientImpl.call("query", null, null, null);
+			Vector repositories = new Vector();
+			try {
+				repositories =
+					(Vector) SOAPClientImpl.call("query", null, null, null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 			TreeParent rep = null, mod = null, elem = null;
 			TreeObject obj = null;
@@ -332,28 +330,72 @@ public class BrowserView extends ViewPart {
 				SOAPClientImpl.setEndPoint(
 					MDSPlugin.getDefault().getPreferenceStore().getString(
 						MDSPluginConstants.P_ENDPOINT));
-
-				InputDialog id =
+				InputDialog dialog =
 					new InputDialog(
 						getSite().getShell(),
 						"Create New Repository",
 						"Repositoryname:",
 						"",
 						new LabelValidator());
-				id.open();
-				if (id.getReturnCode() == InputDialog.OK) {
+				dialog.open();
+				if (dialog.getReturnCode() == InputDialog.OK) {
 					MDSRepositoryBean repository = new MDSRepositoryBean();
-					repository.setLabel(id.getValue());
-					repository =
-						(MDSRepositoryBean) SOAPClientImpl.call(
-							methodName,
-							"repository",
-							MDSRepositoryBean.class,
-							repository);
+					repository.setLabel(dialog.getValue());
+					String[] paramName = { "repository" };
+					Class[] paramType = { MDSRepositoryBean.class };
+					Object[] paramValue = { repository };
+					try {
+						repository =
+							(MDSRepositoryBean) SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					TreeObject[] invisibleRootChilds =
 						vcp.invisibleRoot.getChildren();
 					((TreeParent) invisibleRootChilds[0]).addChild(
 						new TreeRepository(repository));
+					viewer.refresh();
+				}
+
+			} else if (methodName.equals("createModel")) {
+				SOAPClientImpl.setEndPoint(
+					MDSPlugin.getDefault().getPreferenceStore().getString(
+						MDSPluginConstants.P_ENDPOINT));
+				InputDialog dialog =
+					new CreateModelDialog(
+						getSite().getShell(),
+						"Create New Model in Repository " + obj.toString(),
+						"Modelname:",
+						"",
+						new LabelValidator());
+				dialog.open();
+				if (dialog.getReturnCode() == InputDialog.OK) {
+					TreeRepository repository = (TreeRepository) obj;
+					MDSModelBean model = new MDSModelBean();
+					model.setLabel(dialog.getValue());
+					String[] paramName = { "string", "model" };
+					Class[] paramType = { String.class, MDSModelBean.class };
+					Object[] paramValue =
+						{
+							"mds://server_0/repository_"
+								+ repository.getBean().getId(),
+							model };
+					try {
+						model =
+							(MDSModelBean) SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					repository.addChild(
+						new TreeModel(model));
 					viewer.refresh();
 				}
 
@@ -381,10 +423,12 @@ public class BrowserView extends ViewPart {
 		public void selectionChanged(SelectionChangedEvent event) {
 			ISelection selection = viewer.getSelection();
 			Object obj = ((IStructuredSelection) selection).getFirstElement();
-			if (obj instanceof TreeServer) {
-				createRepository.setEnabled(true);
-			} else {
+			if (obj instanceof TreeRepository) {
 				createRepository.setEnabled(false);
+				createModel.setEnabled(true);
+			} else {
+				createRepository.setEnabled(true);
+				createModel.setEnabled(false);
 			}
 		}
 	}
@@ -435,13 +479,12 @@ public class BrowserView extends ViewPart {
 
 	private void fillLocalPullDown(IMenuManager manager) {
 		manager.add(createRepository);
-		manager.add(new Separator());
-		manager.add(action2);
+		manager.add(createModel);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(createRepository);
-		manager.add(action2);
+		manager.add(createModel);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
@@ -456,14 +499,25 @@ public class BrowserView extends ViewPart {
 	}
 
 	private void makeActions() {
+		
 		createRepository =
 			new MDSAction(
 				"createRepository",
 				"createRepository",
 				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
 					ISharedImages.IMG_OBJS_INFO_TSK));
-		createRepository.setToolTipText("create a new repository");
+		createRepository.setToolTipText("Create New Repository");
+		
+		createModel =
+			new MDSAction(
+				"createModel",
+				"createModel",
+				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
+					ISharedImages.IMG_OBJS_INFO_TSK));
+		createModel.setToolTipText("Create New Model");
 
+		
+		
 		action2 = new Action() {
 			public void run() {
 				showMessage("Action 2 executed");
