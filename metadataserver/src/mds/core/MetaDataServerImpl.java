@@ -21,7 +21,7 @@ public class MetaDataServerImpl implements MetaDataServer {
 	/**
 	 * der Server kennt seine MME
 	 */
-	private MetaMappingEngine[] metaMappingEngine = null;
+	private MetaMappingEngine metaMappingEngine = null;
 
 	/**
 	 * alle auf dem Server vorhandenen Reposititories
@@ -208,9 +208,9 @@ public class MetaDataServerImpl implements MetaDataServer {
 
 	/**
 	 * Gets the metaMappingEngine
-	 * @return Returns a MetaMappingEngine[]
+	 * @return Returns a MetaMappingEngine
 	 */
-	public MetaMappingEngine[] getMetaMappingEngine() {
+	public MetaMappingEngine getMetaMappingEngine() {
 		return metaMappingEngine;
 	}
 
@@ -218,7 +218,7 @@ public class MetaDataServerImpl implements MetaDataServer {
 	 * Sets the metaMappingEngine
 	 * @param metaMappingEngine The metaMappingEngine to set
 	 */
-	public void setMetaMappingEngine(MetaMappingEngine[] metaMappingEngine) {
+	public void setMetaMappingEngine(MetaMappingEngine metaMappingEngine) {
 		this.metaMappingEngine = metaMappingEngine;
 	}
 
