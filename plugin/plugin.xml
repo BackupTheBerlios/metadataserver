@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="de.chille.mds.plugin"
+   name="metadata.plugin"
+   version="1.0.0"
+   provider-name="metadata.server"
+   class="de.chille.mds.plugin.MDSPlugin">
+
+   <runtime>
+      <library name="plugin.jar"/>
+      <library name="lib/mds.soap.client.jar"/>
+      <library name="lib/soap.jar"/>
+      <library name="lib/mail.jar"/>
+      <library name="lib/activation.jar"/>
+   </runtime>
+   <requires>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+   </requires>
+
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="metadata.server"
+            id="de.chille.mds.plugin">
+      </category>
+      <view
+            name="metadata.browser"
+            icon="icons/sample.gif"
+            category="de.chille.mds.plugin"
+            class="de.chille.mds.plugin.views.MDSView"
+            id="de.chille.mds.plugin.views.MDSView">
+      </view>
+   </extension>
+
+</plugin>
