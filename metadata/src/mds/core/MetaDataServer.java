@@ -2,6 +2,7 @@ package mds.core;
 
 import java.util.*;
 import mme.core.*;
+import mme.mapper.*;
 
 /**
  * stellt die Schnittstelle zu den Clients dar
@@ -14,10 +15,10 @@ public interface MetaDataServer
 	/**
 	 * erzeugt neues MDSRepository
 	 *
-	 * @param label des neuen MDSRepository, id wird automatisch vergeben
+	 * @param mdsRepository das einzufügende MDSRepository, id wird automatisch vergeben
 	 * @return Pfad zum MDSRepository
 	 */
-   	public String createReposititory(String label);
+   	public String insertReposititory(MDSRepository mdsRepository);
 	
 	/**
 	 * löscht ein MDSRepository
@@ -177,19 +178,20 @@ public interface MetaDataServer
    	public MDSModel exportModel(String href, Mapping mapping);
 		
 	/**
-	 * meldet neues Mapping bei Mapper an
+	 * meldet neuen Mapper bei MME an
 	 *
-	 * @param mappingResource beinhaltet MapperType, MappingTyp u. die benötigten Files
-	 * @return des neu entstandene Mapping
+	 * @param mapper der Mapper
+	 * @return true bei Erfolg
 	 */
-   	public Mapping registerMapping(MappingResource mappingResource);
+   	public boolean registerMapper(Mapper mapper);
 	
 	/**
-	 * meldet Mapping ab
+	 * meldet Mapper ab
 	 *
-	 * @param mapping das abzumeldende Mapping
+	 * @param mapper der abzumeldende Mapper
+	 * @return true bei Erfolg
 	 */
-   	public boolean unregisterMapping(Mapping mapping);
+   	public boolean unregisterMapper(Mapper mapper);
 	
 	/**
 	 * gibt eine Liste aller angemeldeten Mappings zurück

@@ -2,6 +2,7 @@ package mme.core;
 
 import java.util.*;
 import mds.core.*;
+import mme.mapper.*;
 
 /**
  * bindet die metamapping.engine
@@ -12,23 +13,21 @@ import mds.core.*;
 public interface MetaMappingEngine
 {
 	/**
-	 * meldet neues Mapping bei Mapper an
+	 * meldet neuen Mapper bei MME an
 	 *
-	 * @param mappingResource beinhaltet MapperType, MappingTyp u. die benötigten Files
-	 * @return des neu entstandene Mapping
-	 * @throws MetaMappingEngineException im Fehlerfall
+	 * @param mapper der Mapper
+	 * @return true bei Erfolg
 	 */
-   	public Mapping registerMapping(MappingResource mappingResource) 
+   	public void registerMapper(Mapper mapper) 
    	throws MetaMappingEngineException;
    	
 	/**
-	 * meldet Mapping ab
+	 * meldet Mapper ab
 	 *
-	 * @param mapping das abzumeldende Mapping
-	 * @throws MetaMappingEngineException im Fehlerfall
+	 * @param mapper der abzumeldende Mapper
 	 */
-   	public void unregisterMapping(Mapping mapping) 
-   	throws MetaMappingEngineException;
+   	public void unregisterMapper(Mapper mapper)
+	throws MetaMappingEngineException;
    	
 	/**
 	 * mappt ein MDSModel bestimmten Typs auf ein 
