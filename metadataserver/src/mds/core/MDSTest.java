@@ -12,13 +12,15 @@ public class MDSTest {
 
 	public static void main(String[] args)
 		throws MDSHrefFormatException, MDSCoreException {
-
+		
 		MetaDataServer server = new MetaDataServerImpl();
 
 		MDSRepository rep = new MDSRepositoryImpl();
-
+		
+		// testmodel erstellen
 		MDSModel model = new MDSModelImpl();
-
+		model.setLabel("erstes");
+		
 		MDSClass myclass1 = new MDSClassImpl();
 		myclass1.setLabel("myclass0");
 
@@ -38,17 +40,17 @@ public class MDSTest {
 		myclass6.setLabel("myclass5");
 
 		MDSClass myclass7 = new MDSClassImpl();
-		myclass5.setLabel("myclass6");
+		myclass7.setLabel("myclass6");
 
 		MDSClass myclass8 = new MDSClassImpl();
-		myclass6.setLabel("myclass7");
+		myclass8.setLabel("myclass7");
 
 		AssociationEnd end1 = new AssociationEndImpl();
-		end1.setMultiplicity(AssociationEnd.MULTIPLICITY_0_OR_1);
+		//end1.setMultiplicity(AssociationEnd.MULTIPLICITY_0_OR_1);
 		end1.setMdsClass(myclass1);
 
 		AssociationEnd end2 = new AssociationEndImpl();
-		end2.setMultiplicity(AssociationEnd.MULTIPLICITY_0_OR_MORE);
+		//end2.setMultiplicity(AssociationEnd.MULTIPLICITY_0_OR_MORE);
 		end2.setMdsClass(myclass2);
 
 		AssociationEnd end3 = new AssociationEndImpl();
@@ -86,9 +88,9 @@ public class MDSTest {
 		geni.setLabel("geni");
 		geni.setSuperClass(myclass5);
 		geni.setSubClass(myclass6);
-
-		MDSHref href =
-			server.insertModel(server.insertReposititory(rep), model);
+		
+		MDSHref rhref = server.insertReposititory(rep);
+		MDSHref href = server.insertModel(rhref, model);
 
 		server.insertElement(href, myclass1);
 		server.insertElement(href, myclass2);
@@ -110,17 +112,24 @@ public class MDSTest {
 		file.setType("plain_text");
 		files.add(file);
 		model.setAdditionalFiles(files);
-
-		//MDSModel model1 = new MDSModelImpl();
-		//model1.setMetamodel(model);
-
-		//href = server.insertModel(erver.insertReposititory(rep), model1);
-		//server.insertElement(href, myclass1);
-
-		//System.out.println(server);
 		
-		String xmiContent =model.getXmiFile().getContent();
+		// zweites testmodel mit erstem als metamodel
+		MDSModel model1 = new MDSModelImpl();
+		model1.setLabel("zweites");
+		model1.setMetamodel(model);
+
+		href = server.insertModel(rhref, model1);
+		server.insertElement(href, myclass1);
+		
+		// vom ersten die xmi-repräsentation ausprinten
+		String xmiContent = model.getXmiFile().getContent();
 		System.out.println(xmiContent);
+		
+		// vom zweiten die xmi-repräsemtation ausprinten
+		xmiContent = model1.getXmiFile().getContent();
+		System.out.println(xmiContent);
+		
+		// erstes model als sample speichern
 		FileWriter f1;
 		MDSFile file1 = new MDSFileImpl();
 		BufferedReader f;
@@ -130,9 +139,10 @@ public class MDSTest {
 		try {
 			
 			f1 = new FileWriter("sample.xmi");
-			f1.write(xmiContent);
+			f1.write(model.getXmiFile().getContent());
 			f1.close();
 			
+			// sample laden
 			f =
 				new BufferedReader(
 					new FileReader("sample.xmi"));
@@ -141,13 +151,21 @@ public class MDSTest {
 			}
 			f.close();
 			file1.setContent(content);
+			// sample-inhalt nach mds konvertieren
 			MDSModel model2 = new XMIHandlerImpl().mapXMI2MDS(file1);
-			System.out.println(model2);
+			
+			// dabei neu entstandenes model auf server ablegen
+			server.insertModel(rhref, model2);
+			
+			// und xmi-repräsentation ausprinten
+			xmiContent = model2.getXmiFile().getContent();
+			System.out.println(xmiContent);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-				
+		System.out.println(server);
 		//System.out.println(model.getDtdFile().getContent());
 		//System.out.println(model.getSchemaFile().getContent());
 	}

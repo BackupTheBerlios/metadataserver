@@ -14,35 +14,34 @@
 			<XMI.exporter>metadata.server</XMI.exporter>
 			<XMI.exporterVersion>0.1</XMI.exporterVersion>
 		</XMI.documentation>
-		<XMI.model xmi.name="model_0" href="mds://server_0/repository_0/model_0"/>
-		<XMI.metamodel xmi.name="UML1.3" href="mds://server_0/repository_0/model_1"/>
+		<XMI.model xmi.name="erstes" href="mds://server_0/repository_0/model_0"/>
 	</XMI.header>
 	<XMI.content>
-		<UML:Class xmi.id="class_0" name="class_0"/>
-		<UML:Class xmi.id="class_1" name="class_1"/>
-		<UML:Class xmi.id="class_2" name="class_2"/>
-		<UML:Class xmi.id="class_3" name="class_3"/>
-		<UML:Class xmi.id="class_4" name="class_4"/>
-		<UML:Class xmi.id="class_6" name="class_6"/>
-		<UML:Class xmi.id="class_7" name="class_7"/>
-		<UML:Class xmi.id="class_5" name="class_5" generalization="class_4">
+		<UML:Class xmi.id="class_0" name="myclass0"/>
+		<UML:Class xmi.id="class_1" name="myclass1"/>
+		<UML:Class xmi.id="class_2" name="myclass2"/>
+		<UML:Class xmi.id="class_3" name="myclass3"/>
+		<UML:Class xmi.id="class_4" name="myclass4"/>
+		<UML:Class xmi.id="class_6" name="myclass6"/>
+		<UML:Class xmi.id="class_7" name="myclass7"/>
+		<UML:Class xmi.id="class_5" name="myclass5" generalization="class_4">
 			<UML:Namespace.ownedElement>
-				<UML:Generalization xmi.id="generalization_11" name="generalization_11" child="class_5" parent="class_4"/>
+				<UML:Generalization xmi.id="generalization_11" name="geni" child="class_5" parent="class_4"/>
 			</UML:Namespace.ownedElement>
 		</UML:Class>
-		<UML:Association xmi.id="association_9" name="association_9">
+		<UML:Association xmi.id="association_9" name="asso">
 			<UML:Association.connection>
 				<UML:AssociationEnd aggregation="none" type="class_0"/>
 				<UML:AssociationEnd aggregation="none" type="class_1"/>
 			</UML:Association.connection>
 		</UML:Association>
-		<UML:Association xmi.id="association_10" name="association_10">
+		<UML:Association xmi.id="association_10" name="aggi">
 			<UML:Association.connection>
 				<UML:AssociationEnd aggregation="aggregate" type="class_2"/>
 				<UML:AssociationEnd aggregation="none" type="class_3"/>
 			</UML:Association.connection>
 		</UML:Association>
-		<UML:Association xmi.id="association_8" name="association_8">
+		<UML:Association xmi.id="association_8" name="compo">
 			<UML:Association.connection>
 				<UML:AssociationEnd aggregation="composite" type="class_6"/>
 				<UML:AssociationEnd aggregation="none" type="class_7"/>

@@ -15,9 +15,12 @@ import org.w3c.dom.traversal.DocumentTraversal;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.NodeIterator;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import mds.core.AssociationEndImpl;
 import mds.core.MDSAssociationImpl;
 import mds.core.MDSClassImpl;
+import mds.core.MDSCoreException;
 import mds.core.MDSFileImpl;
 import mds.core.MDSGeneralizationImpl;
 import mds.core.MDSModelImpl;
@@ -27,6 +30,7 @@ import api.mds.core.MDSAssociation;
 import api.mds.core.MDSClass;
 import api.mds.core.MDSElement;
 import api.mds.core.MDSFile;
+import api.mds.core.MDSGeneralization;
 import api.mds.core.MDSModel;
 import api.mds.xmi.XMIHandler;
 
@@ -58,28 +62,36 @@ public class XMIHandlerImpl implements XMIHandler {
 		xdoc += "\t\t\t<XMI.exporter>metadata.server</XMI.exporter>\n";
 		xdoc += "\t\t\t<XMI.exporterVersion>0.1</XMI.exporterVersion>\n";
 		xdoc += "\t\t</XMI.documentation>\n";
+
 		xdoc += "\t\t<XMI.model xmi.name=\""
-			+ mdsModel.getId()
+			+ mdsModel.getLabel()
 			+ "\" href=\""
 			+ mdsModel.getHref().getHrefString()
 			+ "\"/>\n";
-		xdoc
-			+= "\t\t<XMI.metamodel xmi.name=\"UML1.3\" href=\"mds://server_0/repository_0/model_1\"/>\n";
+
+		if (mdsModel.getMetamodel() != null) {
+			xdoc += "\t\t<XMI.metamodel xmi.name=\""
+				+ mdsModel.getMetamodel().getLabel()
+				+ "\" href=\""
+				+ mdsModel.getMetamodel().getHref().getHrefString()
+				+ "\"/>\n";
+		}
+
 		xdoc += "\t</XMI.header>\n";
 		xdoc += "\t<XMI.content>\n";
 
-		String xclass = "\t\t<UML:Class xmi.id=\"#id#\" name=\"#id#\"/>\n";
+		String xclass = "\t\t<UML:Class xmi.id=\"#id#\" name=\"#name#\"/>\n";
 
 		String xgeneralization =
-			"\t\t<UML:Class xmi.id=\"#subId#\" name=\"#subId#\" generalization=\"#superId#\">\n";
+			"\t\t<UML:Class xmi.id=\"#subId#\" name=\"#name#\" generalization=\"#superId#\">\n";
 		xgeneralization += "\t\t\t<UML:Namespace.ownedElement>\n";
 		xgeneralization
-			+= "\t\t\t\t<UML:Generalization xmi.id=\"#id#\" name=\"#id#\" child=\"#subId#\" parent=\"#superId#\"/>\n";
+			+= "\t\t\t\t<UML:Generalization xmi.id=\"#id#\" name=\"#genName#\" child=\"#subId#\" parent=\"#superId#\"/>\n";
 		xgeneralization += "\t\t\t</UML:Namespace.ownedElement>\n";
 		xgeneralization += "\t\t</UML:Class>\n";
 
 		String xassociation1 =
-			"\t\t<UML:Association xmi.id=\"#id#\" name=\"#id#\">\n";
+			"\t\t<UML:Association xmi.id=\"#id#\" name=\"#name#\">\n";
 		xassociation1 += "\t\t\t<UML:Association.connection>\n";
 		xassociation1
 			+= "\t\t\t\t<UML:AssociationEnd aggregation=\"#aggregation#\" type=\"#endId#\"/>\n";
@@ -135,7 +147,11 @@ public class XMIHandlerImpl implements XMIHandler {
 		AssociationEnd end1, end2;
 		i = classes.iterator();
 		while (i.hasNext()) {
-			xdoc += xclass.replaceAll("#id#", ((MDSElement) i.next()).getId());
+			element = (MDSElement) i.next();
+			xdoc
+				+= (xclass.replaceAll("#id#", element.getId())).replaceAll(
+					"#name#",
+					element.getLabel());
 		}
 		i = generalizations.iterator();
 		while (i.hasNext()) {
@@ -152,7 +168,13 @@ public class XMIHandlerImpl implements XMIHandler {
 						((MDSGeneralizationImpl) element)
 							.getSuperClass()
 							.getId())
-					.replaceAll("#id#", element.getId());
+					.replaceAll("#id#", element.getId())
+					.replaceAll(
+						"#name#",
+						((MDSGeneralizationImpl) element)
+							.getSubClass()
+							.getLabel())
+					.replaceAll("#genName#", element.getLabel());
 		}
 		i = associations.iterator();
 		while (i.hasNext()) {
@@ -176,7 +198,8 @@ public class XMIHandlerImpl implements XMIHandler {
 				+= xassociation1
 					.replaceAll("#id#", element.getId())
 					.replaceAll("#endId#", end1.getMdsClass().getId())
-					.replaceAll("#aggregation#", aggregation);
+					.replaceAll("#aggregation#", aggregation)
+					.replaceAll("#name#", element.getLabel());
 			switch (end2.getAggregation()) {
 				case AssociationEnd.NONE_AGGREGATION :
 					aggregation = "none";
@@ -189,10 +212,11 @@ public class XMIHandlerImpl implements XMIHandler {
 					break;
 			}
 			xdoc
-				+= xassociation2
-					.replaceAll("#id#", element.getId())
-					.replaceAll("#endId#", end2.getMdsClass().getId())
-					.replaceAll("#aggregation#", aggregation);
+				+= xassociation2.replaceAll(
+					"#endId#",
+					end2.getMdsClass().getId()).replaceAll(
+					"#aggregation#",
+					aggregation);
 		}
 		i = mdsModel.getAdditionalFiles().iterator();
 		while (i.hasNext()) {
@@ -261,14 +285,13 @@ public class XMIHandlerImpl implements XMIHandler {
 			ArrayList classes = new ArrayList();
 			String nodeName = "", attName = "", attValue = "";
 			MDSClass newClass = null;
-			MDSAssociation newAsso = null;
 
 			while (n != null) {
 				nodeName = n.getNodeName();
-
+				/*
 				System.out.println(nodeName + ":");
 				System.out.println("  attributes:");
-
+				*/
 				attribs = n.getAttributes();
 				nodeAttribs = new HashMap();
 
@@ -278,10 +301,10 @@ public class XMIHandlerImpl implements XMIHandler {
 					attValue = attribs.item(j).getNodeValue();
 
 					nodeAttribs.put(attName, attValue);
-
+					/*
 					System.out.println(
 						"    " + attName + ": '" + attValue + "'");
-
+					*/
 				}
 				if (nodeName.equals("UML:Class")) {
 					if (nodeAttribs.containsKey("xmi.id")
@@ -293,27 +316,133 @@ public class XMIHandlerImpl implements XMIHandler {
 					} else {
 						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:Class");
 					}
-				} else if (nodeName.equals("UML:Association")) {
-					if (nodeAttribs.containsKey("name")
-						&& nodeAttribs.containsKey("name")) {
-						newAsso = new MDSAssociationImpl();
-						newAsso.setLabel((String) nodeAttribs.get("name"));
-						newAsso.setId((String) nodeAttribs.get("xmi.id"));
-					} else {
-						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:Association");
-					}
-				} else if (nodeName.equals("Class")) {
-				} else if (nodeName.equals("Class")) {
-				} else if (nodeName.equals("Class")) {
-				} else if (nodeName.equals("Class")) {
 				}
 				n = it.nextNode();
 			}
+
+			it =
+				dt.createNodeIterator(
+					d.getDocumentElement(),
+					NodeFilter.SHOW_ALL,
+					new ObjectFilter(),
+					true);
+
+			n = it.nextNode();
+
+			ArrayList associations = new ArrayList();
+			ArrayList generalizations = new ArrayList();
+			MDSAssociation newAssociation = null;
+			MDSGeneralization newGeneralization = null;
+			AssociationEnd newAssociationEnd = null;
+			String aggregation = "";
+
+			while (n != null) {
+				nodeName = n.getNodeName();
+				/*
+				System.out.println(nodeName + ":");
+				System.out.println("  attributes:");
+				*/
+				attribs = n.getAttributes();
+				nodeAttribs = new HashMap();
+
+				for (int j = 0; j < attribs.getLength(); ++j) {
+
+					attName = attribs.item(j).getNodeName();
+					attValue = attribs.item(j).getNodeValue();
+
+					nodeAttribs.put(attName, attValue);
+					/*
+					System.out.println(
+						"    " + attName + ": '" + attValue + "'");
+					*/
+				}
+				if (nodeName.equals("UML:Association")) {
+					if (nodeAttribs.containsKey("xmi.id")
+						&& nodeAttribs.containsKey("name")) {
+						newAssociation = new MDSAssociationImpl();
+						newAssociation.setLabel(
+							(String) nodeAttribs.get("name"));
+						newAssociation.setId(
+							(String) nodeAttribs.get("xmi.id"));
+						associations.add(newAssociation);
+					} else {
+						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:Association");
+					}
+				} else if (nodeName.equals("UML:Generalization")) {
+					if (nodeAttribs.containsKey("xmi.id")
+						&& nodeAttribs.containsKey("name")
+						&& nodeAttribs.containsKey("child")
+						&& nodeAttribs.containsKey("parent")) {
+						newGeneralization = new MDSGeneralizationImpl();
+						newGeneralization.setLabel(
+							(String) nodeAttribs.get("name"));
+						newGeneralization.setId(
+							(String) nodeAttribs.get("xmi.id"));
+						newGeneralization.setSuperClass(
+							getClassById(
+								classes,
+								(String) nodeAttribs.get("parent")));
+						newGeneralization.setSubClass(
+							getClassById(
+								classes,
+								(String) nodeAttribs.get("child")));
+						generalizations.add(newGeneralization);
+					} else {
+						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:Generalization");
+					}
+				} else if (nodeName.equals("UML:AssociationEnd")) {
+					if (nodeAttribs.containsKey("aggregation")
+						&& nodeAttribs.containsKey("type")) {
+						newAssociationEnd = new AssociationEndImpl();
+						newAssociationEnd.setMdsClass(
+							getClassById(
+								classes,
+								(String) nodeAttribs.get("type")));
+						aggregation = (String) nodeAttribs.get("aggregation");
+						if (aggregation.equals("none")) {
+							newAssociationEnd.setAggregation(
+								AssociationEnd.NONE_AGGREGATION);
+						} else if (aggregation.equals("aggregate")) {
+							newAssociationEnd.setAggregation(
+								AssociationEnd.SHARED_AGGREGATION);
+						} else if (aggregation.equals("composite")) {
+							newAssociationEnd.setAggregation(
+								AssociationEnd.COMPOSITE_AGGREGATION);
+						} else {
+							throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:AssociationEnd");
+						}
+						newAssociation.addAssociationEnd(newAssociationEnd);
+					} else {
+						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:AssociationEnd");
+					}
+				}
+				n = it.nextNode();
+			}
+			classes.addAll(generalizations);
+			classes.addAll(associations);
 			model.setElements(classes);
-		} catch (Exception e) {
+		} catch (SAXException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (MDSCoreException e) {
+			throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:AssociationEnd");
 		}
 		return model;
+	}
+
+	private MDSClass getClassById(ArrayList classes, String id)
+		throws XMIHandlerException {
+
+		MDSClass mdsClass;
+		Iterator i = classes.iterator();
+		while (i.hasNext()) {
+			mdsClass = (MDSClass) i.next();
+			if (mdsClass.getId().equals(id)) {
+				return mdsClass;
+			}
+		}
+		throw new XMIHandlerException("Fehler: XMIHandler#getClassById()");
 	}
 
 	private static class ObjectFilter implements NodeFilter {
