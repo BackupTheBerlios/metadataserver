@@ -298,11 +298,20 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 		throw new MDSCoreException("Fehler: MDSModels#getById()");
 	}
 
+	public void update() throws PersistenceHandlerException {
+		MDSModel model = (MDSModelImpl) load(null);
+		this.setLabel(model.getLabel());
+		this.setAdditionalFiles(model.getAdditionalFiles());
+		this.setElements(model.getElements());
+		this.setMetamodel(model.getMetamodel());
+	}
+
 	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		String retString = "\t\tmodel:" + this.getId() + "\n";
+		String retString =
+			"\t\tmodel:" + this.getId() + " - " + this.getLabel() + "\n";
 		Iterator i = elements.iterator();
 		while (i.hasNext()) {
 			retString += ((MDSElement) i.next()).toString();
@@ -349,4 +358,19 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 			//throw new SAXException(message);
 		}
 	}
+	
+	/**
+	 * @see api.mds.core.MDSModel#getCounter()
+	 */
+	public int getCounter() {
+		return counter;
+	}
+
+	/**
+	 * @see api.mds.core.MDSModel#setCounter(int)
+	 */
+	public void setCounter(int counter) {
+		this.counter = counter;
+	}
+
 }

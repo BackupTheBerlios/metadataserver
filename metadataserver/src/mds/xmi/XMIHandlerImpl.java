@@ -116,13 +116,15 @@ public class XMIHandlerImpl implements XMIHandler {
 
 		String xextensions1 =
 			"\t\t<XMI.extensions xmi.extender=\"metadata.server\">\n";
-		xextensions1 += "\t\t\t<additionalFiles>\n";
 
-		String xextensions2 =
+		String xcounter = "\t\t\t<counter value=\"#counter#\"/>\n";
+
+		String xfile1 = "\t\t\t<additionalFiles>\n";
+		String xfile2 =
 			"\t\t\t\t<file name=\"#name#\" path=\"#path#\" type=\"#type#\"/>\n";
+		String xfile3 = "\t\t\t</additionalFiles>\n";
 
-		String xextensions3 = "\t\t\t</additionalFiles>\n";
-		xextensions3 += "\t\t</XMI.extensions>\n";
+		String xextensions2 = "\t\t</XMI.extensions>\n";
 
 		String xfooter = "\t</XMI.content>\n";
 		xfooter += "</XMI>";
@@ -228,17 +230,20 @@ public class XMIHandlerImpl implements XMIHandler {
 					"#aggregation#",
 					aggregation);
 		}
+		xdoc += xextensions1;
+		xdoc += xcounter.replaceAll("#counter#", "" + mdsModel.getCounter());
 		i = mdsModel.getAdditionalFiles().iterator();
 		while (i.hasNext()) {
 			MDSFile file = (MDSFileImpl) i.next();
-			xdoc += xextensions1;
+			xdoc += xfile1;
 			xdoc
-				+= xextensions2
+				+= xfile2
 					.replaceAll("#name#", file.getName())
 					.replaceAll("#path#", file.getPath())
 					.replaceAll("#type#", file.getType());
-			xdoc += xextensions3;
+			xdoc += xfile3;
 		}
+		xdoc += xextensions2;
 		xdoc += xfooter;
 		MDSFile mdsFile = new MDSFileImpl();
 		mdsFile.setContent(xdoc);
@@ -752,6 +757,14 @@ public class XMIHandlerImpl implements XMIHandler {
 					} else {
 						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#file");
 					}
+				} else if (nodeName.equals("counter")) {
+					if (nodeAttribs.containsKey("value")) {
+						model.setCounter(
+							Integer.parseInt(
+								(String) nodeAttribs.get("value")));
+					} else {
+						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#counter");
+					}
 				}
 				n = it.nextNode();
 			}
@@ -797,7 +810,7 @@ public class XMIHandlerImpl implements XMIHandler {
 						newGeneralization.setLabel(
 							(String) nodeAttribs.get("name"));
 						newGeneralization.setId(
-							(String) nodeAttribs.get("xmi.id"));
+							((String) nodeAttribs.get("xmi.id")).substring(6));
 						newGeneralization.setSuperClass(
 							getClassById(
 								((String) nodeAttribs.get("parent")).substring(
@@ -815,7 +828,9 @@ public class XMIHandlerImpl implements XMIHandler {
 						&& nodeAttribs.containsKey("type")) {
 						newAssociationEnd = new MDSAssociationEndImpl();
 						newAssociationEnd.setMdsClass(
-							getClassById(((String) nodeAttribs.get("type")).substring(6)));
+							getClassById(
+								((String) nodeAttribs.get("type")).substring(
+									6)));
 						aggregation = (String) nodeAttribs.get("aggregation");
 						if (aggregation.equals("none")) {
 							newAssociationEnd.setAggregation(

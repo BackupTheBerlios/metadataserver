@@ -143,7 +143,16 @@ public class MDSTest2 {
 		model1.validateModel(0);
 
 		System.out.println(server);
+		
+		try {
+			model.update();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	System.out.println("ready!!");
 
+		/*
 		try {
 			rep.save();
 			MDSRepository lrep =
@@ -151,13 +160,16 @@ public class MDSTest2 {
 					new MDSHrefImpl("mds://server_0/repository_0_0"),
 					null);
 			System.out.println(lrep);
+			MDSModel lmod =
+				(MDSModelImpl) new FilesystemHandlerImpl().load(
+					new MDSHrefImpl("mds://server_0/repository_0_0/model_0_0_1"),
+					null);
+			System.out.println(lmod);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		System.out.println("ready!!");
-
-		/*
+		
 		// erstes model als sample speichern
 		FileWriter f1;
 		MDSFile file1 = new MDSFileImpl();

@@ -36,10 +36,10 @@ public class MDSHrefImpl implements MDSHref {
 	 */
 	public String getServerId() throws MDSHrefFormatException {
 		String[] hrefParts = href.split("[/]");
-		if (hrefParts[2] == null) {
-			throw new MDSHrefFormatException("Fehler: MDSHref#getServerId");
-		} else {
+		try {
 			return hrefParts[2].substring(7);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new MDSHrefFormatException("Fehler: MDSHref#getServerId");
 		}
 	}
 
@@ -48,10 +48,10 @@ public class MDSHrefImpl implements MDSHref {
 	 */
 	public String getServerHref() throws MDSHrefFormatException {
 		String[] hrefParts = href.split("[/]");
-		if (hrefParts[2] == null) {
-			throw new MDSHrefFormatException("Fehler: MDSHref#getServerHref");
-		} else {
+		try {
 			return  "mds://" + hrefParts[2];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new MDSHrefFormatException("Fehler: MDSHref#getServerHref");
 		}
 	}
 
@@ -60,10 +60,10 @@ public class MDSHrefImpl implements MDSHref {
 	 */
 	public String getRepositoryId() throws MDSHrefFormatException {
 		String[] hrefParts = href.split("[/]");
-		if (hrefParts[3] == null) {
-			throw new MDSHrefFormatException("Fehler: MDSHref#getRepositoryId");
-		} else {
+		try {
 			return hrefParts[3].substring(11);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new MDSHrefFormatException("Fehler: MDSHref#getRepositoryId");
 		}
 	}
 
@@ -72,10 +72,10 @@ public class MDSHrefImpl implements MDSHref {
 	 */
 	public String getRepositoryHref() throws MDSHrefFormatException {
 		String[] hrefParts = href.split("[/]");
-		if (hrefParts[3] == null) {
-			throw new MDSHrefFormatException("Fehler: MDSHref#getRepositoryId");
-		} else {
+		try {
 			return "mds://" + hrefParts[2] + "/" + hrefParts[3];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new MDSHrefFormatException("Fehler: MDSHref#getRepositoryHref");
 		}
 	}
 
@@ -87,7 +87,7 @@ public class MDSHrefImpl implements MDSHref {
 		try {
 			return hrefParts[4].substring(6);
 		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MDSHrefFormatException("Fehler: MDSHref#getRepositoryId");
+			throw new MDSHrefFormatException("Fehler: MDSHref#getModelId");
 		}
 	}
 	
@@ -96,15 +96,15 @@ public class MDSHrefImpl implements MDSHref {
 	 */
 	public String getModelHref() throws MDSHrefFormatException {
 		String[] hrefParts = href.split("[/]");
-		if (hrefParts[4] == null) {
-			throw new MDSHrefFormatException("Fehler: MDSHref#getRepositoryId");
-		} else {
+		try {
 			return "mds://"
 				+ hrefParts[2]
 				+ "/"
 				+ hrefParts[3]
 				+ "/"
 				+ hrefParts[4];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new MDSHrefFormatException("Fehler: MDSHref#getModelHref");
 		}
 	}
 
@@ -113,9 +113,7 @@ public class MDSHrefImpl implements MDSHref {
 	 */
 	public String getElementId() throws MDSHrefFormatException {
 		String[] hrefParts = href.split("[/]");
-		if (hrefParts[5] == null) {
-			throw new MDSHrefFormatException("Fehler: MDSHref#getRepositoryId");
-		} else {
+		try {
 			int pos = 0;
 			if (hrefParts[5].startsWith("ass")) {
 				pos = 12;
@@ -124,6 +122,8 @@ public class MDSHrefImpl implements MDSHref {
 			} else if (hrefParts[5].startsWith("gen")) {
 				pos = 15;
 			} return hrefParts[5].substring(pos);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new MDSHrefFormatException("Fehler: MDSHref#getElementId");
 		}
 	}
 
@@ -132,9 +132,7 @@ public class MDSHrefImpl implements MDSHref {
 	 */
 	public String getElementHref() throws MDSHrefFormatException {
 		String[] hrefParts = href.split("[/]");
-		if (hrefParts[5] == null) {
-			throw new MDSHrefFormatException("Fehler: MDSHref#getRepositoryId");
-		} else {
+		try {
 			return "mds://"
 				+ hrefParts[2]
 				+ "/"
@@ -143,6 +141,8 @@ public class MDSHrefImpl implements MDSHref {
 				+ hrefParts[4]
 				+ "/"
 				+ hrefParts[5];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new MDSHrefFormatException("Fehler: MDSHref#getElementHref");
 		}
 	}
 }

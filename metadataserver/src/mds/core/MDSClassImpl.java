@@ -18,12 +18,12 @@ public class MDSClassImpl extends MDSElementImpl implements MDSClass {
 	public MDSClassImpl() {
 		super("class");
 	}
-	
+
 	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "\t\t\tclass:" + this.getId() + "\n";
+		return "\t\t\tclass:" + this.getId() + " - " + this.getLabel() + "\n";
 
 	}
 }

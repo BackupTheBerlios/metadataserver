@@ -7,6 +7,7 @@ import mds.persistence.PersistenceHandlerException;
 import api.mds.core.MDSHref;
 import api.mds.core.MDSModel;
 import api.mds.core.MDSPersistentObject;
+import api.mds.core.MetaDataServer;
 import api.mme.mapper.MDSMapper;
 
 /**
@@ -67,4 +68,8 @@ public interface PersistenceHandler {
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
 	public MDSMapper[] loadMapper() throws PersistenceHandlerException;
+	
+	public void load(MetaDataServer server);
+	
+	public void save(MetaDataServer server) throws PersistenceHandlerException;
 }

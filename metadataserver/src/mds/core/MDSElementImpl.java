@@ -8,7 +8,7 @@ import api.mds.core.MDSHref;
  * 
  * @author Thomas Chille
  */
-public class MDSElementImpl extends MDSPersistentObjectImpl implements MDSElement {
+public class MDSElementImpl extends MDSObjectImpl implements MDSElement {
 	private String prefix = "element_";
 
 	public MDSElementImpl(String prefix) {

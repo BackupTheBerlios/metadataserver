@@ -54,12 +54,6 @@ public class MDSRepositoryImpl
 	public String insertModel(MDSModel mdsModel)
 		throws MDSHrefFormatException, MDSCoreException {
 
-		/*
-		try {
-			mdsModel.save();
-		} catch (PersistenceHandlerException e) {
-			throw new MDSCoreException("Fehler: MDSRepository#insertModel()");
-		}*/
 		if (models.add(mdsModel)) {
 			if (mdsModel.getId() == null) {
 				mdsModel.setId(this.getId() + "_" + this.counter++);
@@ -159,7 +153,8 @@ public class MDSRepositoryImpl
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		String retString = "\trepository:" + this.getId() + "\n";
+		String retString =
+			"\trepository:" + this.getId() + " - " + this.getLabel() + "\n";
 		Iterator i = models.iterator();
 		while (i.hasNext()) {
 			retString += ((MDSModel) i.next()).toString();
@@ -168,19 +163,37 @@ public class MDSRepositoryImpl
 	}
 
 	/**
-	 * Returns the models.
-	 * @return ArrayList
+	 * @see api.mds.core.MDSRepository#getModels()
 	 */
 	public ArrayList getModels() {
 		return models;
 	}
 
 	/**
-	 * Sets the models.
-	 * @param models The models to set
+	 * @see api.mds.core.MDSRepository#setModels(ArrayList)
 	 */
 	public void setModels(ArrayList models) {
 		this.models = models;
+	}
+
+	public void update() throws PersistenceHandlerException {
+		MDSRepository repository = (MDSRepositoryImpl) load(null);
+		this.setLabel(repository.getLabel());
+		this.setModels(repository.getModels());
+	}
+
+	/**
+	 * @see api.mds.core.MDSRepository#getCounter()
+	 */
+	public int getCounter() {
+		return counter;
+	}
+
+	/**
+	 * @see api.mds.core.MDSRepository#setCounter(int)
+	 */
+	public void setCounter(int counter) {
+		this.counter = counter;
 	}
 
 }

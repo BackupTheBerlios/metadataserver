@@ -6,6 +6,7 @@ import api.mds.persistence.PersistenceHandler;
 
 import mds.core.MDSCoreException;
 import mds.core.MDSHrefFormatException;
+import mds.persistence.PersistenceHandlerException;
 
 /**
  * beinhaltet die MDSModels
@@ -73,5 +74,30 @@ public interface MDSRepository extends MDSPersistentObject {
 
 	public MDSModel getModelByHref(MDSHref href)
 		throws MDSCoreException, MDSHrefFormatException;
+	
+	/**
+	 * Returns the models.
+	 * @return ArrayList
+	 */
+	public ArrayList getModels();
 
+	/**
+	 * Sets the models.
+	 * @param models The models to set
+	 */
+	public void setModels(ArrayList models);
+	
+	/**
+	 * Returns the counter.
+	 * @return int
+	 */
+	public int getCounter();
+
+	/**
+	 * Sets the counter.
+	 * @param counter The counter to set
+	 */
+	public void setCounter(int counter);
+	
+	public void update() throws PersistenceHandlerException;
 }

@@ -12,24 +12,24 @@ import api.mds.core.MDSHref;
 public class MDSGeneralizationImpl
 	extends MDSElementImpl
 	implements MDSGeneralization {
-	
+
 	/**
 	 * die vererbende Klasse
 	 */
 	private MDSClass superClass;
-	
+
 	/**
 	 * die erbende Klasse
 	 */
 	private MDSClass subClass;
-	
+
 	/**
 	 * Constructor for MDSGeneralizationImpl.
 	 */
 	public MDSGeneralizationImpl() {
 		super("generalization");
 	}
-	
+
 	/**
 	 * @see api.mds.core.MDSGeneralization#getSubClass()
 	 */
@@ -57,12 +57,16 @@ public class MDSGeneralizationImpl
 	public void setSuperClass(MDSClass superClass) {
 		this.superClass = superClass;
 	}
-	
+
 	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "\t\t\tgeneralization:" + this.getId() + "\n";
+		return "\t\t\tgeneralization:"
+			+ this.getId()
+			+ " - "
+			+ this.getLabel()
+			+ "\n";
 
 	}
 

@@ -13,7 +13,7 @@ import api.mme.mapper.MDSMapper;
  * 
  * @author Thomas Chille
  */
-public interface MetaDataServer {
+public interface MetaDataServer extends MDSPersistentObject {
 
 	/**
 	 * nicht validieren
@@ -223,4 +223,33 @@ public interface MetaDataServer {
 	 * @param metaMappingEngine The metaMappingEngine to set
 	 */
 	public void setMetaMappingEngine(MetaMappingEngine metaMappingEngine);
+	
+	/**
+	 * Returns the counter.
+	 * @return int
+	 */
+	public int getCounter();
+
+	/**
+	 * Returns the repositories.
+	 * @return ArrayList
+	 */
+	public ArrayList getRepositories();
+
+	/**
+	 * Sets the counter.
+	 * @param counter The counter to set
+	 */
+	public void setCounter(int counter);
+
+	/**
+	 * Method setRepositories.
+	 * @param repositories
+	 */
+	public void setRepositories(ArrayList repositories);
+
+	
+	public void startup();
+	
+	public void shutdown();
 }

@@ -26,7 +26,7 @@ public class MDSAssociationImpl
 	public MDSAssociationImpl() {
 		super("association");
 	}
-	
+
 	/**
 	 * @see MDSAssociationImpl#addAssociationEnd(MDSAssociationEnd)
 	 */
@@ -69,7 +69,11 @@ public class MDSAssociationImpl
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return "\t\t\tassociation:" + this.getId() + "\n";
+		return "\t\t\tassociation:"
+			+ this.getId()
+			+ " - "
+			+ this.getLabel()
+			+ "\n";
 
 	}
 }

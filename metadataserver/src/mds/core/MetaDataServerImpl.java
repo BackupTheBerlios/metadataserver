@@ -1,8 +1,11 @@
 package mds.core;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import mds.MDSGlobals;
 import mds.persistence.FilesystemHandlerImpl;
 import mds.persistence.PersistenceHandlerException;
 import mme.core.MetaMappingEngineException;
@@ -24,7 +27,7 @@ import api.mme.mapper.MDSMapper;
  * @author Thomas Chille
  */
 public class MetaDataServerImpl
-	extends MDSObjectImpl
+	extends MDSPersistentObjectImpl
 	implements MetaDataServer {
 
 	private int counter = 0;
@@ -44,6 +47,7 @@ public class MetaDataServerImpl
 	 */
 	public MetaDataServerImpl() {
 		this.setId("0");
+		this.setLabel("metadata.server");
 		try {
 			this.setHref(new MDSHrefImpl("mds://server_" + this.getId()));
 		} catch (MDSHrefFormatException e) {
@@ -52,12 +56,15 @@ public class MetaDataServerImpl
 		MetaMappingEngine metaMappingEngine = new MetaMappingEngineImpl();
 	}
 
+	public void startup() {
+		this.getPersistenceHandler().load(this);
+	}
+
 	/**
 	 * @see MetaDataServer#insertReposititory(MDSRepository)
 	 */
 	public MDSHref insertReposititory(MDSRepository mdsRepository) {
 		try {
-			//String id = mdsRepository.insert();
 			if (repositories.add(mdsRepository)) {
 				if (mdsRepository.getId() == null) {
 					mdsRepository.setId(this.getId() + "_" + this.counter++);
@@ -413,7 +420,8 @@ public class MetaDataServerImpl
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		String retString = "server:" + this.getId() + "\n";
+		String retString =
+			"server:" + this.getId() + " - " + this.getLabel() + "\n";
 		Iterator i = repositories.iterator();
 		while (i.hasNext()) {
 			retString += ((MDSRepository) i.next()).toString();
@@ -422,35 +430,47 @@ public class MetaDataServerImpl
 	}
 
 	/**
-	 * Returns the counter.
-	 * @return int
+	 * @see api.mds.core.MetaDataServer#getCounter()
 	 */
 	public int getCounter() {
 		return counter;
 	}
 
 	/**
-	 * Returns the repositories.
-	 * @return ArrayList
+	 * @see api.mds.core.MetaDataServer#getRepositories()
 	 */
 	public ArrayList getRepositories() {
 		return repositories;
 	}
 
 	/**
-	 * Sets the counter.
-	 * @param counter The counter to set
+	 * @see api.mds.core.MetaDataServer#setCounter(int)
 	 */
 	public void setCounter(int counter) {
 		this.counter = counter;
 	}
 
 	/**
-	 * Sets the repositories.
-	 * @param repositories The repositories to set
+	 * Method setRepositories.
+	 * @param repositories
 	 */
 	public void setRepositories(ArrayList repositories) {
 		this.repositories = repositories;
 	}
 
+	public static void main(String[] args) {
+		MetaDataServer server = new MetaDataServerImpl();
+		server.startup();
+		System.out.println(server);
+		server.shutdown();
+	}
+
+	public void shutdown() {
+		try {
+			this.getPersistenceHandler().save(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.exit(0);
+	}
 }

@@ -24,6 +24,7 @@ import mds.core.MDSHrefFormatException;
 import mds.core.MDSHrefImpl;
 import mds.core.MDSModelImpl;
 import mds.core.MDSRepositoryImpl;
+import mds.core.MetaDataServerImpl;
 import mds.xmi.XMIHandlerImpl;
 
 import api.mds.core.MDSFile;
@@ -31,6 +32,7 @@ import api.mds.core.MDSHref;
 import api.mds.core.MDSModel;
 import api.mds.core.MDSPersistentObject;
 import api.mds.core.MDSRepository;
+import api.mds.core.MetaDataServer;
 import api.mds.persistence.PersistenceHandler;
 import api.mme.mapper.MDSMapper;
 
@@ -62,8 +64,9 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 							+ "/repository.xml");
 				if (!dir.exists() && !dir.mkdir()) {
 					throw new PersistenceHandlerException("Fehler: FilesystemHandler#save(rep)");
-				} else if (!file.exists()) {
-					if (!file.createNewFile()) {
+				} else {
+					// if (!file.exists()) 
+					if (!file.exists() && !file.createNewFile()) {
 						throw new PersistenceHandlerException("Fehler: FilesystemHandler#save(rep)");
 					}
 					FileWriter fw;
@@ -72,6 +75,9 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 						"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
 					doc += "<repository>\r\n";
 					doc += "\t<name>" + mdsObject.getLabel() + "</name>\r\n";
+					doc += "\t<counter>"
+						+ ((MDSRepositoryImpl) mdsObject).getCounter()
+						+ "</counter>\r\n";
 					// TODO: set datetime
 					doc += "\t<datetime>"
 						+ "0000-00-00 00:00:00:000"
@@ -154,83 +160,113 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 
 		String modelID = null;
 		String repositoryID = null;
+		MDSFile xmiFile = new MDSFileImpl();
+		BufferedReader f;
+		String line = null;
+		String content = "";
+		try {
+			repositoryID = href.getRepositoryId();
+		} catch (MDSHrefFormatException e) {
+			e.printStackTrace();
+			throw new PersistenceHandlerException("Fehler: FilesystemHandler#load()");
+		}
+		File dir =
+			new File(
+				MDSGlobals.REPOSITORIES_PATH + "repository_" + repositoryID);
 		try {
 			modelID = href.getModelId();
+			// hier weiter wenn model geladen werden soll
+			f =
+				new BufferedReader(
+					new FileReader(
+						dir
+							+ "/model_"
+							+ modelID
+							+ "/version_"
+							+ getMaxVersion(dir + "/model_" + modelID)
+							+ "/model.xmi"));
+			while ((line = f.readLine()) != null) {
+				content += line + "\n";
+			}
+			f.close();
+			xmiFile.setContent(content);
+			MDSModel model = new XMIHandlerImpl().mapUML2MDS(xmiFile);
+			model.setId(modelID);
+			model.setHref(href);
+
+			return model;
+
 		} catch (MDSHrefFormatException e) {
 			try {
-				repositoryID = href.getRepositoryId();
-				File dir =
-					new File(MDSGlobals.REPOSITORIES_PATH + repositoryID);
-				if (modelID == null) {
-					// komplettes repository laden
-					File file =
-						new File(
-							MDSGlobals.REPOSITORIES_PATH
-								+ repositoryID
-								+ "/repository.xml");
-					MDSRepository repository = new MDSRepositoryImpl();
-					// repository-name aus repository.xml parsen
-					DocumentBuilderFactory dFactory =
-						DocumentBuilderFactory.newInstance();
-					DocumentBuilder dBuilder = dFactory.newDocumentBuilder();
-					Document doc = dBuilder.parse(file);
-					Element root = doc.getDocumentElement();
-					NodeList nList = root.getChildNodes();
-					for (int i = 0; i < nList.getLength(); i++) {
-						String name = nList.item(i).getNodeName();
-						if (nList.item(i).getAttributes() != null
-							&& nList.item(i).getAttributes().getNamedItem("name")
-								!= null)
-							repository.setLabel(
-								nList
-									.item(i)
-									.getAttributes()
-									.getNamedItem("name")
-									.getNodeValue());
+				// komplettes repository laden
+				File file =
+					new File(
+						MDSGlobals.REPOSITORIES_PATH
+							+ "repository_"
+							+ repositoryID
+							+ "/repository.xml");
+				MDSRepository repository = new MDSRepositoryImpl();
+				repository.setHref(new MDSHrefImpl(href.getRepositoryHref()));
+				repository.setId(repositoryID);
+				// repository-name aus repository.xml parsen
+				DocumentBuilderFactory dFactory =
+					DocumentBuilderFactory.newInstance();
+				DocumentBuilder dBuilder = dFactory.newDocumentBuilder();
+				Document doc = dBuilder.parse(file);
+				Element root = doc.getDocumentElement();
+				NodeList nList = root.getChildNodes();
+				for (int i = 0; i < nList.getLength(); i++) {
+					if (nList.item(i).getNodeName().equals("name")) {
+						repository.setLabel(
+							nList.item(i).getFirstChild().getNodeValue());
+					} else if (nList.item(i).getNodeName().equals("counter")) {
+						repository.setCounter(
+							Integer.parseInt(
+								nList.item(i).getFirstChild().getNodeValue()));
 					}
-					// alle enthaltenen models laden
-					File[] entries = dir.listFiles(new FileFilter() {
-						public boolean accept(File pathname) {
-							return true;
-						}
-					});
-					MDSFile xmiFile = new MDSFileImpl();
-					BufferedReader f;
-					String line = null;
-					String content = "";
-					for (int i = 0; i < entries.length; i++) {
-						modelID = entries[i].getName();
-						f =
-							new BufferedReader(
-								new FileReader(
-									dir
-										+ "/"
-										+ modelID
-										+ "/version_"
-										+ getMaxVersion(dir + "/" + modelID)
-										+ "/model.xmi"));
-						while ((line = f.readLine()) != null) {
-							content += line + "\n";
-						}
-						f.close();
-						xmiFile.setContent(content);
-						MDSModel model =
-							new XMIHandlerImpl().mapUML2MDS(xmiFile);
-						model.setId(modelID);
-						repository.insertModel(model);
-					}
-					return repository;
-				} else {
-					// nur ein model laden
 
 				}
+				// alle enthaltenen models laden
+				File[] entries = dir.listFiles(new FileFilter() {
+					public boolean accept(File pathname) {
+						return true;
+					}
+				});
+				for (int i = 0; i < entries.length; i++) {
+					content = "";
+					modelID = entries[i].getName();
+					if (!modelID.startsWith("model_")) {
+						continue;
+					}
+					f =
+						new BufferedReader(
+							new FileReader(
+								dir
+									+ "/"
+									+ modelID
+									+ "/version_"
+									+ getMaxVersion(dir + "/" + modelID)
+									+ "/model.xmi"));
+					while ((line = f.readLine()) != null) {
+						content += line + "\n";
+					}
+					f.close();
+					xmiFile.setContent(content);
+					MDSModel model = new XMIHandlerImpl().mapUML2MDS(xmiFile);
+					model.setId(modelID.substring(6));
+					repository.insertModel(model);
+				}
+
+				return repository;
 
 			} catch (Exception e1) {
 				e1.printStackTrace();
-				throw new PersistenceHandlerException("Fehler: FilesystemHandler#load(mod)");
+				throw new PersistenceHandlerException("Fehler: FilesystemHandler#load(rep)");
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new PersistenceHandlerException("Fehler: FilesystemHandler#load(mod)");
 		}
-		return null;
 	}
 
 	/**
@@ -299,4 +335,91 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 		return null;
 	}
 
+	public void load(MetaDataServer server) {
+		// die servereigenschaften aus server.xml parsen
+		File file = new File(MDSGlobals.REPOSITORIES_PATH + "/server.xml");
+		DocumentBuilderFactory dFactory = DocumentBuilderFactory.newInstance();
+		try {
+			DocumentBuilder dBuilder = dFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(file);
+			Element root = doc.getDocumentElement();
+			NodeList nList = root.getChildNodes();
+			for (int i = 0; i < nList.getLength(); i++) {
+				if (nList.item(i).getNodeName().equals("name")) {
+					server.setLabel(
+						nList.item(i).getFirstChild().getNodeValue());
+				} else if (nList.item(i).getNodeName().equals("counter")) {
+					server.setCounter(
+						Integer.parseInt(
+							nList.item(i).getFirstChild().getNodeValue()));
+				} else if (nList.item(i).getNodeName().equals("id")) {
+					server.setId(
+						nList.item(i).getFirstChild().getNodeValue());
+				}
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// alle enthaltenen repositories laden
+		File dir = new File(MDSGlobals.REPOSITORIES_PATH);
+		File[] entries = dir.listFiles(new FileFilter() {
+			public boolean accept(File pathname) {
+				return true;
+			}
+		});
+		String repID = null;
+		MDSRepository rep = null;
+		for (int i = 0; i < entries.length; i++) {
+			repID = entries[i].getName();
+			if (!repID.startsWith("repository_")) {
+				continue;
+			}
+			try {
+				rep =
+					(MDSRepositoryImpl) new FilesystemHandlerImpl().load(
+						new MDSHrefImpl(
+							"mds://server_" + server.getId() + "/" + repID),
+						null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			server.insertReposititory(rep);
+		}
+	}
+
+	public void save(MetaDataServer server)
+		throws PersistenceHandlerException {
+		Iterator i = server.getRepositories().iterator();
+		while (i.hasNext()) {
+			try {
+				((MDSRepository) i.next()).save();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		File file = new File(MDSGlobals.REPOSITORIES_PATH + "/server.xml");
+		try {
+			if (!file.exists() && !file.createNewFile()) {
+				throw new PersistenceHandlerException("Fehler: FilesystemHandler#save(server)");
+			}
+			FileWriter fw;
+			fw = new FileWriter(file);
+			String doc = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
+			doc += "<server>\r\n";
+			doc += "\t<id>" + server.getId() + "</id>\r\n";
+			doc += "\t<name>" + server.getLabel() + "</name>\r\n";
+			doc += "\t<counter>" + server.getCounter() + "</counter>\r\n";
+			// TODO: set datetime
+			doc += "\t<datetime>"
+				+ "0000-00-00 00:00:00:000"
+				+ "</datetime>\r\n";
+			doc += "</server>";
+			fw.write(doc);
+			fw.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

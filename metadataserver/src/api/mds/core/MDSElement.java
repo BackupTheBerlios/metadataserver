@@ -5,7 +5,7 @@ package api.mds.core;
  * 
  * @author Thomas Chille
  */
-public interface MDSElement extends MDSPersistentObject {
+public interface MDSElement extends MDSObject {
 	
 	/**
 	 * Returns the prefix.

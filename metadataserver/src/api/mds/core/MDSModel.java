@@ -7,6 +7,7 @@ import api.mds.xmi.XMIHandler;
 
 import mds.core.MDSCoreException;
 import mds.core.MDSHrefFormatException;
+import mds.persistence.PersistenceHandlerException;
 
 /**
  * Abbildung eines UML- o. MOF- Models, besteht aus seiner 
@@ -148,5 +149,19 @@ public interface MDSModel extends MDSPersistentObject {
 	 * @param elements The elements to set
 	 */
 	public void setElements(ArrayList elements);
+	
+	/**
+	 * Returns the counter.
+	 * @return int
+	 */
+	public int getCounter();
+
+	/**
+	 * Sets the counter.
+	 * @param counter The counter to set
+	 */
+	public void setCounter(int counter);
+	
+	public void update() throws PersistenceHandlerException;
 
 }
