@@ -23,7 +23,10 @@ import mds.core.MDSClassImpl;
 import mds.core.MDSCoreException;
 import mds.core.MDSFileImpl;
 import mds.core.MDSGeneralizationImpl;
+import mds.core.MDSHrefFormatException;
+import mds.core.MDSHrefImpl;
 import mds.core.MDSModelImpl;
+import mds.persistence.PersistenceHandlerException;
 
 import api.mds.core.AssociationEnd;
 import api.mds.core.MDSAssociation;
@@ -259,52 +262,37 @@ public class XMIHandlerImpl implements XMIHandler {
 	 * @see api.mds.xmi.XMIHandler#mapXMI2MDS(MDSFile)
 	 */
 	public MDSModel mapXMI2MDS(MDSFile mdsFile) throws XMIHandlerException {
-
 		MDSModel model = new MDSModelImpl();
 		MDSElement element = null;
-
 		try {
 			DOMParser parser = new DOMParser();
 			parser.parse(
 				new InputSource(
 					new ByteArrayInputStream(mdsFile.getContent().getBytes())));
-
 			Document d = parser.getDocument();
 			DocumentTraversal dt = (DocumentTraversal) d;
-
 			NodeIterator it =
 				dt.createNodeIterator(
 					d.getDocumentElement(),
 					NodeFilter.SHOW_ALL,
 					new ObjectFilter(),
 					true);
-
 			Node n = it.nextNode();
 			NamedNodeMap attribs;
 			HashMap nodeAttribs = null;
 			ArrayList classes = new ArrayList();
 			String nodeName = "", attName = "", attValue = "";
 			MDSClass newClass = null;
-
+			ArrayList files = new ArrayList();
+			MDSFile file = null;
 			while (n != null) {
 				nodeName = n.getNodeName();
-				/*
-				System.out.println(nodeName + ":");
-				System.out.println("  attributes:");
-				*/
 				attribs = n.getAttributes();
 				nodeAttribs = new HashMap();
-
 				for (int j = 0; j < attribs.getLength(); ++j) {
-
 					attName = attribs.item(j).getNodeName();
 					attValue = attribs.item(j).getNodeValue();
-
 					nodeAttribs.put(attName, attValue);
-					/*
-					System.out.println(
-						"    " + attName + ": '" + attValue + "'");
-					*/
 				}
 				if (nodeName.equals("UML:Class")) {
 					if (nodeAttribs.containsKey("xmi.id")
@@ -319,49 +307,68 @@ public class XMIHandlerImpl implements XMIHandler {
 				} else if (nodeName.equals("XMI.model")) {
 					if (nodeAttribs.containsKey("href")
 						&& nodeAttribs.containsKey("xmi.name")) {
-							model.setLabel((String) nodeAttribs.get("xmi.name"));
+						model.setLabel((String) nodeAttribs.get("xmi.name"));
 					} else {
-						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:Class");
+						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#XMI.model");
+					}
+				} else if (nodeName.equals("XMI.metamodel")) {
+					if (nodeAttribs.containsKey("href")
+						&& nodeAttribs.containsKey("xmi.name")) {
+						MDSModel metamodel = null;
+						try {
+							metamodel =
+								(MDSModelImpl) model
+									.getPersistenceHandler()
+									.load(
+									new MDSHrefImpl(
+										(String) nodeAttribs.get("href")),
+									null);
+						} catch (MDSHrefFormatException e) {
+							throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#XMI.metamodel");
+						} catch (PersistenceHandlerException e) {
+							throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#XMI.metamodel");
+						}
+						model.setMetamodel(metamodel);
+					} else {
+						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#XMI.metamodel");
+					}
+				} else if (nodeName.equals("file")) {
+					if (nodeAttribs.containsKey("name")
+						&& nodeAttribs.containsKey("path")
+						&& nodeAttribs.containsKey("type")) {
+						file = new MDSFileImpl();
+						file.setName((String) nodeAttribs.get("name"));
+						file.setPath((String) nodeAttribs.get("path"));
+						file.setType((String) nodeAttribs.get("type"));
+						files.add(file);
+					} else {
+						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#file");
 					}
 				}
 				n = it.nextNode();
 			}
-
+			model.setAdditionalFiles(files);
 			it =
 				dt.createNodeIterator(
 					d.getDocumentElement(),
 					NodeFilter.SHOW_ALL,
 					new ObjectFilter(),
 					true);
-
 			n = it.nextNode();
-
 			ArrayList associations = new ArrayList();
 			ArrayList generalizations = new ArrayList();
 			MDSAssociation newAssociation = null;
 			MDSGeneralization newGeneralization = null;
 			AssociationEnd newAssociationEnd = null;
 			String aggregation = "";
-
 			while (n != null) {
 				nodeName = n.getNodeName();
-				/*
-				System.out.println(nodeName + ":");
-				System.out.println("  attributes:");
-				*/
 				attribs = n.getAttributes();
 				nodeAttribs = new HashMap();
-
 				for (int j = 0; j < attribs.getLength(); ++j) {
-
 					attName = attribs.item(j).getNodeName();
 					attValue = attribs.item(j).getNodeValue();
-
 					nodeAttribs.put(attName, attValue);
-					/*
-					System.out.println(
-						"    " + attName + ": '" + attValue + "'");
-					*/
 				}
 				if (nodeName.equals("UML:Association")) {
 					if (nodeAttribs.containsKey("xmi.id")
