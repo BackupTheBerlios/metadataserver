@@ -113,7 +113,7 @@ public class XMLMapperImpl extends MDSMapperImpl implements XMLMapper {
 	 * @throws MetaMappingEngineException
 	 */
 	public ArrayList doMapping(String xmi)throws MetaMappingEngineException{
-		XmlMapperProzessor  trans = new XmlMapperProzessor ();
+		XMLMapperProzessor  trans = new XMLMapperProzessor ();
 		trans.setConfigXml(configXml.getAbsolutePath());
 		ArrayList fileList;
 		if(outputPath != null)

@@ -33,7 +33,7 @@ import java.util.ArrayList;
  * @author Christian Sterr
  *
  */
-public class XmlMapperProzessor
+public class XMLMapperProzessor
 {
     private String home = "output/src/";
     private String xmlMapperConfigPath = "src/mme/config/XMLMapper/xsl-templates/java/XMLMapperConfig.xml";
@@ -371,12 +371,20 @@ public class XmlMapperProzessor
         this.home = modelNr + "/src/";
         this.doMain(source);
         System.out.println("alles ok!!");
-        return searchForFilesIn(modelNr + "/src/");
+        return searchForFilesIn(modelNr + "/src/", new ArrayList());
         
     }
     
-    private ArrayList searchForFilesIn(String path){
-    	ArrayList fileList = new ArrayList();
+    private ArrayList searchForFilesIn(String path, ArrayList fileList){
+
+		File parent = new File(path);
+		File[] directoryAndFileList = parent.listFiles();
+		for(int i=0; i<directoryAndFileList.length; i++){
+			if(directoryAndFileList[i].isFile())
+				fileList.add(directoryAndFileList[i]);
+			if(directoryAndFileList[i].isDirectory())
+				searchForFilesIn(directoryAndFileList[i].getAbsolutePath(), fileList);
+		}
     	return fileList;
     }
 }

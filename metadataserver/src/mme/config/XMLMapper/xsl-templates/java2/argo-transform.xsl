@@ -10,7 +10,7 @@
 </xsl:template>
 
 <xsl:template name="Owned">
-    <xsl:for-each select="Foundation.Core.Namespace.ownedElement/Model_Management.Package">
+    <xsl:for-each select="UML:Namespace.ownedElement/Model_Management.Package">
         <package>
             <package_name><xsl:value-of select="Foundation.Core.ModelElement.name"/></package_name>
             <package_stereotype><xsl:value-of select="Foundation.Core.ModelElement.name"/></package_stereotype>
