@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xmi="http://www.omg.org/XMI">
+
+<xsd:import namespace="http://www.omg.org/XMI" schemaLocation="xmi20.xsd"/>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: myclass1</xsd:documentation>
+</xsd:annotation>
+
+<xsd:complexType name="myclass1">
+  <xsd:choice minOccurs="0" maxOccurs="unbounded">
+    <xsd:element name="asso" type="xmi:Any"/>
+    <xsd:element ref="xmi:Extension"/>
+  </xsd:choice>
+  <xsd:attribute ref="xmi:id"/>
+  <xsd:attributeGroup ref="xmi:ObjectAttribs"/>
+  <xsd:attribute name="asso" type="xsd:IDREFS" use="optional"/>
+</xsd:complexType>
+
+<xsd:element name="myclass1" type="myclass1"/>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: myclass2</xsd:documentation>
+</xsd:annotation>
+
+<xsd:complexType name="myclass2">
+  <xsd:choice minOccurs="0" maxOccurs="unbounded">
+    <xsd:element ref="xmi:Extension"/>
+  </xsd:choice>
+  <xsd:attribute ref="xmi:id"/>
+  <xsd:attributeGroup ref="xmi:ObjectAttribs"/>
+</xsd:complexType>
+
+<xsd:element name="myclass2" type="myclass2"/>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: myclass3</xsd:documentation>
+</xsd:annotation>
+
+<xsd:complexType name="myclass3">
+  <xsd:choice minOccurs="0" maxOccurs="unbounded">
+    <xsd:element name="aggi" type="xmi:Any"/>
+    <xsd:element ref="xmi:Extension"/>
+  </xsd:choice>
+  <xsd:attribute ref="xmi:id"/>
+  <xsd:attributeGroup ref="xmi:ObjectAttribs"/>
+</xsd:complexType>
+
+<xsd:element name="myclass3" type="myclass3"/>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: myclass4</xsd:documentation>
+</xsd:annotation>
+
+<xsd:complexType name="myclass4">
+  <xsd:choice minOccurs="0" maxOccurs="unbounded">
+    <xsd:element ref="xmi:Extension"/>
+  </xsd:choice>
+  <xsd:attribute ref="xmi:id"/>
+  <xsd:attributeGroup ref="xmi:ObjectAttribs"/>
+</xsd:complexType>
+
+<xsd:element name="myclass4" type="myclass4"/>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: myclass5</xsd:documentation>
+</xsd:annotation>
+
+<xsd:complexType name="myclass5">
+  <xsd:choice minOccurs="0" maxOccurs="unbounded">
+    <xsd:element ref="xmi:Extension"/>
+  </xsd:choice>
+  <xsd:attribute ref="xmi:id"/>
+  <xsd:attributeGroup ref="xmi:ObjectAttribs"/>
+</xsd:complexType>
+
+<xsd:element name="myclass5" type="myclass5"/>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: myclass6</xsd:documentation>
+</xsd:annotation>
+
+<xsd:complexType name="myclass6">
+  <xsd:choice minOccurs="0" maxOccurs="unbounded">
+    <xsd:element ref="xmi:Extension"/>
+  </xsd:choice>
+  <xsd:attribute ref="xmi:id"/>
+  <xsd:attributeGroup ref="xmi:ObjectAttribs"/>
+</xsd:complexType>
+
+<xsd:element name="myclass6" type="myclass6"/>
+
+</xsd:schema>

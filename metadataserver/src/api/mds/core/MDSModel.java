@@ -1,6 +1,5 @@
 package api.mds.core;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import api.mds.persistence.PersistenceHandler;
@@ -80,39 +79,39 @@ public interface MDSModel extends MDSObject {
 
 	/**
 	 * Gets the xmiFile
-	 * @return Returns a File
+	 * @return Returns a MDSFile
 	 */
-	public File getXmiFile();
+	public MDSFile getXmiFile();
 
 	/**
 	 * Sets the xmiFile
 	 * @param xmiFile The xmiFile to set
 	 */
-	public void setXmiFile(File xmiFile);
+	public void setXmiFile(MDSFile xmiFile);
 
 	/**
 	 * Gets the dtdFile
-	 * @return Returns a File
+	 * @return Returns a MDSFile
 	 */
-	public File getDtdFile();
+	public MDSFile getDtdFile();
 
 	/**
 	 * Sets the dtdFile
 	 * @param dtdFile The dtdFile to set
 	 */
-	public void setDtdFile(File dtdFile);
+	public void setDtdFile(MDSFile dtdFile);
 
 	/**
 	 * Gets the schemaFile
-	 * @return Returns a File
+	 * @return Returns a MDSFile
 	 */
-	public File getSchemaFile();
+	public MDSFile getSchemaFile();
 
 	/**
 	 * Sets the schemaFile
 	 * @param schemaFile The schemaFile to set
 	 */
-	public void setSchemaFile(File schemaFile);
+	public void setSchemaFile(MDSFile schemaFile);
 
 	/**
 	 * Gets the metamodel

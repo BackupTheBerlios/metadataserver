@@ -32,9 +32,11 @@ public class MDSTest {
 		myclass6.setLabel("myclass6");
 
 		AssociationEnd end1 = new AssociationEndImpl();
+		end1.setMultiplicity(AssociationEnd.MULTIPLICITY_0_OR_1);
 		end1.setMdsClass(myclass1);
 
 		AssociationEnd end2 = new AssociationEndImpl();
+		end2.setMultiplicity(AssociationEnd.MULTIPLICITY_0_OR_MORE);
 		end2.setMdsClass(myclass2);
 
 		AssociationEnd end3 = new AssociationEndImpl();
@@ -72,7 +74,9 @@ public class MDSTest {
 
 		System.out.println(server);
 		
-		model.getXmiFile();
+		System.out.println(model.getXmiFile().getContent());
+		System.out.println(model.getDtdFile().getContent());
+		System.out.println(model.getSchemaFile().getContent());
 	}
 
 }

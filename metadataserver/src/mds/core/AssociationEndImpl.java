@@ -13,7 +13,7 @@ public class AssociationEndImpl implements AssociationEnd {
 	/**
 	 * die multiplicity dieses AssociationEndes
 	 */
-	private int multiplicity = 0;
+	private String multiplicity = null;
 
 	/**
 	 * die Klasse dieses AssociationEndes
@@ -23,14 +23,14 @@ public class AssociationEndImpl implements AssociationEnd {
 	/**
 	 * @see AssociationEnd#getMultiplicity()
 	 */
-	public int getMultiplicity() {
+	public String getMultiplicity() {
 		return multiplicity;
 	}
 
 	/**
-	 * @see AssociationEnd#setMultiplicity(int)
+	 * @see AssociationEnd#setMultiplicity(String)
 	 */
-	public void setMultiplicity(int multiplicity) {
+	public void setMultiplicity(String multiplicity) {
 		this.multiplicity = multiplicity;
 	}
 

@@ -1,6 +1,5 @@
 package mds.core;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -9,6 +8,7 @@ import mds.xmi.XMIHandlerException;
 import mds.xmi.XMIHandlerImpl;
 
 import api.mds.core.MDSElement;
+import api.mds.core.MDSFile;
 import api.mds.core.MDSHref;
 import api.mds.core.MDSModel;
 import api.mds.core.MDSRepository;
@@ -36,17 +36,17 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	/**
 	 * xmi-repräsenation des Models
 	 */
-	private File xmiFile = null;
+	private MDSFile xmiFile = null;
 
 	/**
 	 * dtd-Repräsenation des Models
 	 */
-	private File dtdFile = null;
+	private MDSFile dtdFile = null;
 
 	/**
 	 * schema-repräsenation des Models
 	 */
-	private File schemaFile = null;
+	private MDSFile schemaFile = null;
 
 	/**
 	 * wenn nicht null dann ist Model Instance dieses metamodel
@@ -134,46 +134,54 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	/**
 	 * @see MDSModel#getXmiFile()
 	 */
-	public File getXmiFile() {
+	public MDSFile getXmiFile() {
 		try {
 			xmiHandler.generateXMI(this);
 		} catch (XMIHandlerException e) {
 		}
-		return null;
+		return this.xmiFile;
 	}
 
 	/**
-	 * @see MDSModel#setXmiFile(File)
+	 * @see MDSModel#setXmiFile(MDSFile)
 	 */
-	public void setXmiFile(File xmiFile) {
+	public void setXmiFile(MDSFile xmiFile) {
 		this.xmiFile = xmiFile;
 	}
 
 	/**
 	 * @see MDSModel#getDtdFile()
 	 */
-	public File getDtdFile() {
-		return dtdFile;
+	public MDSFile getDtdFile() {
+		try {
+			xmiHandler.generateDTD(this);
+		} catch (XMIHandlerException e) {
+		}
+		return this.dtdFile;
 	}
 
 	/**
-	 * @see MDSModel#setDtdFile(File)
+	 * @see MDSModel#setDtdFile(MDSFile)
 	 */
-	public void setDtdFile(File dtdFile) {
+	public void setDtdFile(MDSFile dtdFile) {
 		this.dtdFile = dtdFile;
 	}
 
 	/**
 	 * @see MDSModel#getSchemaFile()
 	 */
-	public File getSchemaFile() {
-		return schemaFile;
+	public MDSFile getSchemaFile() {
+		try {
+			xmiHandler.generateSchema(this);
+		} catch (XMIHandlerException e) {
+		}
+		return this.schemaFile;
 	}
 
 	/**
-	 * @see MDSModel#setSchemaFile(File)
+	 * @see MDSModel#setSchemaFile(MDSFile)
 	 */
-	public void setSchemaFile(File schemaFile) {
+	public void setSchemaFile(MDSFile schemaFile) {
 		this.schemaFile = schemaFile;
 	}
 
@@ -199,7 +207,7 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	}
 
 	/**
-	 * @see MDSModel#setAdditionalFiles(File[])
+	 * @see MDSModel#setAdditionalFiles(ArrayList)
 	 */
 	public void setAdditionalFiles(ArrayList additionalFiles) {
 		this.additionalFiles = additionalFiles;
