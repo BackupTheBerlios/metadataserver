@@ -4,9 +4,11 @@ api.mds.soap
 api.mds.xmi
 api.mme.core
 api.mme.mapper
+mds
 mds.core
 mds.persistence
 mds.soap
 mds.xmi
+mme
 mme.core
 mme.mapper
