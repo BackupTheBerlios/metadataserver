@@ -1,5 +1,8 @@
 package mds.persistence;
 
+import java.util.ArrayList;
+
+import api.mds.core.MDSHref;
 import api.mds.core.MDSModel;
 import api.mds.core.MDSObject;
 import api.mds.persistence.PersistenceHandler;
@@ -19,9 +22,9 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 	}
 
 	/**
-	 * @see PersistenceHandler#load(String, String)
+	 * @see PersistenceHandler#load(MDSHref, String)
 	 */
-	public MDSObject load(String href, String version)
+	public MDSObject load(MDSHref href, String version)
 		throws PersistenceHandlerException {
 		return null;
 	}
@@ -36,7 +39,7 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 	/**
 	 * @see PersistenceHandler#getModelVersions(MDSModel)
 	 */
-	public String[] getModelVersions(MDSModel mdsModel)
+	public ArrayList getModelVersions(MDSModel mdsModel)
 		throws PersistenceHandlerException {
 		return null;
 	}

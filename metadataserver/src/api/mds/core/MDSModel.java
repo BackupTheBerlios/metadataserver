@@ -7,6 +7,7 @@ import api.mds.persistence.PersistenceHandler;
 import api.mds.xmi.XMIHandler;
 
 import mds.core.MDSCoreException;
+import mds.core.MDSHrefFormatException;
 
 /**
  * Abbildung eines UML- o. MOF- Models, besteht aus seiner 
@@ -43,7 +44,7 @@ public interface MDSModel extends MDSObject {
 	 * fügt ein MDSElement in MDSModel ein
 	 *
 	 * @param mdsElement das MDSElement (Klasse, Assoziation,...)
-	 * @return Pfad zum neu eingefügten MDSElement
+	 * @return id des eingefügten MDSElement
 	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public String insertElement(MDSElement mdsElement)
@@ -55,29 +56,31 @@ public interface MDSModel extends MDSObject {
 	 * @param href an dieser spezifierten Stelle 
 	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public void removeElement(String href) throws MDSCoreException;
+	public void removeElement(MDSHref href)
+		throws MDSCoreException, MDSHrefFormatException;
 
 	/**
 	 * verschiebt ein MDSElement in ein anderes MDSModel
 	 *
 	 * @param from href spezifierten Stelle 
 	 * @param to an diese spezifierten Stelle 
-	 * @return Pfad zur neuen MDSElement-Position
+	 * @return id des MDSElement
 	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public String moveElement(String from, String to) throws MDSCoreException;
+	public String moveElement(MDSHref from, MDSHref to)
+		throws MDSCoreException, MDSHrefFormatException;
 
 	/**
 	 * kopiert ein MDSElement innerhalb eines MDSModel
 	 * oder in ein anderes MDSModel
 	 *
-	 * @param from href spezifierten Stelle 
+	 * @param from von spezifierten Stelle 
 	 * @param to an dieser spezifierten Stelle 
 	 * @param label des neuen MDSElement, id wird automatisch vergeben
-	 * @return Pfad zur Kopie des MDSElement
+	 * @return id der Kopie des MDSElement
 	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public String copyElement(String from, String to, String label)
+	public String copyElement(MDSHref from, MDSHref to, String label)
 		throws MDSCoreException;
 
 	/**
@@ -89,7 +92,7 @@ public interface MDSModel extends MDSObject {
 	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public ArrayList validateModel(int validateType) throws MDSCoreException;
-	
+
 	/**
 	 * führt eine Abfrage auf MDSModel aus
 	 *
@@ -110,7 +113,7 @@ public interface MDSModel extends MDSObject {
 	 * @param xmiFile The xmiFile to set
 	 */
 	public void setXmiFile(File xmiFile);
-	
+
 	/**
 	 * Gets the dtdFile
 	 * @return Returns a File
@@ -134,7 +137,7 @@ public interface MDSModel extends MDSObject {
 	 * @param schemaFile The schemaFile to set
 	 */
 	public void setSchemaFile(File schemaFile);
-	
+
 	/**
 	 * Gets the metamodel
 	 * @return Returns a MDSModel
@@ -146,7 +149,7 @@ public interface MDSModel extends MDSObject {
 	 * @param metamodel The metamodel to set
 	 */
 	public void setMetamodel(MDSModel metamodel);
-	
+
 	/**
 	 * Gets the additionalFiles
 	 * @return Returns a ArrayList
@@ -158,7 +161,7 @@ public interface MDSModel extends MDSObject {
 	 * @param additionalFiles The additionalFiles to set
 	 */
 	public void setAdditionalFiles(ArrayList additionalFiles);
-	
+
 	/**
 	 * Gets the xmiHandler
 	 * @return Returns a XMIHandler
@@ -170,18 +173,17 @@ public interface MDSModel extends MDSObject {
 	 * @param xmiHandler The xmiHandler to set
 	 */
 	public void setXmiHandler(XMIHandler xmiHandler);
-	
+
 	/**
 	 * Gets the elements
 	 * @return Returns a ArrayList
 	 */
 	public ArrayList getElements();
-	
+
 	/**
 	 * Sets the elements
 	 * @param elements The elements to set
 	 */
 	public void setElements(ArrayList elements);
-
 
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import api.mds.persistence.PersistenceHandler;
 
 import mds.core.MDSCoreException;
+import mds.core.MDSHrefFormatException;
 
 /**
  * beinhaltet die MDSModels
@@ -16,7 +17,7 @@ public interface MDSRepository extends MDSObject {
 	/**
 	 * legt MDSRepository auf Server ab
 	 *
-	 * @return Pfad zum MDSRepository
+	 * @return id des MDSRepository
 	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public String insert() throws MDSCoreException;
@@ -41,7 +42,7 @@ public interface MDSRepository extends MDSObject {
 	 * fügt in MDSModel in MDSRepository ein
 	 *
 	 * @param mdsModel das einzufügende Model
-	 * @return Pfad zum neu MDSModel
+	 * @return id des neuen MDSModel
 	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public String insertModel(MDSModel mdsModel)
@@ -53,31 +54,32 @@ public interface MDSRepository extends MDSObject {
 	 * @param href Pfad des zu löschenden Model
 	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public void removeModel(String href) throws MDSCoreException;
+	public void removeModel(MDSHref href) throws MDSCoreException;
 
 	/**
 	 * verschiebt MDSModel in ein anderes MDSRepository
 	 *
-	 * @param from href spezifierten Stelle 
+	 * @param from von spezifierten Stelle 
 	 * @param to an dieser spezifierten Stelle 
-	 * @return Pfad zur neuen MDSModel-Position
+	 * @return id des neuen MDSModel 
 	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public String moveModel(String from, String to) throws MDSCoreException;
+	public String moveModel(MDSHref from, MDSHref to)
+		throws MDSCoreException;
 
 	/**
 	 * kopiert MDSModel
 	 *
-	 * @param from href spezifizierten Stelle 
+	 * @param from von spezifizierten Stelle 
 	 * @param to an diese spezifizierten Stelle 
 	 * @param label des neuen MDSModels, id wird automatisch vergeben
-	 * @return Pfad zur Kopie des MDSModel
+	 * @return id der Kopie des MDSModel
 	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public String copyModel(String from, String to, String label)
+	public String copyModel(MDSHref from, MDSHref to, String label)
 		throws MDSCoreException;
-	
-	public MDSModel getModelByHref(String href)
-		throws MDSCoreException;
+
+	public MDSModel getModelByHref(MDSHref href)
+		throws MDSCoreException, MDSHrefFormatException;
 
 }

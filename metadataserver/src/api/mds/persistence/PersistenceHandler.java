@@ -1,7 +1,10 @@
 package api.mds.persistence;
 
+import java.util.ArrayList;
+
 import mds.persistence.PersistenceHandlerException;
 
+import api.mds.core.MDSHref;
 import api.mds.core.MDSModel;
 import api.mds.core.MDSObject;
 import api.mme.mapper.MDSMapper;
@@ -34,7 +37,7 @@ public interface PersistenceHandler {
 	 * @return das geladene MDSObject
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-	public MDSObject load(String href, String version)
+	public MDSObject load(MDSHref href, String version)
 		throws PersistenceHandlerException;
 
 	/**
@@ -54,7 +57,7 @@ public interface PersistenceHandler {
 	 * @return Liste aller Versionen
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-	public String[] getModelVersions(MDSModel mdsModel)
+	public ArrayList getModelVersions(MDSModel mdsModel)
 		throws PersistenceHandlerException;
 
 	/**
