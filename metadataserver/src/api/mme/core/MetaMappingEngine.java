@@ -5,6 +5,7 @@ import mme.core.MetaMappingEngineException;
 import api.mds.core.MDSModel;
 import api.mme.mapper.MDSMapper;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * bindet die metamapping.engine
@@ -49,6 +50,6 @@ public interface MetaMappingEngine {
 	 * @return die Mappings
 	 * @throws MetaMappingEngineException im Fehlerfall
 	 */
-	public List getMappings(String from, String to)
+	public ArrayList getMappings(String from, String to)
 		throws MetaMappingEngineException;
 }

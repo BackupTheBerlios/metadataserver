@@ -9,6 +9,10 @@ import api.mds.core.MDSModel;
 import api.mds.persistence.PersistenceHandler;
 import api.mme.core.Mapping;
 import api.mme.mapper.MDSMapper;
+import api.mme.mapper.UnicodeMapper;
+import api.mme.mapper.XMLMapper;
+
+import java.util.ArrayList;
 
 /**
  * @see MDSMapper
@@ -26,6 +30,16 @@ public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 	 * Datei mit den globalen Mappinginstruktionen
 	 */
 	private File mappingFile = null;
+	
+	/**
+	 * der eigendliche Mapper
+	 */
+	public XMLMapper xmlMapper = null;
+
+	/**
+	 * 
+	 */
+	public UnicodeMapper unicodeMapper = null;
 
 	/**
 	 * zum speichern des models
@@ -37,7 +51,15 @@ public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 	 */
 	public MDSModel map(MDSModel mdsModel, Mapping mapping)
 		throws MetaMappingEngineException {
-		return null;
+		String xmlContend = mdsModel.getXmiFile().getContent();
+		ArrayList fileList = null;
+		if(xmlMapper != null)
+			fileList = this.xmlMapper.doMapping(xmlContend);
+			// dann handelt es sich um einen XmlMapper
+		if(unicodeMapper != null)
+			// dann handelt es sich um einen unicodeMapper
+		mdsModel.setAdditionalFiles(fileList);
+		return mdsModel;
 	}
 
 	/**

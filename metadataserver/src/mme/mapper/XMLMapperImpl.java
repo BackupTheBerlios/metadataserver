@@ -9,6 +9,8 @@ import mme.MmeGlobals;
 import api.mme.core.Mapping;
 import mme.core.MappingImpl;
 
+import java.util.ArrayList;
+
 
 /**
  * @see XMIHandler
@@ -41,6 +43,7 @@ public class XMLMapperImpl extends MDSMapperImpl implements XMLMapper {
 	 * @param outputPath
 	 */
 	public XMLMapperImpl(File configXml, String outputPath){
+		super.xmlMapper = this;
 		this.configXml  = configXml ;
 		this.outputPath = outputPath;
 		String from = null;
@@ -109,13 +112,16 @@ public class XMLMapperImpl extends MDSMapperImpl implements XMLMapper {
 	 * @param outputPath
 	 * @throws MetaMappingEngineException
 	 */
-	private void doMapping(String xmiPath)throws MetaMappingEngineException{
-		Transform trans = new Transform();
+	public ArrayList doMapping(String xmi)throws MetaMappingEngineException{
+		XmlMapperProzessor  trans = new XmlMapperProzessor ();
 		trans.setConfigXml(configXml.getAbsolutePath());
+		ArrayList fileList;
 		if(outputPath != null)
-			trans.startMapping(xmiPath ,outputPath);
+			fileList = trans.startMapping(xmi ,outputPath);
 		else
-			trans.startMapping(xmiPath, MmeGlobals.OUTPUT_PATH);		
+			fileList = trans.startMapping(xmi, MmeGlobals.OUTPUT_PATH);
+		return fileList;
 	}
+	
 
 }

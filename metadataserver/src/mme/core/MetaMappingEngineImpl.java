@@ -6,6 +6,7 @@ import api.mme.core.MetaMappingEngine;
 import api.mme.mapper.MDSMapper;
 import java.util.Vector;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @see MetaMappingEngine
@@ -50,10 +51,10 @@ public class MetaMappingEngineImpl implements MetaMappingEngine {
 	/**
 	 * @see MetaMappingEngine#getMappings(String, String)
 	 */
-	public List getMappings(String from, String to)
+	public ArrayList getMappings(String from, String to)
 		throws MetaMappingEngineException {
 
-		List mappingList = new Vector();
+		ArrayList mappingList = new ArrayList();
 
 		if(from == null && to == null){
 			for(int i=0; i<mdsMapperVec.size(); i++){

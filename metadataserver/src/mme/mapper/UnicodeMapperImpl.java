@@ -9,7 +9,7 @@ import api.mme.mapper.UnicodeMapper;
 /**
  * @see UnicodeMapper
  * 
- * @author Thomas Chille
+ * @author Christian Sterr
  */
 public class UnicodeMapperImpl extends MDSMapperImpl implements UnicodeMapper {
 
@@ -60,4 +60,12 @@ public class UnicodeMapperImpl extends MDSMapperImpl implements UnicodeMapper {
 	public void setParserFile(File parserFile) {
 		this.parserFile = parserFile;
 	}
+	
+	/**
+	 * @see api.mme.mapper.UnicodeMapper#doMapping(String)
+	 */
+	public String doMapping(String xmi)throws MetaMappingEngineException{
+		return null;
+	}
+
 }
