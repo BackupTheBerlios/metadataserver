@@ -1,0 +1,165 @@
+ MDS API
+
+	stellt die Schnittstelle zu den Clients dar und 
+	muss vom Core implementiert werden 
+ 	
+	createReposititory(label : String) : Href
+		erzeugt neues Repository
+	
+	deleteRepository(href : String) : Boolean
+		löscht ein Repository
+	
+	renameRepository(href : String, label : String) : Boolean
+		umbenennen eines Repository
+	
+	queryRepository(href : String, query : String) : ResultList
+		führt eine Abfrage auf einem Repository aus
+	
+	public  insertModel(href : String, model : Model) : Href
+		fügt ein Model in Repository ein
+	
+	removeModel(href : String) : Boolean
+		entfernt ein Model aus einem Repository
+	
+	moveModel(from : String, to : String) : Href
+		verschiebt ein Model in ein anderes Repository
+	
+	copyModel(from : String, to : String, label : String) : Href
+		kopiert ein Model
+	
+	renameModel(href : String, label : String) : Boolean
+		umbenennen eines Model
+	
+	getModelVersions(href : String) : VersionList
+		gibt Liste aller vorhandenen Versionen eines Model zurück
+	
+	restoreModel(href : String, version : String) : Boolean 
+		macht Änderungen an einem Model rückgängig
+	
+	insertElement(href : String, element : Element) : Href
+		fügt ein Element in Model ein
+	
+	removeElement(href : String) : Boolean
+		entfernt ein Element aus einem Model
+	
+	moveElement(from : String, to : String) : Href
+		verschiebt ein Element innerhalb eines Model oder in ein anderes Model
+	
+	copyElement(from : String, to : String, label : String) : Href
+		kopiert ein Element innerhalb eines Model oder in ein anderes Model
+	
+	validateModel(href : String, validateType : String) : MessageList
+		validiert Model
+	
+	importModel(label : String, model : Model, mapping : Mapping) : Href
+		importiert Model, wenn ein Mapping angeben wird wirkt dieses als Importfilter - 
+		das Model wird dabei im Repository abgelegt
+	
+	exportModel(href : String, mapping : Mapping) : Model
+		exportiert Model, wenn ein Mapping angeben wird wirkt dieses als Exportfilter - 
+		das evtl. neue Model  wird dabei nicht im Repository abgelegt
+		
+	registerMapping(mappingResource : MappingResource) : Mapping
+		meldet neues Mapping bei Mapper an
+	
+	unregisterMapping(mapping : Mapping) : Boolean
+		meldet Mapping ab
+	
+	getMappings(from : String, to : String) : MappingList
+		gibt eine Liste aller angemeldeten Mappings zurück
+   		
+	convertModel(href : String, mapping : Mapping, label : String) : Href
+		konvertiert ein Model in eien anderes
+
+
+XMIHandler API:
+
+	Stellt Methoden zum Erzeugen und Manipulieren von Models mittels XMI 
+	zur Verfügung
+	
+	createModel(name : String, type : String, metamodel : Model) : Model
+		erzeugt neues Modell, metmodel ist optional
+	
+	insertClass(class : Class, model : Model, id : String) 
+		fügt eine Klasse an der mit id spezifierten Stelle in model ein
+	
+	insertAssociation(association : Assciation, model : Model, id : String)
+		fügt eine Assiziation an der mit id spezifierten Stelle in model ein
+	
+	remove(model : Model, id : String)
+		entfernt ein element (Klase oder Asso) an der mit id spezifierten 
+		Stelle aus dem model
+	
+	generateDTD(model : Model) 
+		erzeugt oder aktualsiert die zum Model gehördende DTD
+	
+	generateSchema(model : Model) 
+	erzeugt oder aktualsiert das zum Model gehöredende Schema
+
+	query(model : Model, query : String) : Result
+		führt eine Abfrage auf dem Model aus
+
+
+PersistenceHandler API:
+
+	stellt Methoden zur dauerhaften Speicherung der Models 
+	mit einer einfachen Versionierung zur Verfügung
+	
+	save(model : Model) 
+		sichert komplettes Model (xmi, [dtd], [xsd]), 
+		aktualisiert automatisch die Versionsnummer im Model
+	
+	load(pfad : String, version : String) : Model
+		lädt komplettes Model (xmi, [dtd], [xsd]), 
+		wenn version==null das aktuellste
+	
+	delete(model : Model , version : String) 
+		löscht komplettes Model (xmi, [dtd], [xsd]),
+		wenn version==null alle Versionen
+	
+	getVersions(model : Model) : StringList
+		gibt eine Liste aller vorhandenen Versionen eines Models zurück
+
+
+MME API:
+
+	bindet die metamapping.engine an den metadata.server an
+	
+	map(model : Model, mapping : Mapping) : Model
+		mappt ein Model bestimmten Types mit seinen Resoucen auf ein 
+		durchs Mapping spezifziertes Model mit seinen Resourcen
+	
+	registerMapping(mappingResource : MappingResource) : Mapping
+		meldet neues Mapping an, mappingResource beinhaltet 
+		MapperType, MappingType u. die benötigten Files
+	
+	unregisterMapping(mapping : Mapping)
+		meldet Mapping  ab
+	
+	getMappings(from : String, to : String) : MappingList
+		gibt eine Liste aller angemeldeten Mappings zurück,
+		from== null - alle mit to als Ziel, to==null - alle mit mit from als 
+		Quelle, from==to==null - alle
+
+
+Mapper API:
+
+	stellt Methoden zur Transformation der Models bereit
+	
+	map(model : Model, mapping : Mapping) : Model
+		mappt ein Model bestimmten Types mit seinen Resoucen auf ein 
+	durchs Mapping spezifziertes Model mit seinen Resourcen
+	
+	registerMapping(mappingResource : MappingResource) : Mapping
+		meldet neues Mapping an, mappingResource beinhaltet 
+	MapperType, MappingType u. die benötigten Files
+	
+	unregisterMapping(mapping : Mapping)
+		meldet Mapping  ab
+	
+	getMappings(from : String, to : String) : MappingList
+		gibt eine Liste aller angemeldeten Mappings zurück,
+		from== null - alle mit to als Ziel, to==null - alle mit mit from 
+		als Quelle, from==to==null - alle
+
+
