@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 import mds.MDSGlobals;
+import mds.persistence.FilesystemHandlerImpl;
 import mds.persistence.PersistenceHandlerException;
 import mds.xmi.XMIHandlerImpl;
 
@@ -121,47 +122,55 @@ public class MDSTest2 {
 
 		href = server.insertModel(rhref, model1);
 		server.insertElement(href, myclass1);
-		
+
 		// fehler simulieren
 		MDSClass wrongClass = new MDSClassImpl();
 		wrongClass.setLabel("wrongClass");
 		server.insertElement(href, wrongClass);
-		
+
 		// vom ersten die uml-xmi-repräsentation ausprinten
 		String content = model.getUmlFile().getContent();
 		System.out.println(content);
-		
+
 		// dtd des metamodels ausprinten
 		content = model.getDtdFile().getContent();
 		System.out.println(content);
-		
+
 		// vom zweiten die xmi-repräsemtation ausprinten
 		content = model1.getXmiFile().getContent();
 		System.out.println(content);
-		
+
 		model1.validateModel(0);
-		
-		System.out.println("ready!!");
-		
-		/*
+
+		System.out.println(server);
+
 		try {
-			model.save();
-			model1.save();
-		} catch (PersistenceHandlerException e) {
+			rep.save();
+			MDSRepository lrep =
+				(MDSRepositoryImpl) new FilesystemHandlerImpl().load(
+					new MDSHrefImpl("mds://server_0/repository_0_0"),
+					null);
+			System.out.println(lrep);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+
+		System.out.println("ready!!");
+
+		/*
 		// erstes model als sample speichern
 		FileWriter f1;
 		MDSFile file1 = new MDSFileImpl();
 		BufferedReader f;
 		String line = null;
 		String content = "";
-
+		
 		try {
-
+		
 			f1 = new FileWriter("sample.xmi");
 			f1.write(model.getXmiFile().getContent());
 			f1.close();
-
+		
 			// sample laden
 			f = new BufferedReader(new FileReader("sample.xmi"));
 			while ((line = f.readLine()) != null) {
@@ -170,21 +179,21 @@ public class MDSTest2 {
 			f.close();
 			file1.setContent(content);
 			// sample-inhalt nach mds konvertieren
-			//MDSModel model2 = new XMIHandlerImpl().mapXMI2MDS(file1);
-
+			//MDSModel model2 = new XMIHandlerImpl().mapUML2MDS(file1);
+		
 			// dabei neu entstandenes model auf server ablegen
 			//server.insertModel(rhref, model2);
-
+		
 			// und xmi-repräsentation ausprinten
 			//System.out.println(model2.getXmiFile().getContent());
-
+		
 			// und dtd-repräsentation ausprinten
 			//System.out.println(model2.getDtdFile().getContent());
-
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-*/
+		*/
 		//System.out.println(server);
 
 		//System.out.println(model.getSchemaFile().getContent());

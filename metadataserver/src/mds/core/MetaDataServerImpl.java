@@ -27,6 +27,8 @@ public class MetaDataServerImpl
 	extends MDSObjectImpl
 	implements MetaDataServer {
 
+	private int counter = 0;
+
 	/**
 	 * der Server kennt seine MME
 	 */
@@ -41,9 +43,9 @@ public class MetaDataServerImpl
 	 * Constructor for MetaDataServerImpl.
 	 */
 	public MetaDataServerImpl() {
-		this.setId("server_0");
+		this.setId("0");
 		try {
-			this.setHref(new MDSHrefImpl("mds://" + this.getId()));
+			this.setHref(new MDSHrefImpl("mds://server_" + this.getId()));
 		} catch (MDSHrefFormatException e) {
 			e.printStackTrace();
 		}
@@ -55,21 +57,21 @@ public class MetaDataServerImpl
 	 */
 	public MDSHref insertReposititory(MDSRepository mdsRepository) {
 		try {
-			String id = mdsRepository.insert();
+			//String id = mdsRepository.insert();
 			if (repositories.add(mdsRepository)) {
-				mdsRepository.setHref(
+				if (mdsRepository.getId() == null) {
+					mdsRepository.setId(this.getId() + "_" + this.counter++);
+				}
+				MDSHref href =
 					new MDSHrefImpl(
 						this.getHref().getServerHref()
-							+ "/"
-							+ mdsRepository.getId()));
-				return new MDSHrefImpl(
-					this.getHref().getServerHref() + "/" + id);
+							+ "/repository_"
+							+ mdsRepository.getId());
+				mdsRepository.setHref(href);
+				return href;
 			} else {
 				return null;
 			}
-		} catch (MDSCoreException e) {
-			e.printStackTrace();
-			return null;
 		} catch (MDSHrefFormatException e) {
 			e.printStackTrace();
 			return null;
@@ -132,7 +134,7 @@ public class MetaDataServerImpl
 		try {
 			MDSRepository mdsRepository = getRepositoryByHref(href);
 			String id = mdsRepository.insertModel(mdsModel);
-			return new MDSHrefImpl(href.getHrefString() + "/" + id);
+			return mdsModel.getHref();
 		} catch (MDSCoreException e) {
 			return null;
 		} catch (MDSHrefFormatException e) {
@@ -241,10 +243,12 @@ public class MetaDataServerImpl
 			MDSRepository mdsRepository = getRepositoryByHref(href);
 			MDSModel mdsModel = mdsRepository.getModelByHref(href);
 			String id = mdsModel.insertElement(mdsElement);
-			return new MDSHrefImpl(href.getHrefString() + "/" + id);
+			return mdsElement.getHref();
 		} catch (MDSCoreException e) {
+			e.printStackTrace();
 			return null;
 		} catch (MDSHrefFormatException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -415,6 +419,38 @@ public class MetaDataServerImpl
 			retString += ((MDSRepository) i.next()).toString();
 		}
 		return retString;
+	}
+
+	/**
+	 * Returns the counter.
+	 * @return int
+	 */
+	public int getCounter() {
+		return counter;
+	}
+
+	/**
+	 * Returns the repositories.
+	 * @return ArrayList
+	 */
+	public ArrayList getRepositories() {
+		return repositories;
+	}
+
+	/**
+	 * Sets the counter.
+	 * @param counter The counter to set
+	 */
+	public void setCounter(int counter) {
+		this.counter = counter;
+	}
+
+	/**
+	 * Sets the repositories.
+	 * @param repositories The repositories to set
+	 */
+	public void setRepositories(ArrayList repositories) {
+		this.repositories = repositories;
 	}
 
 }

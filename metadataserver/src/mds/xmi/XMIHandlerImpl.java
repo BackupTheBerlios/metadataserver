@@ -92,24 +92,25 @@ public class XMIHandlerImpl implements XMIHandler {
 		xdoc += "\t</XMI.header>\n";
 		xdoc += "\t<XMI.content>\n";
 
-		String xclass = "\t\t<UML:Class xmi.id=\"#id#\" name=\"#name#\"/>\n";
+		String xclass =
+			"\t\t<UML:Class xmi.id=\"mdsID_#id#\" name=\"#name#\"/>\n";
 
 		String xgeneralization =
-			"\t\t<UML:Class xmi.id=\"#subId#\" name=\"#name#\" generalization=\"#superId#\">\n";
+			"\t\t<UML:Class xmi.id=\"mdsID_#subId#\" name=\"#name#\" generalization=\"mdsID_#superId#\">\n";
 		xgeneralization += "\t\t\t<UML:Namespace.ownedElement>\n";
 		xgeneralization
-			+= "\t\t\t\t<UML:Generalization xmi.id=\"#id#\" name=\"#genName#\" child=\"#subId#\" parent=\"#superId#\"/>\n";
+			+= "\t\t\t\t<UML:Generalization xmi.id=\"mdsID_#id#\" name=\"#genName#\" child=\"mdsID_#subId#\" parent=\"mdsID_#superId#\"/>\n";
 		xgeneralization += "\t\t\t</UML:Namespace.ownedElement>\n";
 		xgeneralization += "\t\t</UML:Class>\n";
 
 		String xassociation1 =
-			"\t\t<UML:Association xmi.id=\"#id#\" name=\"#name#\">\n";
+			"\t\t<UML:Association xmi.id=\"mdsID_#id#\" name=\"#name#\">\n";
 		xassociation1 += "\t\t\t<UML:Association.connection>\n";
 		xassociation1
-			+= "\t\t\t\t<UML:AssociationEnd aggregation=\"#aggregation#\" type=\"#endId#\"/>\n";
+			+= "\t\t\t\t<UML:AssociationEnd aggregation=\"#aggregation#\" type=\"mdsID_#endId#\"/>\n";
 
 		String xassociation2 =
-			"\t\t\t\t<UML:AssociationEnd aggregation=\"#aggregation#\" type=\"#endId#\"/>\n";
+			"\t\t\t\t<UML:AssociationEnd aggregation=\"#aggregation#\" type=\"mdsID_#endId#\"/>\n";
 		xassociation2 += "\t\t\t</UML:Association.connection>\n";
 		xassociation2 += "\t\t</UML:Association>\n";
 
@@ -322,7 +323,7 @@ public class XMIHandlerImpl implements XMIHandler {
 
 			xdoc += "\t\t<"
 				+ mdsClass.getLabel()
-				+ " xmi.id=\""
+				+ " xmi.id=\"mdsID_"
 				+ mdsClass.getId()
 				+ "\"";
 
@@ -467,7 +468,7 @@ public class XMIHandlerImpl implements XMIHandler {
 							classAssociations.add(
 								" "
 									+ end2Class.getLabel().toLowerCase()
-									+ "=\""
+									+ "=\"mdsID_"
 									+ end2Class.getId()
 									+ "\"");
 							classAssociations.addAll(
@@ -596,7 +597,7 @@ public class XMIHandlerImpl implements XMIHandler {
 				subClasses.add(
 					" "
 						+ subClass.getLabel().toLowerCase()
-						+ "=\""
+						+ "=\"mdsID_"
 						+ subClass.getId()
 						+ "\"");
 				//attributeList.add(subClass.getLabel().toLowerCase());
@@ -705,7 +706,8 @@ public class XMIHandlerImpl implements XMIHandler {
 						&& nodeAttribs.containsKey("name")) {
 						newClass = new MDSClassImpl();
 						newClass.setLabel((String) nodeAttribs.get("name"));
-						newClass.setId((String) nodeAttribs.get("xmi.id"));
+						newClass.setId(
+							((String) nodeAttribs.get("xmi.id")).substring(6));
 						classes.add(newClass);
 					} else {
 						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:Class");
@@ -781,7 +783,7 @@ public class XMIHandlerImpl implements XMIHandler {
 						newAssociation.setLabel(
 							(String) nodeAttribs.get("name"));
 						newAssociation.setId(
-							(String) nodeAttribs.get("xmi.id"));
+							((String) nodeAttribs.get("xmi.id")).substring(6));
 						associations.add(newAssociation);
 					} else {
 						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:Association");
@@ -797,9 +799,13 @@ public class XMIHandlerImpl implements XMIHandler {
 						newGeneralization.setId(
 							(String) nodeAttribs.get("xmi.id"));
 						newGeneralization.setSuperClass(
-							getClassById((String) nodeAttribs.get("parent")));
+							getClassById(
+								((String) nodeAttribs.get("parent")).substring(
+									6)));
 						newGeneralization.setSubClass(
-							getClassById((String) nodeAttribs.get("child")));
+							getClassById(
+								((String) nodeAttribs.get("child")).substring(
+									6)));
 						generalizations.add(newGeneralization);
 					} else {
 						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:Generalization");
@@ -809,7 +815,7 @@ public class XMIHandlerImpl implements XMIHandler {
 						&& nodeAttribs.containsKey("type")) {
 						newAssociationEnd = new MDSAssociationEndImpl();
 						newAssociationEnd.setMdsClass(
-							getClassById((String) nodeAttribs.get("type")));
+							getClassById(((String) nodeAttribs.get("type")).substring(6)));
 						aggregation = (String) nodeAttribs.get("aggregation");
 						if (aggregation.equals("none")) {
 							newAssociationEnd.setAggregation(

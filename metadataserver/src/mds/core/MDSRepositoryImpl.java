@@ -10,9 +10,11 @@ import api.mds.core.MDSModel;
 import api.mds.core.MDSRepository;
 import api.mds.persistence.PersistenceHandler;
 
-public class MDSRepositoryImpl extends MDSPersistentObjectImpl implements MDSRepository {
+public class MDSRepositoryImpl
+	extends MDSPersistentObjectImpl
+	implements MDSRepository {
 
-	private static int counter = 0;
+	private int counter = 0;
 
 	/**
 	 * alle auf dem Server vorhandenen Reposititories
@@ -20,21 +22,6 @@ public class MDSRepositoryImpl extends MDSPersistentObjectImpl implements MDSRep
 	private ArrayList models = new ArrayList();
 
 	public MDSRepositoryImpl() {
-		this.setId("repository_" + counter++);
-	}
-
-	/**
-	 * @see MDSRepository#insert()
-	 */
-	public String insert() throws MDSCoreException {
-
-		try {
-			// TODO: save all contained models
-			save();
-		} catch (PersistenceHandlerException e) {
-			throw new MDSCoreException("Fehler: MDSRepository#insert()");
-		}
-		return this.getId();
 	}
 
 	/**
@@ -66,18 +53,22 @@ public class MDSRepositoryImpl extends MDSPersistentObjectImpl implements MDSRep
 	 */
 	public String insertModel(MDSModel mdsModel)
 		throws MDSHrefFormatException, MDSCoreException {
-		
-		mdsModel.setHref(
-				new MDSHrefImpl(
-					this.getHref().getRepositoryHref()
-						+ "/"
-						+ mdsModel.getId()));
+
+		/*
 		try {
 			mdsModel.save();
 		} catch (PersistenceHandlerException e) {
 			throw new MDSCoreException("Fehler: MDSRepository#insertModel()");
-		}
+		}*/
 		if (models.add(mdsModel)) {
+			if (mdsModel.getId() == null) {
+				mdsModel.setId(this.getId() + "_" + this.counter++);
+			}
+			mdsModel.setHref(
+				new MDSHrefImpl(
+					this.getHref().getRepositoryHref()
+						+ "/model_"
+						+ mdsModel.getId()));
 			return mdsModel.getId();
 		} else {
 			throw new MDSCoreException("Fehler: MDSRepository#insertModel()");
@@ -174,6 +165,22 @@ public class MDSRepositoryImpl extends MDSPersistentObjectImpl implements MDSRep
 			retString += ((MDSModel) i.next()).toString();
 		}
 		return retString;
+	}
+
+	/**
+	 * Returns the models.
+	 * @return ArrayList
+	 */
+	public ArrayList getModels() {
+		return models;
+	}
+
+	/**
+	 * Sets the models.
+	 * @param models The models to set
+	 */
+	public void setModels(ArrayList models) {
+		this.models = models;
 	}
 
 }

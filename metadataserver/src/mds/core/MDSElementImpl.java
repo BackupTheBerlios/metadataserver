@@ -9,9 +9,24 @@ import api.mds.core.MDSHref;
  * @author Thomas Chille
  */
 public class MDSElementImpl extends MDSPersistentObjectImpl implements MDSElement {
-	private static int counter = 0;
+	private String prefix = "element_";
 
 	public MDSElementImpl(String prefix) {
-		this.setId(prefix + "_" + counter++);
+		this.setPrefix(prefix + "_");
 	}
+	
+	/**
+	 * @see api.mds.core.MDSElement#getPrefix()
+	 */
+	public String getPrefix() {
+		return prefix;
+	}
+
+	/**
+	 * @see api.mds.core.MDSElement#setPrefix(String)
+	 */
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
 }

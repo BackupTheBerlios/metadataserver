@@ -49,6 +49,8 @@ public class MDSTest {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		System.out.println(server);
 
 	}
 

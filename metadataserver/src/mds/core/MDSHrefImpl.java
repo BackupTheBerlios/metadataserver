@@ -39,7 +39,7 @@ public class MDSHrefImpl implements MDSHref {
 		if (hrefParts[2] == null) {
 			throw new MDSHrefFormatException("Fehler: MDSHref#getServerId");
 		} else {
-			return hrefParts[2];
+			return hrefParts[2].substring(7);
 		}
 	}
 
@@ -63,7 +63,7 @@ public class MDSHrefImpl implements MDSHref {
 		if (hrefParts[3] == null) {
 			throw new MDSHrefFormatException("Fehler: MDSHref#getRepositoryId");
 		} else {
-			return hrefParts[3];
+			return hrefParts[3].substring(11);
 		}
 	}
 
@@ -84,13 +84,13 @@ public class MDSHrefImpl implements MDSHref {
 	 */
 	public String getModelId() throws MDSHrefFormatException {
 		String[] hrefParts = href.split("[/]");
-		if (hrefParts[4] == null) {
+		try {
+			return hrefParts[4].substring(6);
+		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new MDSHrefFormatException("Fehler: MDSHref#getRepositoryId");
-		} else {
-			return hrefParts[4];
 		}
 	}
-
+	
 	/**
 	 * @see api.mds.core.MDSHref#getModelHref()
 	 */
@@ -116,7 +116,14 @@ public class MDSHrefImpl implements MDSHref {
 		if (hrefParts[5] == null) {
 			throw new MDSHrefFormatException("Fehler: MDSHref#getRepositoryId");
 		} else {
-			return hrefParts[5];
+			int pos = 0;
+			if (hrefParts[5].startsWith("ass")) {
+				pos = 12;
+			} else if (hrefParts[5].startsWith("cla")) {
+				pos = 6;
+			} else if (hrefParts[5].startsWith("gen")) {
+				pos = 15;
+			} return hrefParts[5].substring(pos);
 		}
 	}
 

@@ -15,14 +15,6 @@ import mds.core.MDSHrefFormatException;
 public interface MDSRepository extends MDSPersistentObject {
 
 	/**
-	 * legt MDSRepository auf Server ab
-	 *
-	 * @return id des MDSRepository
-	 * @throws MDSCoreException im Fehlerfall
-	 */
-	public String insert() throws MDSCoreException;
-
-	/**
 	 * entfernt MDSRepository und alle beinhaltenden MDSModels
 	 * 
 	 * @throws MDSCoreException im Fehlerfall

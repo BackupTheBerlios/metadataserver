@@ -6,4 +6,16 @@ package api.mds.core;
  * @author Thomas Chille
  */
 public interface MDSElement extends MDSPersistentObject {
+	
+	/**
+	 * Returns the prefix.
+	 * @return String
+	 */
+	public String getPrefix();
+
+	/**
+	 * Sets the prefix.
+	 * @param prefix The prefix to set
+	 */
+	public void setPrefix(String prefix);
 }

@@ -38,10 +38,9 @@ import api.mds.xmi.XMIHandler;
  */
 public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 
-	private static int counter = 0;
+	private int counter = 0;
 
 	public MDSModelImpl() {
-		this.setId("model_" + counter++);
 	}
 
 	/**
@@ -95,9 +94,15 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 		throws MDSCoreException, MDSHrefFormatException {
 
 		if (elements.add(mdsElement)) {
+			if (mdsElement.getId() == null) {
+				mdsElement.setId(this.getId() + "_" + this.counter++);
+			}
 			mdsElement.setHref(
 				new MDSHrefImpl(
-					this.getHref().getModelHref() + "/" + mdsElement.getId()));
+					this.getHref().getModelHref()
+						+ "/"
+						+ mdsElement.getPrefix()
+						+ mdsElement.getId()));
 			return mdsElement.getId();
 		} else {
 			throw new MDSCoreException("Fehler: MDSModel#insertElement()");
@@ -138,7 +143,7 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 						MDSGlobals.TEMP_PATH + "validate.dtd");
 				// debug
 				System.out.println(xmiFile.getContent());
-				
+
 				// mittels SAXParser validieren
 				SAXParserFactory spf = SAXParserFactory.newInstance();
 				spf.setValidating(true);
@@ -151,7 +156,7 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 					new InputSource(
 						new ByteArrayInputStream(
 							xmiFile.getContent().getBytes())));
-							
+
 			} catch (XMIHandlerException e) {
 				e.printStackTrace();
 			} catch (SAXException e) {
