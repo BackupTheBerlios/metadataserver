@@ -22,17 +22,17 @@ public class MetaDataServerImpl implements MetaDataServer {
 	 * der Server kennt seine MME
 	 */
 	private MetaMappingEngine[] metaMappingEngine = null;
-	
+
 	/**
 	 * alle auf dem Server vorhandenen Reposititories
 	 */
 	private MDSRepository[] repositories = null;
-	
+
 	/**
 	 * muﬂ beim deployen hier gesetzt werden
 	 */
 	private PersistenceHandler persistenceHandler = null;
-	
+
 	/**
 	 * @see MetaDataServer#insertReposititory(MDSRepository)
 	 */
@@ -139,7 +139,7 @@ public class MetaDataServerImpl implements MetaDataServer {
 	}
 
 	/**
-	 * @see MetaDataServer#validateModel(String, String)
+	 * @see MetaDataServer#validateModel(String, int)
 	 */
 	public String[] validateModel(String href, int validateType) {
 		return null;
@@ -148,7 +148,10 @@ public class MetaDataServerImpl implements MetaDataServer {
 	/**
 	 * @see MetaDataServer#importModel(String, MDSModel, Mapping)
 	 */
-	public String importModel(String label, MDSModel mdsModel, Mapping mapping) {
+	public String importModel(
+		String label,
+		MDSModel mdsModel,
+		Mapping mapping) {
 		return null;
 	}
 
@@ -194,7 +197,7 @@ public class MetaDataServerImpl implements MetaDataServer {
 	public PersistenceHandler getPersistenceHandler() {
 		return persistenceHandler;
 	}
-	
+
 	/**
 	 * Sets the persistenceHandler
 	 * @param persistenceHandler The persistenceHandler to set
@@ -202,7 +205,7 @@ public class MetaDataServerImpl implements MetaDataServer {
 	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
 		this.persistenceHandler = persistenceHandler;
 	}
-	
+
 	/**
 	 * Gets the metaMappingEngine
 	 * @return Returns a MetaMappingEngine[]
@@ -210,7 +213,7 @@ public class MetaDataServerImpl implements MetaDataServer {
 	public MetaMappingEngine[] getMetaMappingEngine() {
 		return metaMappingEngine;
 	}
-	
+
 	/**
 	 * Sets the metaMappingEngine
 	 * @param metaMappingEngine The metaMappingEngine to set
@@ -220,4 +223,3 @@ public class MetaDataServerImpl implements MetaDataServer {
 	}
 
 }
-

@@ -26,7 +26,7 @@ public interface MetaDataServer {
 	/**
 	 * strikt mit schema validieren
 	 */
-	public static final int VALIDATE_SCHEMA_STRKT = 3;
+	public static final int VALIDATE_SCHEMA_STRIKT = 3;
 
 	/**
 	 * erzeugt neues MDSRepository

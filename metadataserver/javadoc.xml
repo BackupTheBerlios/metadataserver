@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="metadataserver" default="javadoc">
+    <target name="javadoc">
+        <javadoc destdir="D:\Eigene Dateien\diplom\metadataserver\doc"
+            access="public" use="true" notree="false" nonavbar="false"
+            noindex="false" splitindex="true" author="true"
+            version="true" nodeprecatedlist="false" nodeprecated="false"
+            packagenames="mds.xmi,mds.core,api.mds.soap,api.mme.mapper,mds.persistence,api.mme.core,api.mds.core,api.mds.xmi,mds.soap,mme.mapper,api.mds.persistence,mme.core"
+            sourcepath="D:\Eigene Dateien\diplom\metadataserver\src" classpath="D:\Eigene Dateien\diplom\metadataserver\build\classes">
+            <link href="file:/E:/j2sdk1.4.0_01/bin/"/>
+        </javadoc>
+    </target>
+</project>

@@ -5,7 +5,7 @@ import java.io.File;
 import api.mme.mapper.XMLMapper;
 
 /**
- * @see XMIHandler
+ * @see XMLMapper
  * 
  * @author Thomas Chille
  */

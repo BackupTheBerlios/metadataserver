@@ -1,0 +1,12 @@
+api.mds.core
+api.mds.persistence
+api.mds.soap
+api.mds.xmi
+api.mme.core
+api.mme.mapper
+mds.core
+mds.persistence
+mds.soap
+mds.xmi
+mme.core
+mme.mapper

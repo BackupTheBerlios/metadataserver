@@ -33,7 +33,7 @@ public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 	private PersistenceHandler persistenceHandler = null;
 
 	/**
-	 * @see Mapper#map(MDSModel, Mapping)
+	 * @see MDSMapper#map(MDSModel, Mapping)
 	 */
 	public MDSModel map(MDSModel mdsModel, Mapping mapping)
 		throws MetaMappingEngineException {

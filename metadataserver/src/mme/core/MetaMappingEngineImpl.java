@@ -18,14 +18,14 @@ public class MetaMappingEngineImpl implements MetaMappingEngine {
 	private MDSMapper[] mapper = null;
 
 	/**
-	 * @see MetaMappingEngine#registerMapper(Mapper)
+	 * @see MetaMappingEngine#registerMapper(MDSMapper)
 	 */
 	public void registerMapper(MDSMapper mapper)
 		throws MetaMappingEngineException {
 	}
 
 	/**
-	 * @see MetaMappingEngine#unregisterMapper(Mapper)
+	 * @see MetaMappingEngine#unregisterMapper(MDSMapper)
 	 */
 	public void unregisterMapper(MDSMapper mapper)
 		throws MetaMappingEngineException {
