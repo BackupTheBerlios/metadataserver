@@ -1,4 +1,4 @@
-package mds.core;
+package api.mds.core;
 
 /**
  * Superinterface aller MDS-Datatypes

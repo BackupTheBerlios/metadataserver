@@ -1,8 +1,9 @@
-package mme.core;
+package api.mme.core;
 
-import java.util.*;
-import mds.core.*;
-import mme.mapper.*;
+import mme.core.MetaMappingEngineException;
+
+import api.mds.core.MDSModel;
+import api.mme.mapper.MDSMapper;
 
 /**
  * bindet die metamapping.engine
@@ -17,14 +18,15 @@ public interface MetaMappingEngine {
 	 *
 	 * @param mapper der Mapper
 	 */
-	public void registerMapper(Mapper mapper) throws MetaMappingEngineException;
+	public void registerMapper(MDSMapper mapper) throws MetaMappingEngineException;
 
 	/**
 	 * meldet Mapper ab
 	 *
 	 * @param mapper der abzumeldende Mapper
 	 */
-	public void unregisterMapper(Mapper mapper) throws MetaMappingEngineException;
+	public void unregisterMapper(MDSMapper mapper)
+		throws MetaMappingEngineException;
 
 	/**
 	 * mappt ein MDSModel bestimmten Typs auf ein 
@@ -46,6 +48,6 @@ public interface MetaMappingEngine {
 	 * @return die Mappings
 	 * @throws MetaMappingEngineException im Fehlerfall
 	 */
-	public ArrayList getMappings(String from, String to)
+	public Mapping[] getMappings(String from, String to)
 		throws MetaMappingEngineException;
 }

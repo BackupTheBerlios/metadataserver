@@ -1,8 +1,9 @@
-package mds.core;
+package api.mds.core;
 
-import java.util.*;
-import mme.core.*;
-import mme.mapper.*;
+import java.util.ArrayList;
+
+import api.mme.core.Mapping;
+import api.mme.mapper.MDSMapper;
 
 /**
  * stellt die Schnittstelle zu den Clients dar
@@ -11,11 +12,26 @@ import mme.mapper.*;
  * @author Thomas Chille
  */
 public interface MetaDataServer {
-	
+
+	/**
+	 * nicht validieren
+	 */
+	public static final int VALIDATE_NO = 1;
+
+	/**
+	 * strikt mit dtd validieren
+	 */
+	public static final int VALIDATE_DTD_STRIKT = 2;
+
+	/**
+	 * strikt mit schema validieren
+	 */
+	public static final int VALIDATE_SCHEMA_STRKT = 3;
+
 	/**
 	 * erzeugt neues MDSRepository
 	 *
-	 * @param mdsRepository das einzufügende MDSRepository, id wird automatisch vergeben
+	 * @param mdsRepository das einzufügende MDSRepository, id automatisch
 	 * @return Pfad zum MDSRepository
 	 */
 	public String insertReposititory(MDSRepository mdsRepository);
@@ -44,7 +60,7 @@ public interface MetaDataServer {
 	 * @param query der Querystring
 	 * @return das Ergebnis der Abfrage
 	 */
-	public ArrayList queryRepository(String href, String query);
+	public String[] queryRepository(String href, String query);
 
 	/**
 	 * fügt ein MDSModel in MDSRepository ein
@@ -97,7 +113,7 @@ public interface MetaDataServer {
 	 * @param href Pfad zum MDSModel
 	 * @return Liste aller Versionen
 	 */
-	public ArrayList getModelVersions(String href);
+	public String[] getModelVersions(String href);
 
 	/**
 	 * macht Änderungen an einem MDSModel rückgängig
@@ -152,7 +168,7 @@ public interface MetaDataServer {
 	 * @param validateType Art der Validierung(dtd, schema, strikt, ...)
 	 * @return Messages der Validierung
 	 */
-	public ArrayList validateModel(String href, String validateType);
+	public String[] validateModel(String href, int validateType);
 
 	/**
 	 * importiert MDSModel, wenn ein Mapping angeben wird
@@ -183,7 +199,7 @@ public interface MetaDataServer {
 	 * @param mapper der Mapper
 	 * @return true bei Erfolg
 	 */
-	public boolean registerMapper(Mapper mapper);
+	public boolean registerMapper(MDSMapper mapper);
 
 	/**
 	 * meldet Mapper ab
@@ -191,7 +207,7 @@ public interface MetaDataServer {
 	 * @param mapper der abzumeldende Mapper
 	 * @return true bei Erfolg
 	 */
-	public boolean unregisterMapper(Mapper mapper);
+	public boolean unregisterMapper(MDSMapper mapper);
 
 	/**
 	 * gibt eine Liste aller angemeldeten Mappings zurück

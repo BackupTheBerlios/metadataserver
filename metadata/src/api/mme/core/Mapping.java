@@ -1,4 +1,4 @@
-package mme.core;
+package api.mme.core;
 
 /**
  * modelliert eine Mappingmöglichkeit(Ziel, Quelle)

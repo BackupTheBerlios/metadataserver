@@ -1,4 +1,4 @@
-package mds.soap;
+package api.mds.soap;
 
 /**
  * stellt die Schnittstelle des MetaDataSever
@@ -6,5 +6,5 @@ package mds.soap;
  * 
  * @author Thomas Chille
  */
-public interface MDSSOAPService {
+public interface SOAPService {
 }

@@ -1,13 +1,15 @@
-package mds.xmi;
+package api.mds.xmi;
 
-import java.util.*;
-import mds.core.*;
+import mds.xmi.XMIHandlerException;
+
+import api.mds.core.MDSElement;
+import api.mds.core.MDSModel;
 
 /**
  * Stellt Methoden zum Erzeugen und Manipulieren 
  * von MDSModels mittels XMI zur Verfügung
  * 
- * wird von MDSModel implementiert
+ * wird von MDSModel benutzt
  * 
  * @author Thomas Chille
  */
@@ -66,6 +68,6 @@ public interface XMIHandler {
 	 * @return das Ergebnis der Abfrage
 	 * @throws XMIHandlerException im Fehlerfall
 	 */
-	public ArrayList query(MDSModel mdsModel, String query)
+	public String[] query(MDSModel mdsModel, String query)
 		throws XMIHandlerException;
 }

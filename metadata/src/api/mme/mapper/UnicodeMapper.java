@@ -1,13 +1,13 @@
-package mme.mapper;
+package api.mme.mapper;
 
-import mme.core.*;
+import mme.core.MetaMappingEngineException;
 
 /**
  * Spezialisierung des Mappers für Unicode-Quellen
  * 
  * @author Thomas Chille
  */
-public interface UnicodeMapper extends Mapper {
+public interface UnicodeMapper extends MDSMapper {
 
 	/**
 	 * erzeugt mit Hilfe des Parsergeneratos javaCC einen

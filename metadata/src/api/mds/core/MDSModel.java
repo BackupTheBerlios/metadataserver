@@ -1,6 +1,6 @@
-package mds.core;
+package api.mds.core;
 
-import java.util.*;
+import mds.core.MDSCoreException;
 
 /**
  * Abbildung eines UML- o. MOF- Models, besteht aus seiner 
@@ -15,11 +15,14 @@ public interface MDSModel extends MDSObject {
 	 *
 	 * @param href Pfad des MDSRepository
 	 * @return Pfad zum neu MDSModel
+	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public String insertModel(String href) throws MDSCoreException;
 
 	/**
 	 * löscht MDSModel
+	 * 
+	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public void removeModel() throws MDSCoreException;
 
@@ -29,6 +32,7 @@ public interface MDSModel extends MDSObject {
 	 * @param from href spezifierten Stelle 
 	 * @param to an dieser spezifierten Stelle 
 	 * @return Pfad zur neuen MDSModel-Position
+	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public String moveModel(String to) throws MDSCoreException;
 
@@ -39,6 +43,7 @@ public interface MDSModel extends MDSObject {
 	 * @param to an diese spezifizierten Stelle 
 	 * @param label des neuen MDSModels, id wird automatisch vergeben
 	 * @return Pfad zur Kopie des MDSModel
+	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public String copyModel(String to, String label) throws MDSCoreException;
 
@@ -53,13 +58,15 @@ public interface MDSModel extends MDSObject {
 	 * gibt Liste aller vorhandenen Versionen des MDSModel zurück
 	 *
 	 * @return Liste aller Versionen
+	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public ArrayList getModelVersions(String href) throws MDSCoreException;
+	public String[] getModelVersions(String href) throws MDSCoreException;
 
 	/**
 	 * macht Änderungen an einem MDSModel rückgängig
 	 *
 	 * @param version Versionsnummer
+	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public void restoreModel(String version) throws MDSCoreException;
 
@@ -69,13 +76,16 @@ public interface MDSModel extends MDSObject {
 	 * @param href an dieser spezifierten Stelle 
 	 * @param mdsElement das MDSElement (Klasse, Assoziation,...)
 	 * @return Pfad zum neu eingefügten MDSElement
+	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public String insertElement(String href, MDSElement mdsElement) throws MDSCoreException;
+	public String insertElement(String href, MDSElement mdsElement)
+		throws MDSCoreException;
 
 	/**
 	 * entfernt ein MDSElement aus dem MDSModel
 	 *
 	 * @param href an dieser spezifierten Stelle 
+	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public void removeElement(String href) throws MDSCoreException;
 
@@ -86,6 +96,7 @@ public interface MDSModel extends MDSObject {
 	 * @param from href spezifierten Stelle 
 	 * @param to an diesee spezifierten Stelle 
 	 * @return Pfad zur neuen MDSElement-Position
+	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public String moveElement(String from, String to) throws MDSCoreException;
 
@@ -97,8 +108,10 @@ public interface MDSModel extends MDSObject {
 	 * @param to an dieser spezifierten Stelle 
 	 * @param label des neuen MDSElement, id wird automatisch vergeben
 	 * @return Pfad zur Kopie des MDSElement
+	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public String copyElement(String from, String to, String label) throws MDSCoreException;
+	public String copyElement(String from, String to, String label)
+		throws MDSCoreException;
 
 	/**
 	 * validiert MDSModel
@@ -106,7 +119,8 @@ public interface MDSModel extends MDSObject {
 	 * @param href Pfad zum zu validierenden MDSModel
 	 * @param validateType Art der Validierung(dtd, schema, strikt, ...)
 	 * @return Messages der Validierung
+	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public ArrayList validateModel(String validateType) throws MDSCoreException;
+	public String[] validateModel(String validateType) throws MDSCoreException;
 
 }

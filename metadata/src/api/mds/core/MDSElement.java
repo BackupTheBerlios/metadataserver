@@ -1,7 +1,7 @@
-package mds.core;
+package api.mds.core;
 
 /**
- * Strukturelemnt eiens MDSModels, dient als Datatype
+ * Strukturelement eines MDSModels
  * 
  * @author Thomas Chille
  */

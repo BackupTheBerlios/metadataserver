@@ -1,7 +1,10 @@
-package mme.mapper;
+package api.mme.mapper;
 
-import mds.core.*;
-import mme.core.*;
+import mme.core.MetaMappingEngineException;
+
+import api.mds.core.MDSModel;
+import api.mds.core.MDSObject;
+import api.mme.core.Mapping;
 
 /**
  * stellt Methoden zur Transformation der MDSModels
@@ -10,7 +13,7 @@ import mme.core.*;
  * 
  * @author Thomas Chille
  */
-public interface Mapper extends MDSObject {
+public interface MDSMapper extends MDSObject {
 
 	/**
 	 * mappt ein MDSModel bestimmten Typs auf ein 

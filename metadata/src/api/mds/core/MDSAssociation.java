@@ -1,4 +1,4 @@
-package mds.core;
+package api.mds.core;
 
 /**
  * Spezialisierung des MDSElements, modelliert eine 
