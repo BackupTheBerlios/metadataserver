@@ -18,5 +18,17 @@ public interface MDSFile {
 	 * @param href The href to set
 	 */
 	public void setContent(String content);
+	
+	/**
+	 * Returns the name.
+	 * @return String
+	 */
+	public String getName();
+
+	/**
+	 * Sets the name.
+	 * @param name The name to set
+	 */
+	public void setName(String name);
 
 }

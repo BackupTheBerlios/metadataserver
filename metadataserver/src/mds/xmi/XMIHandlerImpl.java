@@ -1,10 +1,18 @@
 package mds.xmi;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.InputStream;
+import java.io.*;
+
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import org.apache.xerces.parsers.DOMParser;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.traversal.DocumentTraversal;
+import org.w3c.dom.traversal.NodeFilter;
+import org.w3c.dom.traversal.NodeIterator;
 
 import mds.core.MDSAggregationImpl;
 import mds.core.MDSAssociationImpl;
@@ -27,22 +35,75 @@ import com.ibm.xmi.framework.*;
  */
 public class XMIHandlerImpl implements XMIHandler {
 
+	private static class ObjectFilter implements NodeFilter {
+
+		public short acceptNode(Node n) {
+			if (n.getNodeType() == Node.ELEMENT_NODE) {
+				Element e = (Element) n;
+
+				//if (e.getAttributeNode("xmi:id") != null)
+				return NodeFilter.FILTER_ACCEPT;
+			}
+
+			return NodeFilter.FILTER_REJECT;
+		}
+	}
+
+	Namespace namespace = new Namespace("UML", "org.omg/UML1.3");
+
 	/**
-	 * @see XMIHandler#generateXMI(MDSModel)
+	 * @see api.mds.xmi.XMIHandler#generateXMI(MDSModel)
 	 */
 	public void generateXMI(MDSModel mdsModel) throws XMIHandlerException {
+
+		String xdoc = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+		//xdoc += "<!DOCTYPE XMI SYSTEM \"file:///D:/Eigene Dateien/diplom/metadataserver/uml1998.dtd\">\n";
+		xdoc += "<XMI xmi.version=\"1.1\" xmlns:UML=\"org.omg/UML1.3\">\n";
+		xdoc += "\t<XMI.header>\n";
+		xdoc += "\t\t<XMI.model xmi.name=\"testmodel\" href=\"test.xmi\"/>\n";
+		xdoc += "\t\t<XMI.metamodel xmi.name=\"UML\" href=\"uml.xml\"/>\n";
+		xdoc += "\t</XMI.header>\n";
+		xdoc += "\t<XMI.content>\n";
+
+		String xclass = "\t<UML:Class xmi:id=\"#id#\" name=\"#id#\"/>\n";
+
+		String xgeneralization =
+			"\t<UML:Class xmi:id=\"#id#\" name=\"#id#\" generalization=\"#superId#\"/>\n";
+
+		String xassociation1 = "\t<UML:Association>\n";
+		xassociation1 += "\t\t<UML:Association.connection>\n";
+		xassociation1
+			+= "\t\t\t<UML:AssociationEnd name=\"#id#\" aggregation=\"#aggregation#\" type=\"#endId#\"/>\n";
+		String xassociation2 =
+			"\t\t\t<UML:AssociationEnd name=\"#id#\" aggregation=\"#aggregation#\" type=\"#endId#\"/>\n";
+		xassociation2 += "\t\t</UML:Association.connection>\n";
+		xassociation2 += "\t</UML:Association>\n";
+
+		String xfooter = "\t</XMI.content>\n";
+		xfooter += "</XMI>";
+
 		ArrayList classes = new ArrayList();
 		ArrayList relations = new ArrayList();
 		MDSElement element = null;
-		XMIObject object = null;
-
+		XMIObject xmiObject = null;
 		Iterator i = mdsModel.getElements().iterator();
+		Iterator j;
+		MDSClass mdsClass = null, subClass = null;
+
 		while (i.hasNext()) {
 			element = (MDSElement) i.next();
 			if (element instanceof MDSClassImpl) {
-				object = new XMIObjectImpl(element.getLabel());
-				object.setXMIId(element.getId());
-				classes.add(object);
+				classes.add(element);
+			} else if (element instanceof MDSGeneralizationImpl) {
+				subClass = ((MDSGeneralizationImpl) element).getSubClass();
+				j = classes.iterator();
+				while (i.hasNext()) {
+					mdsClass = (MDSClassImpl) i.next();
+					if (mdsClass.getId().equals(subClass.getId())) {
+						classes.remove(subClass);
+					}
+					relations.add(element);
+				}
 			} else {
 				relations.add(element);
 			}
@@ -50,46 +111,114 @@ public class XMIHandlerImpl implements XMIHandler {
 
 		ArrayList ends;
 		api.mds.core.AssociationEnd end1, end2;
-		XMIObject container, part, parent, child;
+		XMIObject container, part, parent, child, oend1, oend2;
 
+		i = classes.iterator();
+		while (i.hasNext()) {
+			xdoc += xclass.replaceAll("#id#", ((MDSElement) i.next()).getId());
+		}
 		i = relations.iterator();
 		while (i.hasNext()) {
 			element = (MDSElement) i.next();
-			if (element instanceof MDSAssociationImpl) {
+			if (element instanceof MDSGeneralizationImpl) {
+				xdoc
+					+= xgeneralization.replaceAll(
+						"#id#",
+						element.getId()).replaceAll(
+						"#superId#",
+						((MDSGeneralizationImpl) element)
+							.getSuperClass()
+							.getId());
+			} else if (element instanceof MDSAssociationImpl) {
 				ends = ((MDSAssociationImpl) element).getAssociationEnds();
 				end1 = (api.mds.core.AssociationEnd) ends.get(0);
 				end2 = (api.mds.core.AssociationEnd) ends.get(1);
-				getObjectById(end1.getMdsClass().getId(), classes).addXMIValue(
-					element.getLabel(),
-					getObjectById(end2.getMdsClass().getId(), classes),
-					Value.REFERENCE);
+				xdoc
+					+= xassociation1
+						.replaceAll("#id#", element.getId())
+						.replaceAll("#endId#", end1.getMdsClass().getId())
+						.replaceAll("#aggregation#", "none");
+				;
+				xdoc
+					+= xassociation2
+						.replaceAll("#id#", element.getId())
+						.replaceAll("#endId#", end2.getMdsClass().getId())
+						.replaceAll("#aggregation#", "none");
+				;
 			} else if (element instanceof MDSAggregationImpl) {
-				end1 = ((MDSAggregationImpl) element).getContainerEnd();
-				end2 = ((MDSAggregationImpl) element).getContainedEnd();
-				container = getObjectById(end1.getMdsClass().getId(), classes);
-				part = getObjectById(end2.getMdsClass().getId(), classes);
-				container.addXMIValue(
-					element.getLabel(),
-					part,
-					Value.CONTAINED);
-				classes.remove(part);
+				end1 = ((MDSAggregationImpl) element).getContainedEnd();
+				end2 = ((MDSAggregationImpl) element).getContainerEnd();
+				xdoc
+					+= xassociation1
+						.replaceAll("#id#", element.getId())
+						.replaceAll("#endId#", end1.getMdsClass().getId())
+						.replaceAll("#aggregation#", "shared");
+				;
+				xdoc
+					+= xassociation2
+						.replaceAll("#id#", element.getId())
+						.replaceAll("#endId#", end2.getMdsClass().getId())
+						.replaceAll("#aggregation#", "shared");
+				;
 			}
 		}
-		XMIFile file = new XMIFile("test.xmi");
+		xdoc += xfooter;
+		MDSFile mdsFile = new MDSFileImpl();
+		mdsFile.setContent(xdoc);
+		mdsModel.setXmiFile(mdsFile);
+
+		FileWriter f1;
 		try {
-			//file.setOutputStream(System.out);
-			file.write(classes.iterator(), XMIFile.DEFAULT);
-			String line, content = null;
-			BufferedReader f = new BufferedReader(new FileReader("test.xmi"));
-			while ((line = f.readLine()) != null) {
-				content += line + "\n";
+			f1 = new FileWriter("test.xmi");
+			f1.write(xdoc);
+			f1.close();
+
+			DOMParser parser = new DOMParser();
+			parser.parse("test.xmi");
+
+			Document d = parser.getDocument();
+			DocumentTraversal dt = (DocumentTraversal) d;
+
+			NodeIterator it =
+				dt.createNodeIterator(
+					d.getDocumentElement(),
+					NodeFilter.SHOW_ALL,
+					new ObjectFilter(),
+					true);
+
+			Node n = it.nextNode();
+
+			while (n != null) {
+				writeObject(n);
+				n = it.nextNode();
 			}
-			MDSFile mdsFile = new MDSFileImpl();
-			mdsFile.setContent(content);
-			mdsModel.setXmiFile(mdsFile);
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Fehler beim Erstellen der Datei");
 		}
+
+	}
+
+	public static void writeObject(Node object) {
+		System.out.println(object.getNodeName() + ":");
+		System.out.println("  attributes:");
+		NamedNodeMap attribs = object.getAttributes();
+		String[] names, vals;
+		
+		for (int j = 0; j < attribs.getLength(); ++j) {
+			System.out.println(
+				"    "
+					+ attribs.item(j).getNodeName()
+					+ ": '"
+					+ attribs.item(j).getNodeValue()
+					+ "'");
+			names[j] = attribs.item(j).getNodeName();
+			vals[j] = attribs.item(j).getNodeValue();
+		}
+		
+		if (object.getNodeName().equals("Class") {
+			xmiObject = new XMIObjectImpl(
+		
+		
 	}
 
 	/**
@@ -99,7 +228,7 @@ public class XMIHandlerImpl implements XMIHandler {
 		XMIDTD dtd = new XMIDTD("test.dtd");
 		try {
 			dtd.write(map2XMIClasses(mdsModel).iterator());
-			String line, content = null;
+			String line, content = "";
 			BufferedReader f = new BufferedReader(new FileReader("test.dtd"));
 			while ((line = f.readLine()) != null) {
 				content += line + "\n";
@@ -121,7 +250,7 @@ public class XMIHandlerImpl implements XMIHandler {
 		//	new Namespace("test", "http://test.com/test.xsd"));
 		try {
 			schema.write(map2XMIClasses(mdsModel).iterator());
-			String line, content = null;
+			String line, content = "";
 			BufferedReader f = new BufferedReader(new FileReader("test.xsd"));
 			while ((line = f.readLine()) != null) {
 				content += line + "\n";

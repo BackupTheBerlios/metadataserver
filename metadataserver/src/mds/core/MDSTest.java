@@ -72,11 +72,17 @@ public class MDSTest {
 		server.insertElement(href, aggi);
 		server.insertElement(href, geni);
 
-		System.out.println(server);
+		//MDSModel model1 = new MDSModelImpl();
+		//model1.setMetamodel(model);
 		
+		//href = server.insertModel(erver.insertReposititory(rep), model1);
+		//server.insertElement(href, myclass1);
+		
+		//System.out.println(server);
+
 		System.out.println(model.getXmiFile().getContent());
-		System.out.println(model.getDtdFile().getContent());
-		System.out.println(model.getSchemaFile().getContent());
+		//System.out.println(model.getDtdFile().getContent());
+		//System.out.println(model.getSchemaFile().getContent());
 	}
 
 }

@@ -11,6 +11,7 @@ public class MDSFileImpl implements MDSFile {
 
 	private String content = null;
 	
+	private String name = null;
 	/**
 	 * @see api.mds.core.MDSFile#getContent()
 	 */
@@ -23,6 +24,20 @@ public class MDSFileImpl implements MDSFile {
 	 */
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	/**
+	 * @see api.mds.core.MDSFile#getName(String)
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @see api.mds.core.MDSFile#setName(String)
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }
