@@ -60,7 +60,7 @@ public interface MetaDataServer {
 	 * @param query der Querystring
 	 * @return das Ergebnis der Abfrage
 	 */
-	public String[] queryRepository(String href, String query);
+	public ArrayList queryRepository(String href, String query);
 
 	/**
 	 * fügt ein MDSModel in MDSRepository ein

@@ -1,6 +1,7 @@
 package mds.core;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import mds.persistence.PersistenceHandlerException;
 import mds.xmi.XMIHandlerImpl;
@@ -156,6 +157,13 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 		return null;
 	}
 
+	/**
+	 * @see MDSModel#query(String)
+	 */
+	public ArrayList query(String query) throws MDSCoreException {
+		return null;
+	}
+	
 	/**
 	 * @see MDSModel#getPersistenceHandler()
 	 */

@@ -1,5 +1,7 @@
 package api.mds.core;
 
+import java.util.ArrayList;
+
 import api.mds.persistence.PersistenceHandler;
 
 import mds.core.MDSCoreException;
@@ -33,7 +35,7 @@ public interface MDSRepository extends MDSObject {
 	 * @return das Ergebnis der Abfrage
 	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public String[] query(String query) throws MDSCoreException;
+	public ArrayList query(String query) throws MDSCoreException;
 
 	/**
 	 * Gets the persistenceHandler
@@ -50,12 +52,11 @@ public interface MDSRepository extends MDSObject {
 	/**
 	 * fügt in MDSModel in MDSRepository ein
 	 *
-	 * @param href Pfad des MDSRepository
 	 * @param mdsModel das einzufügende Model
 	 * @return Pfad zum neu MDSModel
 	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public String insertModel(String href, MDSModel mdsModel)
+	public String insertModel(MDSModel mdsModel)
 		throws MDSCoreException;
 
 	/**

@@ -1,6 +1,7 @@
 package api.mds.core;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import api.mds.persistence.PersistenceHandler;
 import api.mds.xmi.XMIHandler;
@@ -91,6 +92,15 @@ public interface MDSModel extends MDSObject {
 	 */
 	public String[] validateModel(int validateType) throws MDSCoreException;
 	
+	/**
+	 * führt eine Abfrage auf MDSModel aus
+	 *
+	 * @param query der Querystring
+	 * @return das Ergebnis der Abfrage
+	 * @throws MDSCoreException im Fehlerfall
+	 */
+	public ArrayList query(String query) throws MDSCoreException;
+
 	/**
 	 * Gets the persistenceHandler
 	 * @return Returns a PersistenceHandler

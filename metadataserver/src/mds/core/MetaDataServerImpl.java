@@ -103,11 +103,11 @@ public class MetaDataServerImpl
 	/**
 	 * @see MetaDataServer#queryRepository(String, String)
 	 */
-	public String[] queryRepository(String href, String query) {
+	public ArrayList queryRepository(String href, String query) {
 		try {
 			MDSRepository mdsRepository =
 				(MDSRepository) persistenceHandler.load(href, null);
-			String[] result = mdsRepository.query(query);
+			ArrayList result = mdsRepository.query(query);
 			return result;
 		} catch (MDSCoreException e) {
 			return null;
@@ -124,7 +124,7 @@ public class MetaDataServerImpl
 			mdsModel.setPersistenceHandler(persistenceHandler);
 			MDSRepository mdsRepository =
 				(MDSRepository) persistenceHandler.load(href, null);
-			String modelHref = mdsRepository.insertModel(href, mdsModel);
+			String modelHref = mdsRepository.insertModel(mdsModel);
 			return this.getId() + "." + modelHref;
 		} catch (MDSCoreException e) {
 			return null;
