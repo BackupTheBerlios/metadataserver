@@ -9,26 +9,27 @@ package mme.core;
 public interface MetaMappingEngine {
 	
 	/**
-	 * meldet neuen Mapper an
+	 * meldet neues Mapping bei Mapper an
 	 *
-	 * @param mappingResource beinhaltet den Type und die benötigten Files
+	 * @param mappingResource beinhaltet MapperType, MappingTyp u. die benötigten Files
+	 * @return des neu entstandene Mapping
 	 * @throws MetaMappingEngineException im Fehlerfall
 	 */
-   	public void registerMapper(MappingResource mappingResource) 
+   	public Mapping registerMapping(MappingResource mappingResource) 
    	throws MetaMappingEngineException;
    	
 	/**
-	 * meldet Mapper ab
+	 * meldet Mapping ab
 	 *
-	 * @param mappingResource beinhaltet den Type und die benötigten Files
+	 * @param mapping das abzumeldende Mapping
 	 * @throws MetaMappingEngineException im Fehlerfall
 	 */
-   	public void unregisterMapper(Mapper mapper) 
+   	public void unregisterMapping(Mapping mapping) 
    	throws MetaMappingEngineException;
    	
 	/**
-	 * mappt ein Modell bestimmten Typs auf ein 
-	 * durchs Mapping spezifziertes Modell anderen Typs
+	 * mappt ein Modell bestimmten Typs mit seinen Ressoucen auf ein 
+	 * durchs Mapping spezifziertes Modell anderen Typs mit seinen Ressoucen
 	 *
 	 * @param model das Ausgangs-Modell
 	 * @param mapping das Mapping
@@ -39,19 +40,9 @@ public interface MetaMappingEngine {
    	throws MetaMappingEngineException;
    	
 	/**
-	 * gibt eine Liste aller angemeldeten Mapper zurück
+	 * gibt eine Liste aller angemeldeten Mappings zurück
 	 *
-	 * @param type kann 'XML','Unicode' oder null sein
-	 * @throws MetaMappingEngineException im Fehlerfall
-	 */
-   	public ArrayList getMapper(String type) 
-   	throws MetaMappingEngineException;
-   	
-	/**
-	 * gibt eine Liste aller durch die angemeldeten Mapper 
-	 * möglichen Mappings zurück,
-	 *
-	 * @param from mit dieser Quelltyp, wenn null mit allen Quelltypen
+	 * @param from mit diesem Quelltyp, wenn null mit allen Quelltypen
 	 * @param to mit diesem Zieltyp, wenn null mit allen Zieltypen
 	 * @throws MetaMappingEngineException im Fehlerfall
 	 */
