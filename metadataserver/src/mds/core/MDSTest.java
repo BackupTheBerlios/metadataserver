@@ -64,8 +64,9 @@ public class MDSTest {
 		end6.setMdsClass(myclass8);
 
 		MDSAssociation compo =
-			new MDSAssociationImpl(MDSAssociation.COMPOSITE_AGGREGATION);
+			new MDSAssociationImpl();
 		compo.setLabel("compo");
+		end5.setAggregation(AssociationEnd.COMPOSITE_AGGREGATION);
 		compo.addAssociationEnd(end5);
 		compo.addAssociationEnd(end6);
 
@@ -75,8 +76,9 @@ public class MDSTest {
 		asso.addAssociationEnd(end2);
 
 		MDSAssociation aggi =
-			new MDSAssociationImpl(MDSAssociation.SHARED_AGGREGATION);
+			new MDSAssociationImpl();
 		aggi.setLabel("aggi");
+		end3.setAggregation(AssociationEnd.SHARED_AGGREGATION);
 		aggi.addAssociationEnd(end3);
 		aggi.addAssociationEnd(end4);
 

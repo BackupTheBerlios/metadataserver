@@ -21,23 +21,10 @@ public class MDSAssociationImpl
 	private ArrayList associationEnds = new ArrayList();
 
 	/**
-	 * type der Aggregation
-	 */
-	private int aggregation = NONE_AGGREGATION;
-
-	/**
 	 * Constructor for MDSAssociationImpl.
 	 */
 	public MDSAssociationImpl() {
 		super("association");
-	}
-	
-	/**
-	 * Constructor for MDSAssociationImpl.
-	 */
-	public MDSAssociationImpl(int aggregation) {
-		super("association");
-		this.aggregation = aggregation;
 	}
 	
 	/**
@@ -69,20 +56,6 @@ public class MDSAssociationImpl
 	 */
 	public ArrayList getAssociationEnds() {
 		return associationEnds;
-	}
-
-	/**
-	 * @see MDSAssociationImpl#getAggregation()
-	 */
-	public int getAggregation() {
-		return aggregation;
-	}
-
-	/**
-	 * @see MDSAssociationImpl#setAggregation(int)
-	 */
-	public void setAggregation(int aggregation) {
-		this.aggregation = aggregation;
 	}
 
 	/**

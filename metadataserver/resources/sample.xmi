@@ -35,13 +35,13 @@
 		<UML:Association name="association_10">
 			<UML:Association.connection>
 				<UML:AssociationEnd aggregation="shared" type="class_2"/>
-				<UML:AssociationEnd aggregation="shared" type="class_3"/>
+				<UML:AssociationEnd aggregation="none" type="class_3"/>
 			</UML:Association.connection>
 		</UML:Association>
 		<UML:Association name="association_8">
 			<UML:Association.connection>
 				<UML:AssociationEnd aggregation="composite" type="class_6"/>
-				<UML:AssociationEnd aggregation="composite" type="class_7"/>
+				<UML:AssociationEnd aggregation="none" type="class_7"/>
 			</UML:Association.connection>
 		</UML:Association>
 		<XMI.extensions xmi.extender="metadata.server">

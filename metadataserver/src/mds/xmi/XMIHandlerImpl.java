@@ -153,14 +153,14 @@ public class XMIHandlerImpl implements XMIHandler {
 			end1 = (AssociationEnd) ends.get(0);
 			end2 = (AssociationEnd) ends.get(1);
 			String aggregation = null;
-			switch (((MDSAssociationImpl) element).getAggregation()) {
-				case MDSAssociation.NONE_AGGREGATION :
+			switch (end1.getAggregation()) {
+				case AssociationEnd.NONE_AGGREGATION :
 					aggregation = "none";
 					break;
-				case MDSAssociation.SHARED_AGGREGATION :
+				case AssociationEnd.SHARED_AGGREGATION :
 					aggregation = "shared";
 					break;
-				case MDSAssociation.COMPOSITE_AGGREGATION :
+				case AssociationEnd.COMPOSITE_AGGREGATION :
 					aggregation = "composite";
 					break;
 			}
@@ -169,6 +169,17 @@ public class XMIHandlerImpl implements XMIHandler {
 					.replaceAll("#id#", element.getId())
 					.replaceAll("#endId#", end1.getMdsClass().getId())
 					.replaceAll("#aggregation#", aggregation);
+			switch (end2.getAggregation()) {
+				case AssociationEnd.NONE_AGGREGATION :
+					aggregation = "none";
+					break;
+				case AssociationEnd.SHARED_AGGREGATION :
+					aggregation = "shared";
+					break;
+				case AssociationEnd.COMPOSITE_AGGREGATION :
+					aggregation = "composite";
+					break;
+			}
 			xdoc
 				+= xassociation2
 					.replaceAll("#id#", element.getId())
