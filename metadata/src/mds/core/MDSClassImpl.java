@@ -49,6 +49,8 @@ public class MDSClassImpl extends MDSElementImpl implements MDSClass {
 	 */
 	public MDSClass[] getSuperClasses() throws MDSCoreException {
 		return superClasses;
+		
+		
 	}
 
 	/**
