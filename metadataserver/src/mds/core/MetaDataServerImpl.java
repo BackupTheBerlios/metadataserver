@@ -2,6 +2,10 @@ package mds.core;
 
 import java.util.ArrayList;
 
+import mds.persistence.FilesystemHandlerImpl;
+import mds.persistence.PersistenceHandlerException;
+import mme.core.MetaMappingEngineImpl;
+
 import api.mds.core.MDSElement;
 import api.mds.core.MDSModel;
 import api.mds.core.MDSRepository;
@@ -34,31 +38,69 @@ public class MetaDataServerImpl implements MetaDataServer {
 	private PersistenceHandler persistenceHandler = null;
 
 	/**
+	 * Constructor for MetaDataServerImpl.
+	 */
+	public MetaDataServerImpl() {
+		MetaMappingEngine metaMappingEngine = new MetaMappingEngineImpl();
+		PersistenceHandler persistenceHandler = new FilesystemHandlerImpl();
+	}
+
+	/**
 	 * @see MetaDataServer#insertReposititory(MDSRepository)
 	 */
 	public String insertReposititory(MDSRepository mdsRepository) {
-		return null;
+		try {
+			String href = mdsRepository.insert();
+			return href;
+		} catch (MDSCoreException e) {
+			return null;
+		}
 	}
 
 	/**
 	 * @see MetaDataServer#deleteRepository(String)
 	 */
 	public boolean deleteRepository(String href) {
-		return false;
+		try {
+			MDSRepositoryImpl mdsRepository =
+				(MDSRepositoryImpl) persistenceHandler.load(href, null);
+			mdsRepository.delete();
+			return true;
+		} catch (MDSCoreException e) {
+			return false;
+		} catch (PersistenceHandlerException e) {
+			return false;
+		}
 	}
 
 	/**
 	 * @see MetaDataServer#renameRepository(String, String)
 	 */
 	public boolean renameRepository(String href, String label) {
-		return false;
+		try {
+			MDSRepositoryImpl mdsRepository =
+				(MDSRepositoryImpl) persistenceHandler.load(href, null);
+			mdsRepository.setLabel(label);
+			return true;
+		} catch (PersistenceHandlerException e) {
+			return false;
+		}
 	}
 
 	/**
 	 * @see MetaDataServer#queryRepository(String, String)
 	 */
 	public String[] queryRepository(String href, String query) {
-		return null;
+		try {
+			MDSRepositoryImpl mdsRepository =
+				(MDSRepositoryImpl) persistenceHandler.load(href, null);
+			String[] result = mdsRepository.query(query);
+			return result;
+		} catch (MDSCoreException e) {
+			return null;
+		} catch (PersistenceHandlerException e) {
+			return null;
+		}
 	}
 
 	/**
@@ -220,6 +262,9 @@ public class MetaDataServerImpl implements MetaDataServer {
 	 */
 	public void setMetaMappingEngine(MetaMappingEngine metaMappingEngine) {
 		this.metaMappingEngine = metaMappingEngine;
+	}
+
+	public static void main(String[] args) {
 	}
 
 }
