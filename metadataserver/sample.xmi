@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE XMI SYSTEM "resources/uml13_xmi11.dtd" [
+<!DOCTYPE XMI SYSTEM "resources/UMLX13-11.dtd" [
 	<!ELEMENT additionalFiles (file+)>
 	<!ELEMENT file EMPTY>
 	<!ATTLIST file
@@ -25,20 +25,24 @@
 		<UML:Class xmi.id="class_4" name="class_4"/>
 		<UML:Class xmi.id="class_6" name="class_6"/>
 		<UML:Class xmi.id="class_7" name="class_7"/>
-		<UML:Class xmi.id="class_5" name="class_5" generalization="class_4"/>
-		<UML:Association name="association_9">
+		<UML:Class xmi.id="class_5" name="class_5" generalization="class_4">
+			<UML:Namespace.ownedElement>
+				<UML:Generalization xmi.id="generalization_11" name="generalization_11" child="class_5" parent="class_4"/>
+			</UML:Namespace.ownedElement>
+		</UML:Class>
+		<UML:Association xmi.id="association_9" name="association_9">
 			<UML:Association.connection>
 				<UML:AssociationEnd aggregation="none" type="class_0"/>
 				<UML:AssociationEnd aggregation="none" type="class_1"/>
 			</UML:Association.connection>
 		</UML:Association>
-		<UML:Association name="association_10">
+		<UML:Association xmi.id="association_10" name="association_10">
 			<UML:Association.connection>
-				<UML:AssociationEnd aggregation="shared" type="class_2"/>
+				<UML:AssociationEnd aggregation="aggregate" type="class_2"/>
 				<UML:AssociationEnd aggregation="none" type="class_3"/>
 			</UML:Association.connection>
 		</UML:Association>
-		<UML:Association name="association_8">
+		<UML:Association xmi.id="association_8" name="association_8">
 			<UML:Association.connection>
 				<UML:AssociationEnd aggregation="composite" type="class_6"/>
 				<UML:AssociationEnd aggregation="none" type="class_7"/>
@@ -47,8 +51,6 @@
 		<XMI.extensions xmi.extender="metadata.server">
 			<additionalFiles>
 				<file name="test" path="." type="plain_text"/>
-				<file name="test1" path="dir/" type="plain_text"/>
-				<file name="test2" path="dir/dir/" type="plain_text"/>
 			</additionalFiles>
 		</XMI.extensions>
 	</XMI.content>

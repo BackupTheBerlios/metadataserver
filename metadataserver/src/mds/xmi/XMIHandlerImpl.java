@@ -3,6 +3,7 @@ package mds.xmi;
 import java.io.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.apache.xerces.parsers.DOMParser;
@@ -42,7 +43,7 @@ public class XMIHandlerImpl implements XMIHandler {
 	public MDSFile mapMDS2XMI(MDSModel mdsModel) throws XMIHandlerException {
 
 		String xdoc = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-		xdoc += "<!DOCTYPE XMI SYSTEM \"uml13_xmi11.dtd\" [\n";
+		xdoc += "<!DOCTYPE XMI SYSTEM \"resources/UMLX13-11.dtd\" [\n";
 		xdoc += "\t<!ELEMENT additionalFiles (file+)>\n";
 		xdoc += "\t<!ELEMENT file EMPTY>\n";
 		xdoc += "\t<!ATTLIST file\n";
@@ -55,7 +56,7 @@ public class XMIHandlerImpl implements XMIHandler {
 		xdoc += "\t<XMI.header>\n";
 		xdoc += "\t\t<XMI.documentation>\n";
 		xdoc += "\t\t\t<XMI.exporter>metadata.server</XMI.exporter>\n";
-		xdoc += "\t\t\t<XMI.exporterVersion>0.1</XMI.exporterVersion\n";
+		xdoc += "\t\t\t<XMI.exporterVersion>0.1</XMI.exporterVersion>\n";
 		xdoc += "\t\t</XMI.documentation>\n";
 		xdoc += "\t\t<XMI.model xmi.name=\""
 			+ mdsModel.getId()
@@ -70,9 +71,15 @@ public class XMIHandlerImpl implements XMIHandler {
 		String xclass = "\t\t<UML:Class xmi.id=\"#id#\" name=\"#id#\"/>\n";
 
 		String xgeneralization =
-			"\t\t<UML:Class xmi.id=\"#id#\" name=\"#id#\" generalization=\"#superId#\"/>\n";
+			"\t\t<UML:Class xmi.id=\"#subId#\" name=\"#subId#\" generalization=\"#superId#\">\n";
+		xgeneralization += "\t\t\t<UML:Namespace.ownedElement>\n";
+		xgeneralization
+			+= "\t\t\t\t<UML:Generalization xmi.id=\"#id#\" name=\"#id#\" child=\"#subId#\" parent=\"#superId#\"/>\n";
+		xgeneralization += "\t\t\t</UML:Namespace.ownedElement>\n";
+		xgeneralization += "\t\t</UML:Class>\n";
 
-		String xassociation1 = "\t\t<UML:Association name=\"#id#\">\n";
+		String xassociation1 =
+			"\t\t<UML:Association xmi.id=\"#id#\" name=\"#id#\">\n";
 		xassociation1 += "\t\t\t<UML:Association.connection>\n";
 		xassociation1
 			+= "\t\t\t\t<UML:AssociationEnd aggregation=\"#aggregation#\" type=\"#endId#\"/>\n";
@@ -136,7 +143,7 @@ public class XMIHandlerImpl implements XMIHandler {
 			xdoc
 				+= xgeneralization
 					.replaceAll(
-						"#id#",
+						"#subId#",
 						((MDSGeneralizationImpl) element)
 							.getSubClass()
 							.getId())
@@ -144,7 +151,8 @@ public class XMIHandlerImpl implements XMIHandler {
 						"#superId#",
 						((MDSGeneralizationImpl) element)
 							.getSuperClass()
-							.getId());
+							.getId())
+					.replaceAll("#id#", element.getId());
 		}
 		i = associations.iterator();
 		while (i.hasNext()) {
@@ -158,7 +166,7 @@ public class XMIHandlerImpl implements XMIHandler {
 					aggregation = "none";
 					break;
 				case AssociationEnd.SHARED_AGGREGATION :
-					aggregation = "shared";
+					aggregation = "aggregate";
 					break;
 				case AssociationEnd.COMPOSITE_AGGREGATION :
 					aggregation = "composite";
@@ -174,7 +182,7 @@ public class XMIHandlerImpl implements XMIHandler {
 					aggregation = "none";
 					break;
 				case AssociationEnd.SHARED_AGGREGATION :
-					aggregation = "shared";
+					aggregation = "aggregate";
 					break;
 				case AssociationEnd.COMPOSITE_AGGREGATION :
 					aggregation = "composite";
@@ -230,7 +238,7 @@ public class XMIHandlerImpl implements XMIHandler {
 
 		MDSModel model = new MDSModelImpl();
 		MDSElement element = null;
-		
+
 		try {
 			DOMParser parser = new DOMParser();
 			parser.parse(
@@ -248,37 +256,60 @@ public class XMIHandlerImpl implements XMIHandler {
 					true);
 
 			Node n = it.nextNode();
-			ArrayList names, vals;
 			NamedNodeMap attribs;
+			HashMap nodeAttribs = null;
+			ArrayList classes = new ArrayList();
+			String nodeName = "", attName = "", attValue = "";
+			MDSClass newClass = null;
+			MDSAssociation newAsso = null;
 
 			while (n != null) {
+				nodeName = n.getNodeName();
 
-				System.out.println(n.getNodeName() + ":");
+				System.out.println(nodeName + ":");
 				System.out.println("  attributes:");
 
 				attribs = n.getAttributes();
-				names = new ArrayList();
-				vals = new ArrayList();
+				nodeAttribs = new HashMap();
 
 				for (int j = 0; j < attribs.getLength(); ++j) {
 
-					System.out.println(
-						"    "
-							+ attribs.item(j).getNodeName()
-							+ ": '"
-							+ attribs.item(j).getNodeValue()
-							+ "'");
+					attName = attribs.item(j).getNodeName();
+					attValue = attribs.item(j).getNodeValue();
 
-					names.add(attribs.item(j).getNodeName());
-					vals.add(attribs.item(j).getNodeValue());
+					nodeAttribs.put(attName, attValue);
+
+					System.out.println(
+						"    " + attName + ": '" + attValue + "'");
+
 				}
-				/*
-				if (n.getNodeName().equals("Class") {
-					element = new MDSClassImpl();
-				
-				element.setId(id)*/
+				if (nodeName.equals("UML:Class")) {
+					if (nodeAttribs.containsKey("xmi.id")
+						&& nodeAttribs.containsKey("name")) {
+						newClass = new MDSClassImpl();
+						newClass.setLabel((String) nodeAttribs.get("name"));
+						newClass.setId((String) nodeAttribs.get("xmi.id"));
+						classes.add(newClass);
+					} else {
+						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:Class");
+					}
+				} else if (nodeName.equals("UML:Association")) {
+					if (nodeAttribs.containsKey("name")
+						&& nodeAttribs.containsKey("name")) {
+						newAsso = new MDSAssociationImpl();
+						newAsso.setLabel((String) nodeAttribs.get("name"));
+						newAsso.setId((String) nodeAttribs.get("xmi.id"));
+					} else {
+						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:Association");
+					}
+				} else if (nodeName.equals("Class")) {
+				} else if (nodeName.equals("Class")) {
+				} else if (nodeName.equals("Class")) {
+				} else if (nodeName.equals("Class")) {
+				}
 				n = it.nextNode();
 			}
+			model.setElements(classes);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -290,7 +321,6 @@ public class XMIHandlerImpl implements XMIHandler {
 		public short acceptNode(Node n) {
 			if (n.getNodeType() == Node.ELEMENT_NODE) {
 				Element e = (Element) n;
-				//if (e.getAttributeNode("xmi:id") != null)
 				return NodeFilter.FILTER_ACCEPT;
 			}
 			return NodeFilter.FILTER_REJECT;

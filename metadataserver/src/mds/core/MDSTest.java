@@ -118,23 +118,31 @@ public class MDSTest {
 		//server.insertElement(href, myclass1);
 
 		//System.out.println(server);
-
-		System.out.println(model.getXmiFile().getContent());
+		
+		String xmiContent =model.getXmiFile().getContent();
+		System.out.println(xmiContent);
+		FileWriter f1;
 		MDSFile file1 = new MDSFileImpl();
 		BufferedReader f;
 		String line = null;
 		String content = "";
 
 		try {
+			
+			f1 = new FileWriter("sample.xmi");
+			f1.write(xmiContent);
+			f1.close();
+			
 			f =
 				new BufferedReader(
-					new FileReader(MDSGlobals.RESOURCES_PATH + "sample.xmi"));
+					new FileReader("sample.xmi"));
 			while ((line = f.readLine()) != null) {
 				content += line + "\n";
 			}
 			f.close();
 			file1.setContent(content);
 			MDSModel model2 = new XMIHandlerImpl().mapXMI2MDS(file1);
+			System.out.println(model2);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

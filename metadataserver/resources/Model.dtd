@@ -1,0 +1,994 @@
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- XMI is the top-level XML element for XMI transfer text          -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT XMI (XMI.header, XMI.content?, XMI.difference*,
+               XMI.extensions*) >
+<!ATTLIST XMI
+            xmi.version CDATA #FIXED "1.0"
+            timestamp CDATA #IMPLIED
+            verified (true | false) #IMPLIED >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- XMI.header contains documentation and identifies the model,     -->
+<!-- metamodel, and metametamodel                                    -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT XMI.header (XMI.documentation?, XMI.model*, XMI.metamodel*,
+                      XMI.metametamodel*) >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- documentation for transfer data                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT XMI.documentation (#PCDATA | XMI.owner | XMI.contact |
+                             XMI.longDescription | XMI.shortDescription |
+                             XMI.exporter | XMI.exporterVersion |
+                             XMI.notice)* >
+<!ELEMENT XMI.owner ANY >
+<!ELEMENT XMI.contact ANY >
+<!ELEMENT XMI.longDescription ANY >
+<!ELEMENT XMI.shortDescription ANY >
+<!ELEMENT XMI.exporter ANY >
+<!ELEMENT XMI.exporterVersion ANY >
+<!ELEMENT XMI.exporterID ANY >
+<!ELEMENT XMI.notice ANY >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- XMI.element.att defines the attributes that each XML element    -->
+<!-- that corresponds to a metamodel class must have to conform to   -->
+<!-- the XMI specification.                                          -->
+<!-- _______________________________________________________________ -->
+
+<!ENTITY % XMI.element.att
+               'xmi.id ID #IMPLIED xmi.label CDATA #IMPLIED xmi.uuid
+                CDATA #IMPLIED ' >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- XMI.link.att defines the attributes that each XML element that  -->
+<!-- corresponds to a metamodel class must have to enable it to      -->
+<!-- function as a simple XLink as well as refer to model            -->
+<!-- constructs within the same XMI file.                            -->
+<!-- _______________________________________________________________ -->
+
+<!ENTITY % XMI.link.att
+               'xml:link CDATA #IMPLIED inline (true | false) #IMPLIED
+                actuate (show | user) #IMPLIED href CDATA #IMPLIED role
+                CDATA #IMPLIED title CDATA #IMPLIED show (embed | replace
+                | new) #IMPLIED behavior CDATA #IMPLIED xmi.idref IDREF
+                #IMPLIED xmi.uuidref CDATA #IMPLIED' >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- XMI.model identifies the model(s) being transferred             -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT XMI.model ANY >
+<!ATTLIST XMI.model
+            %XMI.link.att;
+            xmi.name     CDATA #REQUIRED
+            xmi.version  CDATA #IMPLIED >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- XMI.metamodel identifies the metamodel(s) for the transferred   -->
+<!-- data                                                            -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT XMI.metamodel ANY >
+<!ATTLIST XMI.metamodel
+            %XMI.link.att;
+            xmi.name     CDATA #REQUIRED
+            xmi.version  CDATA #IMPLIED >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- XMI.metametamodel identifies the metametamodel(s) for the       -->
+<!-- transferred data                                                -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT XMI.metametamodel ANY >
+<!ATTLIST XMI.metametamodel
+            %XMI.link.att;
+            xmi.name     CDATA #REQUIRED
+            xmi.version  CDATA #IMPLIED >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- XMI.content is the actual data being transferred                -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT XMI.content ANY >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- XMI.extensions contains data to transfer that does not conform  -->
+<!-- to the metamodel(s) in the header                               -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT XMI.extensions ANY >
+<!ATTLIST XMI.extensions
+            xmi.extender CDATA #REQUIRED >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- extension contains information related to a specific model      -->
+<!-- construct that is not defined in the metamodel(s) in the header -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT XMI.extension ANY >
+<!ATTLIST XMI.extension
+            %XMI.element.att;
+            %XMI.link.att;
+            xmi.extender   CDATA #REQUIRED
+            xmi.extenderID CDATA #REQUIRED >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- XMI.difference holds XML elements representing differences to a -->
+<!-- base model                                                      -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT XMI.difference (XMI.difference | XMI.delete | XMI.add |
+                          XMI.replace)* >
+<!ATTLIST XMI.difference
+            %XMI.element.att;
+            %XMI.link.att; >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- XMI.delete represents a deletion from a base model              -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT XMI.delete EMPTY >
+<!ATTLIST XMI.delete
+            %XMI.element.att;
+            %XMI.link.att; >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- XMI.add represents an addition to a base model                  -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT XMI.add ANY >
+<!ATTLIST XMI.add
+            %XMI.element.att;
+            %XMI.link.att;
+            xmi.position CDATA "-1" >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- XMI.replace represents the replacement of a model construct     -->
+<!-- with another model construct in a base model                    -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT XMI.replace ANY >
+<!ATTLIST XMI.replace
+            %XMI.element.att;
+            %XMI.link.att;
+            xmi.position CDATA "-1" >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- XMI.reference may be used to refer to data types not defined in -->
+<!-- the metamodel                                                   -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT XMI.reference ANY >
+<!ATTLIST XMI.reference
+            %XMI.link.att; >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- This section contains the declaration of XML elements           -->
+<!-- representing data types                                         -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT XMI.TypeDefinitions ANY >
+<!ELEMENT XMI.field ANY >
+<!ELEMENT XMI.seqItem ANY >
+<!ELEMENT XMI.octetStream (#PCDATA) >
+<!ELEMENT XMI.unionDiscrim ANY >
+
+<!ELEMENT XMI.enum EMPTY >
+<!ATTLIST XMI.enum xmi.value CDATA #REQUIRED >
+
+<!ELEMENT XMI.any ANY >
+<!ATTLIST XMI.any
+            %XMI.link.att;
+            xmi.type CDATA #IMPLIED
+            xmi.name CDATA #IMPLIED >
+
+<!ELEMENT XMI.CorbaTypeCode (XMI.CorbaTcAlias | XMI.CorbaTcStruct |
+                             XMI.CorbaTcSequence | XMI.CorbaTcArray |
+                             XMI.CorbaTcEnum | XMI.CorbaTcUnion |
+                             XMI.CorbaTcExcept | XMI.CorbaTcString |
+                             XMI.CorbaTcWstring | XMI.CorbaTcShort |
+                             XMI.CorbaTcLong | XMI.CorbaTcUshort |
+                             XMI.CorbaTcUlong | XMI.CorbaTcFloat |
+                             XMI.CorbaTcDouble | XMI.CorbaTcBoolean |
+                             XMI.CorbaTcChar | XMI.CorbaTcWchar |
+                             XMI.CorbaTcOctet | XMI.CorbaTcAny |
+                             XMI.CorbaTcTypeCode | XMI.CorbaTcPrincipal |
+                             XMI.CorbaTcNull | XMI.CorbaTcVoid |
+                             XMI.CorbaTcLongLong | XMI.CorbaTcObjRef |
+                             XMI.CorbaTcLongDouble) >
+<!ATTLIST XMI.CorbaTypeCode
+            %XMI.element.att; >
+
+<!ELEMENT XMI.CorbaTcAlias (XMI.CorbaTypeCode) >
+<!ATTLIST XMI.CorbaTcAlias
+            xmi.tcName CDATA #REQUIRED
+            xmi.tcId   CDATA #IMPLIED >
+
+<!ELEMENT XMI.CorbaTcStruct (XMI.CorbaTcField)* >
+<!ATTLIST XMI.CorbaTcStruct
+            xmi.tcName CDATA #REQUIRED
+            xmi.tcId   CDATA #IMPLIED >
+
+<!ELEMENT XMI.CorbaTcField (XMI.CorbaTypeCode) >
+<!ATTLIST XMI.CorbaTcField
+            xmi.tcName CDATA #REQUIRED >
+
+<!ELEMENT XMI.CorbaTcSequence (XMI.CorbaTypeCode |
+                               XMI.CorbaRecursiveType) >
+<!ATTLIST XMI.CorbaTcSequence
+            xmi.tcLength CDATA #REQUIRED >
+
+<!ELEMENT XMI.CorbaRecursiveType EMPTY >
+<!ATTLIST XMI.CorbaRecursiveType
+            xmi.offset CDATA #REQUIRED >
+
+<!ELEMENT XMI.CorbaTcArray (XMI.CorbaTypeCode) >
+<!ATTLIST XMI.CorbaTcArray
+            xmi.tcLength CDATA #REQUIRED >
+
+<!ELEMENT XMI.CorbaTcObjRef EMPTY >
+<!ATTLIST XMI.CorbaTcObjRef
+            xmi.tcName CDATA #REQUIRED
+            xmi.tcId   CDATA #IMPLIED >
+
+<!ELEMENT XMI.CorbaTcEnum (XMI.CorbaTcEnumLabel)* >
+<!ATTLIST XMI.CorbaTcEnum
+            xmi.tcName CDATA #REQUIRED
+            xmi.tcId   CDATA #IMPLIED >
+
+<!ELEMENT XMI.CorbaTcEnumLabel EMPTY >
+<!ATTLIST XMI.CorbaTcEnumLabel
+            xmi.tcName CDATA #REQUIRED >
+
+<!ELEMENT XMI.CorbaTcUnionMbr (XMI.CorbaTypeCode, XMI.any) >
+<!ATTLIST XMI.CorbaTcUnionMbr
+            xmi.tcName CDATA #REQUIRED >
+
+<!ELEMENT XMI.CorbaTcUnion (XMI.CorbaTypeCode, XMI.CorbaTcUnionMbr*) >
+<!ATTLIST XMI.CorbaTcUnion
+            xmi.tcName CDATA #REQUIRED
+            xmi.tcId   CDATA #IMPLIED >
+
+<!ELEMENT XMI.CorbaTcExcept (XMI.CorbaTcField)* >
+<!ATTLIST XMI.CorbaTcExcept
+            xmi.tcName CDATA #REQUIRED
+            xmi.tcId   CDATA #IMPLIED >
+
+<!ELEMENT XMI.CorbaTcString EMPTY >
+<!ATTLIST XMI.CorbaTcString
+            xmi.tcLength CDATA #REQUIRED >
+
+<!ELEMENT XMI.CorbaTcWstring EMPTY >
+<!ATTLIST XMI.CorbaTcWstring
+            xmi.tcLength CDATA #REQUIRED >
+
+<!ELEMENT XMI.CorbaTcFixed EMPTY >
+<!ATTLIST XMI.CorbaTcFixed
+            xmi.tcDigits CDATA #REQUIRED
+            xmi.tcScale  CDATA #REQUIRED >
+
+<!ELEMENT XMI.CorbaTcShort EMPTY >
+<!ELEMENT XMI.CorbaTcLong EMPTY >
+<!ELEMENT XMI.CorbaTcUshort EMPTY >
+<!ELEMENT XMI.CorbaTcUlong EMPTY >
+<!ELEMENT XMI.CorbaTcFloat EMPTY >
+<!ELEMENT XMI.CorbaTcDouble EMPTY >
+<!ELEMENT XMI.CorbaTcBoolean EMPTY >
+<!ELEMENT XMI.CorbaTcChar EMPTY >
+<!ELEMENT XMI.CorbaTcWchar EMPTY >
+<!ELEMENT XMI.CorbaTcOctet EMPTY >
+<!ELEMENT XMI.CorbaTcAny EMPTY >
+<!ELEMENT XMI.CorbaTcTypeCode EMPTY >
+<!ELEMENT XMI.CorbaTcPrincipal EMPTY >
+<!ELEMENT XMI.CorbaTcNull EMPTY >
+<!ELEMENT XMI.CorbaTcVoid EMPTY >
+<!ELEMENT XMI.CorbaTcLongLong EMPTY >
+<!ELEMENT XMI.CorbaTcLongDouble EMPTY >
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL PACKAGE: Model                                        -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ENTITY % Model.VisibilityKind
+           ' xmi.value (  public_vis| protected_vis| private_vis ) #REQUIRED'>
+
+<!ENTITY % Model.DirectionKind
+           ' xmi.value (  in_dir| out_dir| inout_dir| return_dir ) #REQUIRED'>
+
+<!ENTITY % Model.ScopeKind
+           ' xmi.value (  instance_level| classifier_level ) #REQUIRED'>
+
+<!ENTITY % Model.AggregationKind
+           ' xmi.value (  none| shared| composite ) #REQUIRED'>
+
+<!ELEMENT Model.Namespace.contents ( Model.Feature
+  |Model.Classifier
+  |Model.Namespace
+  |Model.StructuralFeature
+  |Model.Attribute
+  |Model.Operation
+  |Model.Class
+  |Model.ModelElement
+  |Model.Package
+  |Model.Constraint
+  |Model.Association
+  |Model.Parameter
+  |Model.BehavioralFeature
+  |Model.Import
+  |Model.GeneralizableElement
+  |Model.Constant
+  |Model.Reference
+  |Model.Exception
+  |Model.DataType
+  |Model.AssociationEnd
+  |Model.TypedElement
+  |Model.TypeAlias
+  |Model.Tag)* >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.ModelElement                             -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ENTITY % Model.ModelElement.DepthKind
+           ' xmi.value (  shallow| deep ) #REQUIRED'>
+
+<!ENTITY % Model.ModelElement.VerifyResultKind
+           ' xmi.value (  valid| invalid| published ) #REQUIRED'>
+
+<!ELEMENT Model.ModelElement.name (#PCDATA|XMI.reference)*>
+
+<!ELEMENT Model.ModelElement.annotation (#PCDATA|XMI.reference)*>
+
+<!ELEMENT Model.ModelElement.container (Model.Classifier
+  |Model.Namespace
+  |Model.Operation
+  |Model.Class
+  |Model.Package
+  |Model.Association
+  |Model.BehavioralFeature
+  |Model.GeneralizableElement
+  |Model.Exception
+  |Model.DataType)?>
+
+<!ELEMENT Model.ModelElement.constraints (Model.Constraint)*>
+
+<!ENTITY % Model.ModelElementProperties '((Model.ModelElement.name)?
+   ,(Model.ModelElement.annotation)?)' > 
+
+<!ENTITY % Model.ModelElementAssociations '(Model.ModelElement.container?
+   ,Model.ModelElement.constraints*)' > 
+
+<!ELEMENT Model.ModelElement ( %Model.ModelElementProperties;
+       ,(XMI.extension* ,   %Model.ModelElementAssociations; ) )?>
+
+<!ATTLIST Model.ModelElement %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.Feature                                  -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT Model.Feature.scope EMPTY>
+<!ATTLIST Model.Feature.scope %Model.ScopeKind;>
+
+<!ELEMENT Model.Feature.visibility EMPTY>
+<!ATTLIST Model.Feature.visibility %Model.VisibilityKind;>
+
+<!ENTITY % Model.FeatureProperties '(%Model.ModelElementProperties;
+   ,(Model.Feature.scope)? 
+   ,(Model.Feature.visibility)?)' >
+
+<!ENTITY % Model.FeatureAssociations '(%Model.ModelElementAssociations;)' > 
+
+<!ELEMENT Model.Feature ( %Model.FeatureProperties;
+       ,(XMI.extension* ,   %Model.FeatureAssociations; ) )?>
+
+<!ATTLIST Model.Feature %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.Namespace                                -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ENTITY % Model.NamespaceProperties '(%Model.ModelElementProperties;)' > 
+
+<!ENTITY % Model.NamespaceAssociations '(%Model.ModelElementAssociations;)' > 
+
+<!ENTITY % Model.NamespaceCompositions '(Model.Namespace.contents*)' > 
+
+<!ELEMENT Model.Namespace ( %Model.NamespaceProperties;
+       ,(XMI.extension* ,   %Model.NamespaceAssociations; )
+       ,  %Model.NamespaceCompositions; )?>
+
+<!ATTLIST Model.Namespace %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.GeneralizableElement                     -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT Model.GeneralizableElement.visibility EMPTY>
+<!ATTLIST Model.GeneralizableElement.visibility %Model.VisibilityKind;>
+
+<!ELEMENT Model.GeneralizableElement.isAbstract EMPTY>
+<!ATTLIST Model.GeneralizableElement.isAbstract
+        xmi.value ( true | false ) #REQUIRED>
+
+<!ELEMENT Model.GeneralizableElement.isRoot EMPTY>
+<!ATTLIST Model.GeneralizableElement.isRoot
+        xmi.value ( true | false ) #REQUIRED>
+
+<!ELEMENT Model.GeneralizableElement.isLeaf EMPTY>
+<!ATTLIST Model.GeneralizableElement.isLeaf
+        xmi.value ( true | false ) #REQUIRED>
+
+<!ELEMENT Model.GeneralizableElement.supertypes (Model.Classifier
+  |Model.Class
+  |Model.Package
+  |Model.Association
+  |Model.GeneralizableElement
+  |Model.DataType)*>
+
+<!ENTITY % Model.GeneralizableElementProperties '(%Model.NamespaceProperties;
+   ,(Model.GeneralizableElement.isRoot)?
+   ,(Model.GeneralizableElement.isLeaf)? 
+   ,(Model.GeneralizableElement.isAbstract)?
+   ,(Model.GeneralizableElement.visibility)?)' >
+
+<!ENTITY % Model.GeneralizableElementAssociations '(%Model.NamespaceAssociations;
+   ,Model.GeneralizableElement.supertypes*)' > 
+
+<!ENTITY % Model.GeneralizableElementCompositions '(%Model.NamespaceCompositions;)' > 
+
+<!ELEMENT Model.GeneralizableElement ( %Model.GeneralizableElementProperties;
+       ,(XMI.extension* ,   %Model.GeneralizableElementAssociations; )
+       ,  %Model.GeneralizableElementCompositions; )?>
+
+<!ATTLIST Model.GeneralizableElement %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.Classifier                               -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ENTITY % Model.ClassifierProperties '(%Model.GeneralizableElementProperties;)' > 
+
+<!ENTITY % Model.ClassifierAssociations '(%Model.GeneralizableElementAssociations;)' > 
+
+<!ENTITY % Model.ClassifierCompositions '(%Model.GeneralizableElementCompositions;)' > 
+
+<!ELEMENT Model.Classifier ( %Model.ClassifierProperties;
+       ,(XMI.extension* ,   %Model.ClassifierAssociations; )
+       ,  %Model.ClassifierCompositions; )?>
+
+<!ATTLIST Model.Classifier %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.TypedElement                             -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT Model.TypedElement.type (Model.Classifier
+  |Model.Class
+  |Model.Association
+  |Model.DataType)?>
+
+<!ENTITY % Model.TypedElementProperties '(%Model.ModelElementProperties;)' > 
+
+<!ENTITY % Model.TypedElementAssociations '(%Model.ModelElementAssociations;
+   ,Model.TypedElement.type?)' > 
+
+<!ELEMENT Model.TypedElement ( %Model.TypedElementProperties;
+       ,(XMI.extension* ,   %Model.TypedElementAssociations; ) )?>
+
+<!ATTLIST Model.TypedElement %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.StructuralFeature                        -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT Model.StructuralFeature.multiplicity (XMI.field|XMI.reference)*>
+
+<!ELEMENT Model.StructuralFeature.isChangeable EMPTY>
+<!ATTLIST Model.StructuralFeature.isChangeable
+        xmi.value ( true | false ) #REQUIRED>
+
+<!ENTITY % Model.StructuralFeatureProperties '(%Model.FeatureProperties;
+   ,(Model.StructuralFeature.multiplicity)?
+   ,(Model.StructuralFeature.isChangeable)?)' > 
+
+<!ENTITY % Model.StructuralFeatureAssociations '(%Model.FeatureAssociations;
+   ,Model.TypedElement.type?)' > 
+
+<!ELEMENT Model.StructuralFeature ( %Model.StructuralFeatureProperties;
+       ,(XMI.extension* ,   %Model.StructuralFeatureAssociations; ) )?>
+
+<!ATTLIST Model.StructuralFeature %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.Attribute                                -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT Model.Attribute.isDerived EMPTY>
+<!ATTLIST Model.Attribute.isDerived
+        xmi.value ( true | false ) #REQUIRED>
+
+<!ENTITY % Model.AttributeProperties '(%Model.StructuralFeatureProperties;
+   ,(Model.Attribute.isDerived)?)' > 
+
+<!ENTITY % Model.AttributeAssociations '(%Model.StructuralFeatureAssociations;)' > 
+
+<!ELEMENT Model.Attribute ( %Model.AttributeProperties;
+       ,(XMI.extension* ,   %Model.AttributeAssociations; ) )?>
+
+<!ATTLIST Model.Attribute %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.BehavioralFeature                        -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ENTITY % Model.BehavioralFeatureProperties '(%Model.FeatureProperties;)' > 
+
+<!ENTITY % Model.BehavioralFeatureAssociations '(%Model.FeatureAssociations;)' > 
+
+<!ENTITY % Model.BehavioralFeatureCompositions '(Model.Namespace.contents*)' > 
+
+<!ELEMENT Model.BehavioralFeature ( %Model.BehavioralFeatureProperties;
+       ,(XMI.extension* ,   %Model.BehavioralFeatureAssociations; )
+       ,  %Model.BehavioralFeatureCompositions; )?>
+
+<!ATTLIST Model.BehavioralFeature %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.Operation                                -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT Model.Operation.isQuery EMPTY>
+<!ATTLIST Model.Operation.isQuery
+        xmi.value ( true | false ) #REQUIRED>
+
+<!ELEMENT Model.Operation.exceptions (Model.Exception)*>
+
+<!ENTITY % Model.OperationProperties '(%Model.BehavioralFeatureProperties;
+   ,(Model.Operation.isQuery)?)' > 
+
+<!ENTITY % Model.OperationAssociations '(%Model.BehavioralFeatureAssociations;
+   ,Model.Operation.exceptions*)' > 
+
+<!ENTITY % Model.OperationCompositions '(%Model.BehavioralFeatureCompositions;)' > 
+
+<!ELEMENT Model.Operation ( %Model.OperationProperties;
+       ,(XMI.extension* ,   %Model.OperationAssociations; )
+       ,  %Model.OperationCompositions; )?>
+
+<!ATTLIST Model.Operation %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.Class                                    -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT Model.Class.isSingleton EMPTY>
+<!ATTLIST Model.Class.isSingleton
+        xmi.value ( true | false ) #REQUIRED>
+
+<!ENTITY % Model.ClassProperties '(%Model.ClassifierProperties;
+   ,(Model.Class.isSingleton)?)' > 
+
+<!ENTITY % Model.ClassAssociations '(%Model.ClassifierAssociations;)' > 
+
+<!ENTITY % Model.ClassCompositions '(%Model.ClassifierCompositions;)' > 
+
+<!ELEMENT Model.Class ( %Model.ClassProperties;
+       ,(XMI.extension* ,   %Model.ClassAssociations; )
+       ,  %Model.ClassCompositions; )?>
+
+<!ATTLIST Model.Class %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.Package                                  -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ENTITY % Model.PackageProperties '(%Model.GeneralizableElementProperties;)' > 
+
+<!ENTITY % Model.PackageAssociations '(%Model.GeneralizableElementAssociations;)' > 
+
+<!ENTITY % Model.PackageCompositions '(%Model.GeneralizableElementCompositions;)' > 
+
+<!ELEMENT Model.Package ( %Model.PackageProperties;
+       ,(XMI.extension* ,   %Model.PackageAssociations; )
+       ,  %Model.PackageCompositions; )?>
+
+<!ATTLIST Model.Package %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.Constraint                               -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ENTITY % Model.Constraint.EvaluationKind
+           ' xmi.value (  immediate| deferred ) #REQUIRED'>
+
+<!ELEMENT Model.Constraint.expression (XMI.any)>
+
+<!ELEMENT Model.Constraint.language (#PCDATA|XMI.reference)*>
+
+<!ELEMENT Model.Constraint.evaluationPolicy EMPTY>
+<!ATTLIST Model.Constraint.evaluationPolicy %Model.Constraint.EvaluationKind;>
+
+<!ELEMENT Model.Constraint.constrainedElements (Model.Feature
+  |Model.Classifier
+  |Model.Namespace
+  |Model.StructuralFeature
+  |Model.Attribute
+  |Model.Operation
+  |Model.Class
+  |Model.ModelElement
+  |Model.Package
+  |Model.Constraint
+  |Model.Association
+  |Model.Parameter
+  |Model.BehavioralFeature
+  |Model.Import
+  |Model.GeneralizableElement
+  |Model.Constant
+  |Model.Reference
+  |Model.Exception
+  |Model.DataType
+  |Model.AssociationEnd
+  |Model.TypedElement
+  |Model.TypeAlias
+  |Model.Tag)*>
+
+<!ENTITY % Model.ConstraintProperties '(%Model.ModelElementProperties;
+   ,(Model.Constraint.expression)?
+   ,(Model.Constraint.language)?
+   ,(Model.Constraint.evaluationPolicy)?)' > 
+
+<!ENTITY % Model.ConstraintAssociations '(%Model.ModelElementAssociations;
+   ,Model.Constraint.constrainedElements*)' > 
+
+<!ELEMENT Model.Constraint ( %Model.ConstraintProperties;
+       ,(XMI.extension* ,   %Model.ConstraintAssociations; ) )?>
+
+<!ATTLIST Model.Constraint %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.Association                              -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT Model.Association.isDerived EMPTY>
+<!ATTLIST Model.Association.isDerived
+        xmi.value ( true | false ) #REQUIRED>
+
+<!ENTITY % Model.AssociationProperties '(%Model.ClassifierProperties;
+   ,(Model.Association.isDerived)?)' > 
+
+<!ENTITY % Model.AssociationAssociations '(%Model.ClassifierAssociations;)' > 
+
+<!ENTITY % Model.AssociationCompositions '(%Model.ClassifierCompositions;)' > 
+
+<!ELEMENT Model.Association ( %Model.AssociationProperties;
+       ,(XMI.extension* ,   %Model.AssociationAssociations; )
+       ,  %Model.AssociationCompositions; )?>
+
+<!ATTLIST Model.Association %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.Parameter                                -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT Model.Parameter.direction EMPTY>
+<!ATTLIST Model.Parameter.direction %Model.DirectionKind;>
+
+<!ELEMENT Model.Parameter.multiplicity (XMI.field|XMI.reference)*>
+
+<!ENTITY % Model.ParameterProperties '(%Model.TypedElementProperties;
+   ,(Model.Parameter.direction)?
+   ,(Model.Parameter.multiplicity)?)' > 
+
+<!ENTITY % Model.ParameterAssociations '(%Model.TypedElementAssociations;)' > 
+
+<!ELEMENT Model.Parameter ( %Model.ParameterProperties;
+       ,(XMI.extension* ,   %Model.ParameterAssociations; ) )?>
+
+<!ATTLIST Model.Parameter %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.Import                                   -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT Model.Import.visibility EMPTY>
+<!ATTLIST Model.Import.visibility %Model.VisibilityKind;>
+
+<!ELEMENT Model.Import.isClustered EMPTY>
+<!ATTLIST Model.Import.isClustered
+        xmi.value ( true | false ) #REQUIRED>
+
+<!ELEMENT Model.Import.importedNamespace (Model.Classifier
+  |Model.Namespace
+  |Model.Operation
+  |Model.Class
+  |Model.Package
+  |Model.Association
+  |Model.BehavioralFeature
+  |Model.GeneralizableElement
+  |Model.Exception
+  |Model.DataType)?>
+
+<!ENTITY % Model.ImportProperties '(%Model.ModelElementProperties;
+   ,(Model.Import.visibility)?
+   ,(Model.Import.isClustered)?)' > 
+
+<!ENTITY % Model.ImportAssociations '(%Model.ModelElementAssociations;
+   ,Model.Import.importedNamespace?)' > 
+
+<!ELEMENT Model.Import ( %Model.ImportProperties;
+       ,(XMI.extension* ,   %Model.ImportAssociations; ) )?>
+
+<!ATTLIST Model.Import %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.Constant                                 -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT Model.Constant.value (XMI.any)>
+
+<!ENTITY % Model.ConstantProperties '(%Model.TypedElementProperties;
+   ,(Model.Constant.value)?)' > 
+
+<!ENTITY % Model.ConstantAssociations '(%Model.TypedElementAssociations;)' > 
+
+<!ELEMENT Model.Constant ( %Model.ConstantProperties;
+       ,(XMI.extension* ,   %Model.ConstantAssociations; ) )?>
+
+<!ATTLIST Model.Constant %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.Reference                                -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT Model.Reference.referencedEnd (Model.AssociationEnd)?>
+
+<!ENTITY % Model.ReferenceProperties '(%Model.StructuralFeatureProperties;)' > 
+
+<!ENTITY % Model.ReferenceAssociations '(%Model.StructuralFeatureAssociations;
+   ,Model.Reference.referencedEnd?)' > 
+
+<!ELEMENT Model.Reference ( %Model.ReferenceProperties;
+       ,(XMI.extension* ,   %Model.ReferenceAssociations; ) )?>
+
+<!ATTLIST Model.Reference %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.Exception                                -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ENTITY % Model.ExceptionProperties '(%Model.BehavioralFeatureProperties;)' > 
+
+<!ENTITY % Model.ExceptionAssociations '(%Model.BehavioralFeatureAssociations;)' > 
+
+<!ENTITY % Model.ExceptionCompositions '(%Model.BehavioralFeatureCompositions;)' > 
+
+<!ELEMENT Model.Exception ( %Model.ExceptionProperties;
+       ,(XMI.extension* ,   %Model.ExceptionAssociations; )
+       ,  %Model.ExceptionCompositions; )?>
+
+<!ATTLIST Model.Exception %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.DataType                                 -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT Model.DataType.typeCode (XMI.CorbaTypeCode)>
+
+<!ENTITY % Model.DataTypeProperties '(%Model.ClassifierProperties;
+   ,(Model.DataType.typeCode)?)' > 
+
+<!ENTITY % Model.DataTypeAssociations '(%Model.ClassifierAssociations;)' > 
+
+<!ENTITY % Model.DataTypeCompositions '(%Model.ClassifierCompositions;)' > 
+
+<!ELEMENT Model.DataType ( %Model.DataTypeProperties;
+       ,(XMI.extension* ,   %Model.DataTypeAssociations; )
+       ,  %Model.DataTypeCompositions; )?>
+
+<!ATTLIST Model.DataType %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.AssociationEnd                           -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT Model.AssociationEnd.isNavigable EMPTY>
+<!ATTLIST Model.AssociationEnd.isNavigable
+        xmi.value ( true | false ) #REQUIRED>
+
+<!ELEMENT Model.AssociationEnd.aggregation EMPTY>
+<!ATTLIST Model.AssociationEnd.aggregation %Model.AggregationKind;>
+
+<!ELEMENT Model.AssociationEnd.multiplicity (XMI.field|XMI.reference)*>
+
+<!ELEMENT Model.AssociationEnd.isChangeable EMPTY>
+<!ATTLIST Model.AssociationEnd.isChangeable
+        xmi.value ( true | false ) #REQUIRED>
+
+<!ENTITY % Model.AssociationEndProperties '(%Model.TypedElementProperties;
+   ,(Model.AssociationEnd.isNavigable)?
+   ,(Model.AssociationEnd.aggregation)?
+   ,(Model.AssociationEnd.multiplicity)?
+   ,(Model.AssociationEnd.isChangeable)?)' > 
+
+<!ENTITY % Model.AssociationEndAssociations '(%Model.TypedElementAssociations;)' > 
+
+<!ELEMENT Model.AssociationEnd ( %Model.AssociationEndProperties;
+       ,(XMI.extension* ,   %Model.AssociationEndAssociations; ) )?>
+
+<!ATTLIST Model.AssociationEnd %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.TypeAlias                                -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ENTITY % Model.TypeAliasProperties '(%Model.TypedElementProperties;)' > 
+
+<!ENTITY % Model.TypeAliasAssociations '(%Model.TypedElementAssociations;)' > 
+
+<!ELEMENT Model.TypeAlias ( %Model.TypeAliasProperties;
+       ,(XMI.extension* ,   %Model.TypeAliasAssociations; ) )?>
+
+<!ATTLIST Model.TypeAlias %XMI.element.att; %XMI.link.att; >
+
+
+<!-- _______________________________________________________________ -->
+<!--                                                                 -->
+<!-- METAMODEL CLASS: Model.Tag                                      -->
+<!--                                                                 -->
+<!-- _______________________________________________________________ -->
+
+<!ELEMENT Model.Tag.tagId (#PCDATA|XMI.reference)*>
+
+<!ELEMENT Model.Tag.values (XMI.any)>
+
+<!ELEMENT Model.Tag.elements (Model.Feature
+  |Model.Classifier
+  |Model.Namespace
+  |Model.StructuralFeature
+  |Model.Attribute
+  |Model.Operation
+  |Model.Class
+  |Model.ModelElement
+  |Model.Package
+  |Model.Constraint
+  |Model.Association
+  |Model.Parameter
+  |Model.BehavioralFeature
+  |Model.Import
+  |Model.GeneralizableElement
+  |Model.Constant
+  |Model.Reference
+  |Model.Exception
+  |Model.DataType
+  |Model.AssociationEnd
+  |Model.TypedElement
+  |Model.TypeAlias
+  |Model.Tag)*>
+
+<!ENTITY % Model.TagProperties '(%Model.ModelElementProperties;
+   ,(Model.Tag.tagId)?
+   ,(Model.Tag.values)*)' > 
+
+<!ENTITY % Model.TagAssociations '(%Model.ModelElementAssociations;
+   ,Model.Tag.elements*)' > 
+
+<!ELEMENT Model.Tag ( %Model.TagProperties;
+       ,(XMI.extension* ,   %Model.TagAssociations; ) )?>
+
+<!ATTLIST Model.Tag %XMI.element.att; %XMI.link.att; >
+
+<!ELEMENT Model ((Model.Feature
+  |Model.Classifier
+  |Model.Namespace
+  |Model.StructuralFeature
+  |Model.Attribute
+  |Model.Operation
+  |Model.Class
+  |Model.ModelElement
+  |Model.Package
+  |Model.Constraint
+  |Model.Association
+  |Model.Parameter
+  |Model.BehavioralFeature
+  |Model.Import
+  |Model.GeneralizableElement
+  |Model.Constant
+  |Model.Reference
+  |Model.Exception
+  |Model.DataType
+  |Model.AssociationEnd
+  |Model.TypedElement
+  |Model.TypeAlias
+  |Model.Tag)*)>
+<!ATTLIST Model %XMI.element.att; %XMI.link.att;>
