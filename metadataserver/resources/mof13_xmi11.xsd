@@ -1,0 +1,1310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/1999/XMLSchema" xmlns:MOF="org.omg/standards/mof/mof13" targetNamespace="org.omg/standards/mof/mof13">
+
+<xsd:import schemaLocation="http://www.omg.org/2000/XMI/xmi11.xsd"/>
+
+<xsd:simpleType name="ScopeKind" base="xsd:string">
+  <xsd:enumeration value="instance_level"/>
+  <xsd:enumeration value="classifier_level"/>
+</xsd:simpleType>
+
+<xsd:simpleType name="VisibilityKind" base="xsd:string">
+  <xsd:enumeration value="public_vis"/>
+  <xsd:enumeration value="protected_vis"/>
+  <xsd:enumeration value="private_vis"/>
+</xsd:simpleType>
+
+<xsd:simpleType name="Boolean" base="xsd:string">
+  <xsd:enumeration value="true"/>
+  <xsd:enumeration value="false"/>
+</xsd:simpleType>
+
+<xsd:simpleType name="boolean" base="xsd:string">
+  <xsd:enumeration value="true"/>
+  <xsd:enumeration value="false"/>
+</xsd:simpleType>
+
+<xsd:simpleType name="DirectionKind" base="xsd:string">
+  <xsd:enumeration value="in_dir"/>
+  <xsd:enumeration value="out_dir"/>
+  <xsd:enumeration value="inout_dir"/>
+  <xsd:enumeration value="return_dir"/>
+</xsd:simpleType>
+
+<xsd:simpleType name="AggregationKind" base="xsd:string">
+  <xsd:enumeration value="none"/>
+  <xsd:enumeration value="shared"/>
+  <xsd:enumeration value="composite"/>
+</xsd:simpleType>
+
+<xsd:simpleType name="EvaluationKind" base="xsd:string">
+  <xsd:enumeration value="immediate"/>
+  <xsd:enumeration value="deferred"/>
+</xsd:simpleType>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: ModelElement</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="ModelElement.name">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="ModelElement.annotation">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="ModelElement.qualifiedName">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="ModelElement.container">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:Namespace"/>
+    </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="ModelElement.constraints">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:Constraint"/>
+    </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="ModelElement.provider">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement"/>
+    </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="ModelElement">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: Feature</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="Feature.scope">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="ScopeKind" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Feature.visibility">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="VisibilityKind" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Feature">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:Feature.scope"/>
+      <xsd:element ref="MOF:Feature.visibility"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="scope" type="ScopeKind" use="optional"/>
+    <xsd:attribute name="visibility" type="VisibilityKind" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: GeneralizableElement</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="GeneralizableElement.visibility">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="VisibilityKind" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="GeneralizableElement.isAbstract">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="Boolean" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="GeneralizableElement.isRoot">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="Boolean" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="GeneralizableElement.isLeaf">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="Boolean" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="GeneralizableElement.supertypes">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:GeneralizableElement"/>
+    </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="GeneralizableElement">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:GeneralizableElement.visibility"/>
+      <xsd:element ref="MOF:GeneralizableElement.isAbstract"/>
+      <xsd:element ref="MOF:GeneralizableElement.isRoot"/>
+      <xsd:element ref="MOF:GeneralizableElement.isLeaf"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:GeneralizableElement.supertypes"/>
+      <xsd:element ref="MOF:Namespace.contents"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="visibility" type="VisibilityKind" use="optional"/>
+    <xsd:attribute name="isAbstract" type="Boolean" use="optional"/>
+    <xsd:attribute name="isRoot" type="Boolean" use="optional"/>
+    <xsd:attribute name="isLeaf" type="Boolean" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="supertypes" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: MofClass</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="MofClass.isSingleton">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="Boolean" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="MofClass">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:GeneralizableElement.visibility"/>
+      <xsd:element ref="MOF:GeneralizableElement.isAbstract"/>
+      <xsd:element ref="MOF:GeneralizableElement.isRoot"/>
+      <xsd:element ref="MOF:GeneralizableElement.isLeaf"/>
+      <xsd:element ref="MOF:MofClass.isSingleton"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:GeneralizableElement.supertypes"/>
+      <xsd:element ref="MOF:Namespace.contents"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="visibility" type="VisibilityKind" use="optional"/>
+    <xsd:attribute name="isAbstract" type="Boolean" use="optional"/>
+    <xsd:attribute name="isRoot" type="Boolean" use="optional"/>
+    <xsd:attribute name="isLeaf" type="Boolean" use="optional"/>
+    <xsd:attribute name="isSingleton" type="Boolean" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="supertypes" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: Namespace</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="Namespace.contents">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement"/>
+      <xsd:element ref="MOF:Feature"/>
+      <xsd:element ref="MOF:BehavioralFeature"/>
+      <xsd:element ref="MOF:MofException"/>
+      <xsd:element ref="MOF:Operation"/>
+      <xsd:element ref="MOF:StructuralFeature"/>
+      <xsd:element ref="MOF:Reference"/>
+      <xsd:element ref="MOF:Attribute"/>
+      <xsd:element ref="MOF:Namespace"/>
+      <xsd:element ref="MOF:GeneralizableElement"/>
+      <xsd:element ref="MOF:Classifier"/>
+      <xsd:element ref="MOF:MofClass"/>
+      <xsd:element ref="MOF:Association"/>
+      <xsd:element ref="MOF:DataType"/>
+      <xsd:element ref="MOF:Package"/>
+      <xsd:element ref="MOF:Import"/>
+      <xsd:element ref="MOF:TypedElement"/>
+      <xsd:element ref="MOF:Parameter"/>
+      <xsd:element ref="MOF:AssociationEnd"/>
+      <xsd:element ref="MOF:Constant"/>
+      <xsd:element ref="MOF:TypeAlias"/>
+      <xsd:element ref="MOF:Constraint"/>
+      <xsd:element ref="MOF:Tag"/>
+    </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Namespace">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:Namespace.contents"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: BehavioralFeature</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="BehavioralFeature">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:Feature.scope"/>
+      <xsd:element ref="MOF:Feature.visibility"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:Namespace.contents"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="scope" type="ScopeKind" use="optional"/>
+    <xsd:attribute name="visibility" type="VisibilityKind" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: MofException</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="MofException">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:Feature.scope"/>
+      <xsd:element ref="MOF:Feature.visibility"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:Namespace.contents"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="scope" type="ScopeKind" use="optional"/>
+    <xsd:attribute name="visibility" type="VisibilityKind" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: Operation</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="Operation.isQuery">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="Boolean" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Operation.except">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:MofException"/>
+    </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Operation">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:Feature.scope"/>
+      <xsd:element ref="MOF:Feature.visibility"/>
+      <xsd:element ref="MOF:Operation.isQuery"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:Operation.except"/>
+      <xsd:element ref="MOF:Namespace.contents"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="scope" type="ScopeKind" use="optional"/>
+    <xsd:attribute name="visibility" type="VisibilityKind" use="optional"/>
+    <xsd:attribute name="isQuery" type="Boolean" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="except" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: Import</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="Import.visibility">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="VisibilityKind" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Import.isClustered">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="Boolean" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Import.importedNamespace">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:Namespace"/>
+    </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Import">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:Import.visibility"/>
+      <xsd:element ref="MOF:Import.isClustered"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:Import.importedNamespace"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="visibility" type="VisibilityKind" use="optional"/>
+    <xsd:attribute name="isClustered" type="Boolean" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="importedNamespace" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: Classifier</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="Classifier">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:GeneralizableElement.visibility"/>
+      <xsd:element ref="MOF:GeneralizableElement.isAbstract"/>
+      <xsd:element ref="MOF:GeneralizableElement.isRoot"/>
+      <xsd:element ref="MOF:GeneralizableElement.isLeaf"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:GeneralizableElement.supertypes"/>
+      <xsd:element ref="MOF:Namespace.contents"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="visibility" type="VisibilityKind" use="optional"/>
+    <xsd:attribute name="isAbstract" type="Boolean" use="optional"/>
+    <xsd:attribute name="isRoot" type="Boolean" use="optional"/>
+    <xsd:attribute name="isLeaf" type="Boolean" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="supertypes" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: Association</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="Association.isDerived">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="Boolean" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Association">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:GeneralizableElement.visibility"/>
+      <xsd:element ref="MOF:GeneralizableElement.isAbstract"/>
+      <xsd:element ref="MOF:GeneralizableElement.isRoot"/>
+      <xsd:element ref="MOF:GeneralizableElement.isLeaf"/>
+      <xsd:element ref="MOF:Association.isDerived"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:GeneralizableElement.supertypes"/>
+      <xsd:element ref="MOF:Namespace.contents"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="visibility" type="VisibilityKind" use="optional"/>
+    <xsd:attribute name="isAbstract" type="Boolean" use="optional"/>
+    <xsd:attribute name="isRoot" type="Boolean" use="optional"/>
+    <xsd:attribute name="isLeaf" type="Boolean" use="optional"/>
+    <xsd:attribute name="isDerived" type="Boolean" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="supertypes" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: DataType</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="DataType.typeCode">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="DataType">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:GeneralizableElement.visibility"/>
+      <xsd:element ref="MOF:GeneralizableElement.isAbstract"/>
+      <xsd:element ref="MOF:GeneralizableElement.isRoot"/>
+      <xsd:element ref="MOF:GeneralizableElement.isLeaf"/>
+      <xsd:element ref="MOF:DataType.typeCode"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:GeneralizableElement.supertypes"/>
+      <xsd:element ref="MOF:Namespace.contents"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="visibility" type="VisibilityKind" use="optional"/>
+    <xsd:attribute name="isAbstract" type="Boolean" use="optional"/>
+    <xsd:attribute name="isRoot" type="Boolean" use="optional"/>
+    <xsd:attribute name="isLeaf" type="Boolean" use="optional"/>
+    <xsd:attribute name="typeCode" type="xsd:string" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="supertypes" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: TypedElement</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="TypedElement.type">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:Classifier"/>
+    </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="TypedElement">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:TypedElement.type"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="type" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: StructuralFeature</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="StructuralFeature.multiplicity">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:MultiplicityType"/>
+    </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="StructuralFeature.isChangeable">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="Boolean" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="StructuralFeature">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:Feature.scope"/>
+      <xsd:element ref="MOF:Feature.visibility"/>
+      <xsd:element ref="MOF:StructuralFeature.multiplicity"/>
+      <xsd:element ref="MOF:StructuralFeature.isChangeable"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:TypedElement.type"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="scope" type="ScopeKind" use="optional"/>
+    <xsd:attribute name="visibility" type="VisibilityKind" use="optional"/>
+    <xsd:attribute name="isChangeable" type="Boolean" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="type" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: MultiplicityType</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="MultiplicityType.lower">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="MultiplicityType.upper">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="MultiplicityType.isOrdered">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="boolean" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="MultiplicityType.isUnique">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="boolean" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="MultiplicityType">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:MultiplicityType.lower"/>
+      <xsd:element ref="MOF:MultiplicityType.upper"/>
+      <xsd:element ref="MOF:MultiplicityType.isOrdered"/>
+      <xsd:element ref="MOF:MultiplicityType.isUnique"/>
+      <xsd:element ref="XMI.extension"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="lower" type="xsd:string" use="optional"/>
+    <xsd:attribute name="upper" type="xsd:string" use="optional"/>
+    <xsd:attribute name="isOrdered" type="boolean" use="optional"/>
+    <xsd:attribute name="isUnique" type="boolean" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: Parameter</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="Parameter.direction">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="DirectionKind" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Parameter.multiplicity">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:MultiplicityType"/>
+    </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Parameter">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:Parameter.direction"/>
+      <xsd:element ref="MOF:Parameter.multiplicity"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:TypedElement.type"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="direction" type="DirectionKind" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="type" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: AssociationEnd</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="AssociationEnd.isNavigable">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="Boolean" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="AssociationEnd.aggregation">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="AggregationKind" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="AssociationEnd.multiplicity">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:MultiplicityType"/>
+    </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="AssociationEnd.isChangeable">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="Boolean" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="AssociationEnd">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:AssociationEnd.isNavigable"/>
+      <xsd:element ref="MOF:AssociationEnd.aggregation"/>
+      <xsd:element ref="MOF:AssociationEnd.multiplicity"/>
+      <xsd:element ref="MOF:AssociationEnd.isChangeable"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:TypedElement.type"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="isNavigable" type="Boolean" use="optional"/>
+    <xsd:attribute name="aggregation" type="AggregationKind" use="optional"/>
+    <xsd:attribute name="isChangeable" type="Boolean" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="type" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: Reference</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="Reference.referencedEnd">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:AssociationEnd"/>
+    </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Reference.exposedEnd">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:AssociationEnd"/>
+    </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Reference">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:Feature.scope"/>
+      <xsd:element ref="MOF:Feature.visibility"/>
+      <xsd:element ref="MOF:StructuralFeature.multiplicity"/>
+      <xsd:element ref="MOF:StructuralFeature.isChangeable"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:TypedElement.type"/>
+      <xsd:element ref="MOF:Reference.referencedEnd"/>
+      <xsd:element ref="MOF:Reference.exposedEnd"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="scope" type="ScopeKind" use="optional"/>
+    <xsd:attribute name="visibility" type="VisibilityKind" use="optional"/>
+    <xsd:attribute name="isChangeable" type="Boolean" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="type" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="referencedEnd" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="exposedEnd" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: Attribute</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="Attribute.isDerived">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="Boolean" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Attribute">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:Feature.scope"/>
+      <xsd:element ref="MOF:Feature.visibility"/>
+      <xsd:element ref="MOF:StructuralFeature.multiplicity"/>
+      <xsd:element ref="MOF:StructuralFeature.isChangeable"/>
+      <xsd:element ref="MOF:Attribute.isDerived"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:TypedElement.type"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="scope" type="ScopeKind" use="optional"/>
+    <xsd:attribute name="visibility" type="VisibilityKind" use="optional"/>
+    <xsd:attribute name="isChangeable" type="Boolean" use="optional"/>
+    <xsd:attribute name="isDerived" type="Boolean" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="type" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: Constant</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="Constant.value">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Constant">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:Constant.value"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:TypedElement.type"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="value" type="xsd:string" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="type" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: TypeAlias</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="TypeAlias">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:TypedElement.type"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="type" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: Package</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="Package">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:GeneralizableElement.visibility"/>
+      <xsd:element ref="MOF:GeneralizableElement.isAbstract"/>
+      <xsd:element ref="MOF:GeneralizableElement.isRoot"/>
+      <xsd:element ref="MOF:GeneralizableElement.isLeaf"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:GeneralizableElement.supertypes"/>
+      <xsd:element ref="MOF:Namespace.contents"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="visibility" type="VisibilityKind" use="optional"/>
+    <xsd:attribute name="isAbstract" type="Boolean" use="optional"/>
+    <xsd:attribute name="isRoot" type="Boolean" use="optional"/>
+    <xsd:attribute name="isLeaf" type="Boolean" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="supertypes" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: Constraint</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="Constraint.expression">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Constraint.language">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Constraint.evaluationPolicy">
+  <xsd:complexType content="empty">
+    <xsd:attribute name="xmi.value" type="EvaluationKind" use="required"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Constraint.constrainedElements">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement"/>
+    </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Constraint">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:Constraint.expression"/>
+      <xsd:element ref="MOF:Constraint.language"/>
+      <xsd:element ref="MOF:Constraint.evaluationPolicy"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+      <xsd:element ref="MOF:Constraint.constrainedElements"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="expression" type="xsd:string" use="optional"/>
+    <xsd:attribute name="language" type="xsd:string" use="optional"/>
+    <xsd:attribute name="evaluationPolicy" type="EvaluationKind" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constrainedElements" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: Tag</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="Tag.tagId">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Tag.values">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Tag">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ModelElement.name"/>
+      <xsd:element ref="MOF:ModelElement.annotation"/>
+      <xsd:element ref="MOF:ModelElement.qualifiedName"/>
+      <xsd:element ref="MOF:Tag.tagId"/>
+      <xsd:element ref="MOF:Tag.values"/>
+      <xsd:element ref="XMI.extension"/>
+      <xsd:element ref="MOF:ModelElement.container"/>
+      <xsd:element ref="MOF:ModelElement.constraints"/>
+      <xsd:element ref="MOF:ModelElement.provider"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+    <xsd:attribute name="annotation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="qualifiedName" type="xsd:string" use="optional"/>
+    <xsd:attribute name="tagId" type="xsd:string" use="optional"/>
+    <xsd:attribute name="values" type="xsd:string" use="optional"/>
+    <xsd:attribute name="container" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="constraints" type="xsd:IDREFS" use="optional"/>
+    <xsd:attribute name="provider" type="xsd:IDREFS" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: Violation</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="Violation.error_kind">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Violation.element_in_error">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Violation.values_in_error">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Violation.error_description">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="Violation">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:Violation.error_kind"/>
+      <xsd:element ref="MOF:Violation.element_in_error"/>
+      <xsd:element ref="MOF:Violation.values_in_error"/>
+      <xsd:element ref="MOF:Violation.error_description"/>
+      <xsd:element ref="XMI.extension"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="error_kind" type="xsd:string" use="optional"/>
+    <xsd:attribute name="element_in_error" type="xsd:string" use="optional"/>
+    <xsd:attribute name="values_in_error" type="xsd:string" use="optional"/>
+    <xsd:attribute name="error_description" type="xsd:string" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: NameNotFound</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="NameNotFound.name">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="NameNotFound">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:NameNotFound.name"/>
+      <xsd:element ref="XMI.extension"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="name" type="xsd:string" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: NameNotResolved</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="NameNotResolved.explanation">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="NameNotResolved.restOfName">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="NameNotResolved">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:NameNotResolved.explanation"/>
+      <xsd:element ref="MOF:NameNotResolved.restOfName"/>
+      <xsd:element ref="XMI.extension"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="explanation" type="xsd:string" use="optional"/>
+    <xsd:attribute name="restOfName" type="xsd:string" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: ObjectNotExternalizable</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="ObjectNotExternalizable.explanation">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="ObjectNotExternalizable">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:ObjectNotExternalizable.explanation"/>
+      <xsd:element ref="XMI.extension"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="explanation" type="xsd:string" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: FormatNotSupported</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="FormatNotSupported">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="XMI.extension"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:annotation>
+  <xsd:documentation>CLASS: IllformedExternalizedObject</xsd:documentation>
+</xsd:annotation>
+
+<xsd:element name="IllformedExternalizedObject.explanation">
+  <xsd:complexType content="mixed">
+    <xsd:element ref="XMI.reference" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="IllformedExternalizedObject">
+  <xsd:complexType>
+    <xsd:choice minOccurs="0" maxOccurs="unbounded">
+      <xsd:element ref="MOF:IllformedExternalizedObject.explanation"/>
+      <xsd:element ref="XMI.extension"/>
+    </xsd:choice>
+    <xsd:attributeGroup ref="XMIIdentityAttribs"/>
+    <xsd:attributeGroup ref="XMILinkAttribs"/>
+    <xsd:attribute name="explanation" type="xsd:string" use="optional"/>
+  </xsd:complexType>
+</xsd:element>
+
+</xsd:schema>

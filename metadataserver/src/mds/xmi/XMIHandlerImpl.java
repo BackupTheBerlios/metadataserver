@@ -172,7 +172,7 @@ public class XMIHandlerImpl implements XMIHandler {
 			f1 = new FileWriter("test.xmi");
 			f1.write(xdoc);
 			f1.close();
-
+			/*
 			DOMParser parser = new DOMParser();
 			parser.parse("test.xmi");
 
@@ -191,12 +191,17 @@ public class XMIHandlerImpl implements XMIHandler {
 			while (n != null) {
 				writeObject(n);
 				n = it.nextNode();
-			}
+			}*/
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Fehler beim Erstellen der Datei");
 		}
-
+		XMIFile xfile;
+		try {
+			xfile = XMIFile.load("test.xmi", XMIFile.DEFAULT, true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void writeObject(Node object) {
