@@ -1,11 +1,11 @@
 package de.chille.api.mme.core;
 
-import de.chille.mme.core.MetaMappingEngineException;
+import java.util.ArrayList;
+import java.util.Vector;
 
 import de.chille.api.mds.core.MDSModel;
 import de.chille.api.mme.mapper.MDSMapper;
-import java.util.List;
-import java.util.ArrayList;
+import de.chille.mme.core.MetaMappingEngineException;
 
 /**
  * bindet die metamapping.engine
@@ -59,4 +59,5 @@ public interface MetaMappingEngine {
 	 * @return MDSMapper
 	 */
 	public MDSMapper getMDSMapperForMapping(Mapping mapping);	
+	
 }

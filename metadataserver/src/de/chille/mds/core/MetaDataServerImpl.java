@@ -208,10 +208,10 @@ public final class MetaDataServerImpl
 	 */
 	public MDSHref copyModel(MDSHref from, MDSHref to, String label) {
 		try {
-			MDSRepository mdsRepository = getRepositoryByHref(from);
-			String id = mdsRepository.copyModel(from, to, label);
+			String id = getRepositoryByHref(from).copyModel(from, to, label);
+			;
 			save();
-			return new MDSHrefImpl(to.getHrefString() + "/" + id);
+			return new MDSHrefImpl(to.getHrefString() + "/model_" + id);
 		} catch (MDSCoreException e) {
 			return null;
 		} catch (MDSHrefFormatException e) {
@@ -365,12 +365,12 @@ public final class MetaDataServerImpl
 	/**
 	 * @see MetaDataServer#registerMapper(MDSMapper)
 	 */
-	public boolean registerMapper(MDSMapper mapper) {
+	public String registerMapper(MDSMapper mapper) {
 		try {
 			metaMappingEngine.registerMapper(mapper);
-			return true;
+			return null;
 		} catch (MetaMappingEngineException e) {
-			return false;
+			return e.getMessage();
 		}
 	}
 
@@ -401,13 +401,19 @@ public final class MetaDataServerImpl
 	/**
 	 * @see MetaDataServer#convertModel(MDSHref, Mapping, String)
 	 */
-	public void convertModel(MDSHref href, Mapping mapping) {
+	public MDSModel convertModel(MDSHref href, Mapping mapping)
+		throws MetaMappingEngineException {
+		MDSModel mdsModel = null;
 		try {
-			MDSModel mdsModel = getRepositoryByHref(href).getModelByHref(href);
+			mdsModel = getRepositoryByHref(href).getModelByHref(href);
 			metaMappingEngine.map(mdsModel, mapping);
-		} catch (Exception e) {
+			save();
+		} catch (MDSCoreException e) {
+			e.printStackTrace();
+		} catch (MDSHrefFormatException e) {
 			e.printStackTrace();
 		}
+		return mdsModel;
 	}
 
 	/**
@@ -485,8 +491,10 @@ public final class MetaDataServerImpl
 		MetaDataServer server = MetaDataServerImpl.getInstance();
 		System.out.println(server);
 		server.convertModel(
-			new MDSHrefImpl("mds://server_0/repository_0_0/model_0_0_0"),
+			new MDSHrefImpl("mds://server_0/repository_0_12/model_0_12_3"),
 			new MappingImpl("mds", "java"));
+		server.save();
+		System.out.println(server);
 	}
 
 	public void shutdown() {

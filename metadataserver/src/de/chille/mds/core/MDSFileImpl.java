@@ -14,13 +14,13 @@ import de.chille.mds.soap.MDSFileBean;
  */
 public class MDSFileImpl implements MDSFile {
 
-	private String content = null;
+	private String content = "";
 	
-	private String name = null;
+	private String name = "";
 	
-	private String path = null;
+	private String path = "";
 	
-	private String type = null;
+	private String type = "";
 	
 	/**
 	 * @see de.chille.api.de.chille.de.chille.mds.core.MDSFile#getContent()
@@ -95,10 +95,10 @@ public class MDSFileImpl implements MDSFile {
 	
 	public MDSFileBean exportBean() {
 		MDSFileBean bean = new MDSFileBean();
-		bean.setContent(this.getContent());
-		bean.setName(this.getName());
-		bean.setPath(this.getPath());
-		bean.setType(this.getType());
+		bean.setContent(this.getContent() == null ? "" : this.getContent());
+		bean.setName(this.getName() == null ? "" : this.getName());
+		bean.setPath(this.getPath() == null ? "" : this.getPath());
+		bean.setType(this.getType() == null ? "" : this.getType());
 		return bean;
 	}
 	
@@ -107,10 +107,17 @@ public class MDSFileImpl implements MDSFile {
 	 * @see de.chille.api.mds.core.MDSFile#importBean(MDSFileBean)
 	 */
 	public void importBean(MDSFileBean bean) {
-		this.setContent(bean.getContent());
-		this.setName(bean.getName());
-		this.setPath(bean.getPath());
-		this.setType(bean.getType());
+		this.setContent(bean.getContent() == null ? "" : bean.getContent());
+		this.setName(bean.getName() == null ? "" : bean.getName());
+		this.setPath(bean.getPath() == null ? "" : bean.getPath());
+		this.setType(bean.getType() == null ? "" : bean.getType());
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return getName();
 	}
 
 }

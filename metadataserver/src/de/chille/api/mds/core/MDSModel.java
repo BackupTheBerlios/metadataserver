@@ -170,5 +170,8 @@ public interface MDSModel extends MDSPersistentObject {
 	
 	public MDSElement getElementById(MDSHref href)
 		throws MDSCoreException, MDSHrefFormatException;
+		
+	public MDSElement getElementByLabel(String label)
+		throws MDSCoreException;
 
 }

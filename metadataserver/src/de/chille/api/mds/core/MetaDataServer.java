@@ -8,6 +8,7 @@ import de.chille.api.mme.core.MetaMappingEngine;
 import de.chille.api.mme.mapper.MDSMapper;
 import de.chille.mds.core.MDSCoreException;
 import de.chille.mds.core.MDSHrefFormatException;
+import de.chille.mme.core.MetaMappingEngineException;
 
 /**
  * stellt die Schnittstelle zu den Clients dar
@@ -174,9 +175,9 @@ public interface MetaDataServer extends MDSPersistentObject {
 	 * meldet neuen Mapper bei MME an
 	 *
 	 * @param mapper der Mapper
-	 * @return true bei Erfolg
+	 * @return fehlerliste
 	 */
-	public boolean registerMapper(MDSMapper mapper);
+	public String registerMapper(MDSMapper mapper);
 
 	/**
 	 * meldet Mapper ab
@@ -203,7 +204,8 @@ public interface MetaDataServer extends MDSPersistentObject {
 	 * @param href Pfad zum Ausgangs-MDSModel
 	 * @param mapping das Mapping
 	 */
-	public void convertModel(MDSHref href, Mapping mapping);
+	public MDSModel convertModel(MDSHref href, Mapping mapping)
+		throws MetaMappingEngineException;
 
 	/**
 	 * Gets the metaMappingEngine

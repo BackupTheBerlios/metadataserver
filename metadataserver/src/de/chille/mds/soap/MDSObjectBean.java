@@ -65,4 +65,13 @@ public class MDSObjectBean {
 	public void setHref(String href) {
 		this.href = href;
 	}
+	
+	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return getLabel();
+	}
+
 }

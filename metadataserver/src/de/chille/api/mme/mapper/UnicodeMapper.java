@@ -1,5 +1,7 @@
 package de.chille.api.mme.mapper;
 
+import java.util.Vector;
+
 import de.chille.mme.core.MetaMappingEngineException;
 
 /**

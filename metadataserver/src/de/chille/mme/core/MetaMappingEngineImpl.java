@@ -2,13 +2,12 @@ package de.chille.mme.core;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Vector;
 
-import javax.xml.parsers.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.*;
-import org.xml.sax.SAXException;
 
 import de.chille.api.mds.core.MDSModel;
 import de.chille.api.mme.core.Mapping;
@@ -42,6 +41,43 @@ public class MetaMappingEngineImpl implements MetaMappingEngine {
 	 */
 	public void registerMapper(MDSMapper mapper)
 		throws MetaMappingEngineException {
+		String type = "unicode", mappingFileName = "parse.jj";
+		if (mapper instanceof XMLMapperImpl) {
+			type = "xml";
+			mappingFileName = "transform.xsl";
+		}
+		File dir =
+			new File(MMEGlobals.MAPPER_PATH + "/mapper_" + mapper.getId());
+		File file = new File(dir + "/mapper.xml");
+		File mappingFile = new File(dir + "/" + mappingFileName);
+		try {
+			if (!dir.exists() && !dir.mkdir()) {
+				throw new MetaMappingEngineException("Fehler: MetaMappingEngine#registerMapper(Mapper)");
+			}
+			FileWriter fw;
+			fw = new FileWriter(file);
+			String doc = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n";
+			doc += "<mapper>\r\n";
+			doc += "\t<type>" + type + "</type>\r\n";
+			doc += "\t<name>" + mapper.getLabel() + "</name>\r\n";
+			doc += "\t<from>" + mapper.getMapping().getFrom() + "</from>\r\n";
+			doc += "\t<to>" + mapper.getMapping().getTo() + "</to>\r\n";
+			// TODO: set datetime
+			doc += "\t<datetime>"
+				+ "0000-00-00 00:00:00:000"
+				+ "</datetime>\r\n";
+			doc += "</mapper>";
+			fw.write(doc);
+			fw.close();
+			fw = new FileWriter(mappingFile);
+			fw.write(mapper.getMappingFile().getContent());
+			fw.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (mapper instanceof UnicodeMapperImpl) {
+			((UnicodeMapperImpl)mapper).generateParser();
+		}
 		mapperList.add(mapper);
 	}
 
@@ -138,7 +174,7 @@ public class MetaMappingEngineImpl implements MetaMappingEngine {
 
 		String name = "", id = "";
 		MDSMapper mapper = null;
-
+		int tmp = 0, max = 0;
 		try {
 			File dir = new File(MMEGlobals.MAPPER_PATH);
 			File[] entries = dir.listFiles(new FileFilter() {
@@ -152,6 +188,10 @@ public class MetaMappingEngineImpl implements MetaMappingEngine {
 					continue;
 				}
 				id = name.substring(7);
+				tmp = Integer.parseInt(id);
+				if (tmp > max) {
+					max = tmp;
+				}
 				// mapper-properties aus mapper.xml parsen
 				DocumentBuilderFactory dFactory =
 					DocumentBuilderFactory.newInstance();
@@ -188,6 +228,6 @@ public class MetaMappingEngineImpl implements MetaMappingEngine {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		mapper.setCounter(max);
 	}
-
 }

@@ -2,13 +2,13 @@ package de.chille.mds.soap;
 
 public class MDSFileBean extends MDSObjectBean {
 	
-	private String content = null;
+	private String content = "";
 	
-	private String name = null;
+	private String name = "";
 	
-	private String path = null;
+	private String path = "";
 	
-	private String type = null;
+	private String type = "";
 	
 	/**
 	 * @see de.chille.api.de.chille.de.chille.mds.core.MDSFile#getContent()
@@ -71,6 +71,13 @@ public class MDSFileBean extends MDSObjectBean {
 	 */
 	public MDSFileBean() {
 		super();
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return getPath();
 	}
 
 }

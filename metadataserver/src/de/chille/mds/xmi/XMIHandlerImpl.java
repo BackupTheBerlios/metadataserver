@@ -36,7 +36,7 @@ public class XMIHandlerImpl implements XMIHandler {
 		generalizations = new ArrayList();
 
 		String xdoc = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-		xdoc += "<!DOCTYPE XMI SYSTEM \""
+		xdoc += "<!DOCTYPE XMI SYSTEM \"file:/"
 			+ MDSGlobals.RESOURCES_PATH
 			+ "UMLX13-11.dtd\" [\n";
 		xdoc += "\t<!ELEMENT counter EMPTY>\n";
@@ -51,7 +51,8 @@ public class XMIHandlerImpl implements XMIHandler {
 		xdoc += "\t\ttype CDATA #REQUIRED\n";
 		xdoc += "\t>\n";
 		xdoc += "]>\n";
-		xdoc += "<XMI xmi.version=\"1.1\" xmlns:UML=\"http://org.omg/UML1.3\">\n";
+		xdoc
+			+= "<XMI xmi.version=\"1.1\" xmlns:UML=\"http://org.omg/UML1.3\">\n";
 		xdoc += "\t<XMI.header>\n";
 		xdoc += "\t\t<XMI.documentation>\n";
 		xdoc += "\t\t\t<XMI.exporter>metadata.server</XMI.exporter>\n";
@@ -216,14 +217,16 @@ public class XMIHandlerImpl implements XMIHandler {
 		xdoc += xextensions1;
 		xdoc += xcounter.replaceAll("#counter#", "" + mdsModel.getCounter());
 		i = mdsModel.getAdditionalFiles().iterator();
-		while (i.hasNext()) {
-			MDSFile file = (MDSFileImpl) i.next();
+		if (i.hasNext()) {
 			xdoc += xfile1;
-			xdoc
-				+= xfile2
-					.replaceAll("#name#", file.getName())
-					.replaceAll("#path#", file.getPath())
-					.replaceAll("#type#", file.getType());
+			while (i.hasNext()) {
+				MDSFile file = (MDSFileImpl) i.next();
+				xdoc
+					+= xfile2
+						.replaceAll("#name#", file.getName())
+						.replaceAll("#path#", file.getPath())
+						.replaceAll("#type#", file.getType());
+			}
 			xdoc += xfile3;
 		}
 		xdoc += xextensions2;
@@ -654,29 +657,30 @@ public class XMIHandlerImpl implements XMIHandler {
 	 * @see de.chille.api.de.chille.de.chille.mds.xmi.XMIHandler#mapXMI2MDS(MDSFile)
 	 */
 	public MDSModel mapUML2MDS(MDSFile mdsFile) throws XMIHandlerException {
-		
+
 		classes = new ArrayList();
 		associations = new ArrayList();
 		generalizations = new ArrayList();
 
 		MDSModel model = new MDSModelImpl();
 		MDSElement element = null;
-		
+
 		try {
 			DOMParser parser = new DOMParser();
-			ByteArrayInputStream bais = new ByteArrayInputStream(mdsFile.getContent().getBytes());
+			ByteArrayInputStream bais =
+				new ByteArrayInputStream(mdsFile.getContent().getBytes());
 			InputSource is = new InputSource(bais);
 			parser.parse(is);
 			Document d = parser.getDocument();
 			DocumentTraversal dt = (DocumentTraversal) d;
-			
+
 			NodeIterator it =
 				dt.createNodeIterator(
 					d.getDocumentElement(),
 					NodeFilter.SHOW_ALL,
 					new ObjectFilter(),
 					true);
-		
+
 			Node n = it.nextNode();
 			NamedNodeMap attribs;
 			HashMap nodeAttribs = null;

@@ -5,16 +5,16 @@ package de.chille.mme;
 
 /**
  * Globale Constanten für die Meta Mapping Engine
- * @author Christian Sterr
+ * @author Thomas Chille
  * 
  */
 public class MMEGlobals {
 
 	public static final String MAPPER_PATH =
-		"C:/Programme/eclipse/workspace/metadata.server/mapper/";
+		"C:/Programme/Apache Group/Tomcat 4.1/common/classes/de/chille/mme/mapper";
 	
 	public static final String TEMP_PATH =
-		"C:/Programme/eclipse/workspace/metadata.server/tmp/";
+		"C:/Programme/eclipse/workspace/metadata.server/tmp";
 
 	
 	
@@ -26,7 +26,7 @@ public class MMEGlobals {
 	/**
 	 * pfad zum XMLMapperConfig File
 	 */
-	public static final String XML_MAPPER_CONFIG_PATH = "src/de.chille.mme/config/XMLMapper/xsl-templates/java/";
+	public static final String XML_MAPPER_CONFIG_PATH = "src/de.chille.mme/config/XMLMapper/xsl-templates/java";
 
 	/**
 	 * Name des Config Files
@@ -52,6 +52,6 @@ public class MMEGlobals {
 	 * Pfad in dem sich die unterverzeichnisse mit den
 	 * transformer Confgig.xmls und die zugehörigen xslt's befinden
 	 */
-	public static final String XML_MAPPER_PFAD = "src/de.chille.mme/config/XMLMapper/xsl-templates/";
+	public static final String XML_MAPPER_PFAD = "src/de.chille.mme/config/XMLMapper/xsl-templatess";
 	
 }

@@ -1,8 +1,8 @@
 package de.chille.api.mme.mapper;
 
-import de.chille.api.mds.core.MDSModel;
-import de.chille.api.mds.core.MDSObject;
+import de.chille.api.mds.core.*;
 import de.chille.api.mme.core.Mapping;
+import de.chille.mds.soap.MDSMapperBean;
 import de.chille.mme.core.MetaMappingEngineException;
 
 
@@ -30,5 +30,29 @@ public interface MDSMapper extends MDSObject {
 	
 	public void setMapping(Mapping mapping);
 	
+	/**
+	 * Gets the mappingFile
+	 * @return Returns a MDSFile
+	 */
+	public MDSFile getMappingFile();
 
+	/**
+	 * Sets the mappingFile
+	 * @param mappingFile The mappingFile to set
+	 */
+	public void setMappingFile(MDSFile mappingFile);
+	
+	/**
+	 * Returns the counter.
+	 * @return int
+	 */
+	public int getCounter();
+
+	/**
+	 * Sets the counter.
+	 * @param counter The counter to set
+	 */
+	public void setCounter(int newCounter);
+	
+	public void importBean(MDSMapperBean bean);
 }

@@ -1,13 +1,19 @@
 package de.chille.mds.soap;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Iterator;
 import java.util.Vector;
 
 import de.chille.api.mds.core.*;
 import de.chille.api.mds.soap.SOAPService;
+import de.chille.api.mme.mapper.MDSMapper;
 import de.chille.mds.MDSGlobals;
 import de.chille.mds.core.*;
 import de.chille.mme.core.MappingImpl;
+import de.chille.mme.core.MetaMappingEngineException;
+import de.chille.mme.mapper.UnicodeMapperImpl;
+import de.chille.mme.mapper.XMLMapperImpl;
 
 /**
  * @see SOAPService
@@ -22,42 +28,65 @@ public class SOAPServiceImpl implements SOAPService {
 	private static MetaDataServer metaDataServer;
 
 	public static void main(String[] args) throws Exception {
-		/*
-				MDSClassBean end1 = new MDSClassBean();
-				end1.setLabel("class005");
-				end1.setHref("mds://server_0/repository_0_2/model_0_2_0");
-				end1.setId("0_2_0_1");
+
+		/*MDSMapperBean mapper = new MDSMapperBean();
+		mapper.setFrom("java");
+		mapper.setTo("mds");
+		mapper.setLabel("javs2mds");
+		mapper.setType("unicode");
+		MDSFileBean file = new MDSFileBean();
+
+		BufferedReader f;
+		String line = null;
+		String content = "";
+		f = new BufferedReader(new FileReader("C:/Programme/eclipse/workspace/metadata.server/src/de/chille/mme/mapper/JavaParser.jj"));
+		while ((line = f.readLine()) != null) {
+			content += line + "\n";
+		}
+		f.close();
+			
+		file.setContent(content);
+		mapper.setFile(file);
+		System.out.println(registerMapper(mapper));*/
 		
-				MDSClassBean end2 = new MDSClassBean();
-				end2.setLabel("class006");
-				end2.setHref("mds://server_0/repository_0_2/model_0_2_0");
-				end2.setId("0_2_0_0");
-		
-				MDSAssociationEndBean bean1 = new MDSAssociationEndBean();
-				bean1.setMdsClass(end1);
-				bean1.setAggregation(1);
-		
-				MDSAssociationEndBean bean2 = new MDSAssociationEndBean();
-				bean2.setMdsClass(end2);
-				bean2.setAggregation(2);
-		
-				Vector ends = new Vector();
-				ends.add(bean1);
-				ends.add(bean2);
-		
-				MDSAssociationBean bean = new MDSAssociationBean();
-				bean.setAssociationEnds(ends);
-				bean.setLabel("assososososso");*/
-		validateModel("mds://server_0/repository_0_1/model_0_1_0", 0);
+		convertModel("mds://server_0/repository_0_6/model_0_6_6", "java", "mds");
 	}
 
-	public void test(String href) {
+	public static MDSModelBean convertModel(
+		String href,
+		String mapFrom,
+		String mapTo)
+		throws MetaMappingEngineException {
+		
+		MDSModelBean model = new MDSModelBean();
 		try {
-			MetaDataServerImpl.getInstance().convertModel(
-			new MDSHrefImpl(href),
-			new MappingImpl("mds", "java"));
+			model = MetaDataServerImpl
+				.getInstance()
+				.convertModel(
+					new MDSHrefImpl(href),
+					new MappingImpl(mapFrom, mapTo))
+				.exportBean();
+		} catch (MetaMappingEngineException e) {
+			model.setLabel(e.getMessage());
+			model.setHref(e.getSrc());
+			model.setId("error");
+		} catch (Exception e) {
+			model.setLabel(e.toString());
+			model.setHref("exception");
+			model.setId("error");
+		}
+		return model;
+	}
+
+	public static String copyModel(String from, String to, String label) {
+		try {
+			return MetaDataServerImpl
+				.getInstance()
+				.copyModel(new MDSHrefImpl(from), new MDSHrefImpl(to), label)
+				.getHrefString();
 		} catch (Exception e) {
 			MDSGlobals.log(e.getMessage());
+			return null;
 		}
 	}
 
@@ -259,4 +288,15 @@ public class SOAPServiceImpl implements SOAPService {
 		return result;
 	}
 
+	public static String registerMapper(MDSMapperBean mapperBean) {
+		metaDataServer = MetaDataServerImpl.getInstance();
+		MDSMapper mapper;
+		if (mapperBean.getType().equals("xml")) {
+			mapper = new XMLMapperImpl(null);
+		} else {
+			mapper = new UnicodeMapperImpl(null);
+		}
+		mapper.importBean(mapperBean);
+		return metaDataServer.registerMapper(mapper);
+	}
 }

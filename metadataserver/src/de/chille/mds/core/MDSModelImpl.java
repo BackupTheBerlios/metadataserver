@@ -1,47 +1,20 @@
 package de.chille.mds.core;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Vector;
+import java.io.*;
+import java.util.*;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.*;
 
-import org.apache.soap.util.Bean;
-import org.apache.xerces.parsers.DOMParser;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
-
-import de.chille.mds.MDSGlobals;
-import de.chille.mds.persistence.PersistenceHandlerException;
-import de.chille.mds.soap.MDSAssociationBean;
-import de.chille.mds.soap.MDSClassBean;
-import de.chille.mds.soap.MDSFileBean;
-import de.chille.mds.soap.MDSGeneralizationBean;
-import de.chille.mds.soap.MDSModelBean;
-import de.chille.mds.soap.MDSObjectBean;
-import de.chille.mds.xmi.XMIHandlerException;
-import de.chille.mds.xmi.XMIHandlerImpl;
+import org.xml.sax.*;
 
 import de.chille.api.mds.core.*;
-import de.chille.api.mds.core.MDSAssociation;
-import de.chille.api.mds.core.MDSClass;
-import de.chille.api.mds.core.MDSElement;
-import de.chille.api.mds.core.MDSFile;
-import de.chille.api.mds.core.MDSGeneralization;
-import de.chille.api.mds.core.MDSHref;
-import de.chille.api.mds.core.MDSModel;
-import de.chille.api.mds.core.MDSRepository;
-import de.chille.api.mds.persistence.PersistenceHandler;
 import de.chille.api.mds.xmi.XMIHandler;
+import de.chille.mds.MDSGlobals;
+import de.chille.mds.Util;
+import de.chille.mds.persistence.PersistenceHandlerException;
+import de.chille.mds.soap.*;
+import de.chille.mds.xmi.XMIHandlerException;
+import de.chille.mds.xmi.XMIHandlerImpl;
 
 /**
  * @see MDSModel
@@ -232,7 +205,7 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 				MDSFile xmiFile =
 					xmiHandler.mapMDS2XMI(
 						this,
-						MDSGlobals.TEMP_PATH + "validate.dtd");
+						"file://" + MDSGlobals.TEMP_PATH + "validate.dtd");
 				// debug
 				//System.out.println(xmiFile.getContent());
 
@@ -391,6 +364,20 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 		throw new MDSCoreException("Fehler: MDSModels#getById()");
 	}
 
+	public MDSElement getElementByLabel(String label)
+		throws MDSCoreException {
+
+		MDSElement element;
+		Iterator i = elements.iterator();
+		while (i.hasNext()) {
+			element = (MDSElement) i.next();
+			if (element.getLabel().equals(label)) {
+				return element;
+			}
+		}
+		throw new MDSCoreException("Fehler: MDSModels#getElementByLabel()");
+	}
+
 	public void update() throws PersistenceHandlerException {
 		MDSModel model = (MDSModelImpl) load(null);
 		this.setLabel(model.getLabel());
@@ -537,6 +524,7 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 		MDSFile file = null;
 		i = bean.getAdditionalFiles().iterator();
 		while (i.hasNext()) {
+			file = new MDSFileImpl();
 			file.importBean((MDSFileBean) i.next());
 			files.add(file);
 		}

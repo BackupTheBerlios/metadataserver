@@ -114,31 +114,30 @@ public class MDSRepositoryImpl
 		} catch (MDSHrefFormatException e) {
 			throw new MDSCoreException("Fehler: MDSRepository#moveModel()");
 		}
-	} /**
-						 * @see MDSRepository#copyModel(MDSHref, MDSHref, String)
-						 */
+	}
+	
+	/**
+	 * @see MDSRepository#copyModel(MDSHref, MDSHref, String)
+	 */
 	public String copyModel(MDSHref from, MDSHref to, String label)
 		throws MDSCoreException {
 		MDSModel mdsModel = new MDSModelImpl();
 		mdsModel.setHref(from);
-		MDSRepository mdsRepository = new MDSRepositoryImpl();
-		mdsRepository.setHref(to);
 		try {
-			mdsModel.load(null);
-			MDSModel copyModel = new MDSModelImpl();
-			copyModel.setAdditionalFiles(mdsModel.getAdditionalFiles());
-			copyModel.setElements(mdsModel.getElements());
-			copyModel.setMetamodel(mdsModel.getMetamodel());
-			copyModel.setXmiHandler(mdsModel.getXmiHandler());
-			copyModel.setPersistenceHandler(mdsModel.getPersistenceHandler());
+			MDSModel copyModel = (MDSModelImpl) mdsModel.load(null);
+			copyModel.setId(null);
+			String id =
+				MetaDataServerImpl.getInstance().getRepositoryByHref(
+					to).insertModel(
+					copyModel);
 			copyModel.setLabel(label);
-			mdsRepository.load(null);
-			String id = mdsRepository.insertModel(copyModel);
 			return id;
 		} catch (PersistenceHandlerException e) {
-			throw new MDSCoreException("Fehler: MDSRepository#moveModel()");
+			e.printStackTrace();
+			throw new MDSCoreException("Fehler: MDSRepository#copyModel()");
 		} catch (MDSHrefFormatException e) {
-			throw new MDSCoreException("Fehler: MDSRepository#moveModel()");
+			e.printStackTrace();
+			throw new MDSCoreException("Fehler: MDSRepository#copyModel()");
 		}
 	}
 
@@ -156,8 +155,8 @@ public class MDSRepositoryImpl
 		}
 		throw new MDSCoreException("Fehler: MDSRepository#getModelByHref()");
 	} /**
-							 * @see java.lang.Object#toString()
-							 */
+									 * @see java.lang.Object#toString()
+									 */
 	public String toString() {
 		String retString =
 			"\trepository:" + this.getId() + " - " + this.getLabel() + "\n";
@@ -167,13 +166,13 @@ public class MDSRepositoryImpl
 		}
 		return retString;
 	} /**
-							 * @see de.chille.api.de.chille.de.chille.mds.core.MDSRepository#getModels()
-							 */
+									 * @see de.chille.api.de.chille.de.chille.mds.core.MDSRepository#getModels()
+									 */
 	public ArrayList getModels() {
 		return models;
 	} /**
-							 * @see de.chille.api.de.chille.de.chille.mds.core.MDSRepository#setModels(ArrayList)
-							 */
+									 * @see de.chille.api.de.chille.de.chille.mds.core.MDSRepository#setModels(ArrayList)
+									 */
 	public void setModels(ArrayList models) {
 		this.models = models;
 	}
@@ -183,13 +182,13 @@ public class MDSRepositoryImpl
 		this.setLabel(repository.getLabel());
 		this.setModels(repository.getModels());
 	} /**
-							 * @see de.chille.api.de.chille.de.chille.mds.core.MDSRepository#getCounter()
-							 */
+									 * @see de.chille.api.de.chille.de.chille.mds.core.MDSRepository#getCounter()
+									 */
 	public int getCounter() {
 		return counter;
 	} /**
-							 * @see de.chille.api.de.chille.de.chille.mds.core.MDSRepository#setCounter(int)
-							 */
+									 * @see de.chille.api.de.chille.de.chille.mds.core.MDSRepository#setCounter(int)
+									 */
 	public void setCounter(int counter) {
 		this.counter = counter;
 	}

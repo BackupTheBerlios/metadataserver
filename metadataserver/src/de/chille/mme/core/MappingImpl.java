@@ -78,5 +78,14 @@ public class MappingImpl implements Mapping {
 		return false;
 	}
 	
+	
+	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return from + " => " + to;
+	}
+
 }
 

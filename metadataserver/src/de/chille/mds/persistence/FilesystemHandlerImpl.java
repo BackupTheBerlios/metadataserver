@@ -60,8 +60,8 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 								+ "/del_model_"
 								+ mdsObject.getId()))) {
 					throw new PersistenceHandlerException("Fehler: FilesystemHandler#del(model)");
-					
-				} 
+
+				}
 			} catch (MDSHrefFormatException e) {
 				e.printStackTrace();
 				throw new PersistenceHandlerException("Fehler: FilesystemHandler#del()");
@@ -76,6 +76,7 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 		throws PersistenceHandlerException {
 
 		if (mdsObject instanceof MetaDataServerImpl) {
+			// save complete server
 			MetaDataServer server = (MetaDataServerImpl) mdsObject;
 			Iterator i = server.getRepositories().iterator();
 			while (i.hasNext()) {
@@ -108,6 +109,7 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 				e.printStackTrace();
 			}
 		} else if (mdsObject instanceof MDSRepositoryImpl) {
+			// save repository
 			try {
 				File dir =
 					new File(
@@ -155,6 +157,7 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 				throw new PersistenceHandlerException("Fehler: FilesystemHandler#save(rep)");
 			}
 		} else if (mdsObject instanceof MDSModelImpl) {
+			// save model
 			MDSModel mdsModel = (MDSModelImpl) mdsObject;
 			if (!mdsModel.hasUnsavedChanges()) {
 				return;
@@ -184,11 +187,20 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 						throw new PersistenceHandlerException("Fehler: FilesystemHandler#save(mod)");
 					}
 				}
-				path += "/";
+				// write model as xmi-serialization
 				FileWriter fw;
-				fw = new FileWriter(path + "model.xmi");
+				fw = new FileWriter(path + "/model.xmi");
 				fw.write(mdsModel.getUmlFile().getContent());
 				fw.close();
+				// write additional files
+				MDSFile mdsFile;
+				Iterator it = mdsModel.getAdditionalFiles().iterator();
+				while (it.hasNext()) {
+					mdsFile = (MDSFileImpl) it.next();
+					fw = new FileWriter(path + "/" + mdsFile.getName());
+					fw.write(mdsFile.getContent());
+					fw.close();
+				}
 				mdsModel.untouch();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -209,12 +221,15 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 			if (tmp > max) {
 				max = tmp;
 			}
-		} // versionierung off
+		}
 		return max;
+		// versionierung off
 		//return max > 0 ? --max : 0;
-	} /**
-							 * @see PersistenceHandler#load(MDSHref, String)
-							 */
+	}
+
+	/**
+	 * @see PersistenceHandler#load(MDSHref, String)
+	 */
 	public MDSPersistentObject load(MDSHref href, String version)
 		throws PersistenceHandlerException {
 
@@ -231,21 +246,21 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 			e.printStackTrace();
 			throw new PersistenceHandlerException("Fehler: FilesystemHandler#load()");
 		}
-		File dir =
+		File rdir =
 			new File(
 				MDSGlobals.REPOSITORIES_PATH + "repository_" + repositoryID);
 		try {
 			modelID = href.getModelId();
 			// hier weiter wenn model geladen werden soll
-			f =
-				new BufferedReader(
-					new FileReader(
-						dir
-							+ "/model_"
-							+ modelID
-							+ "/version_"
-							+ getMaxVersion(dir + "/model_" + modelID)
-							+ "/model.xmi"));
+
+			File dir =
+				new File(
+					rdir
+						+ "/model_"
+						+ modelID
+						+ "/version_"
+						+ getMaxVersion(rdir + "/model_" + modelID));
+			f = new BufferedReader(new FileReader(dir + "/model.xmi"));
 			while ((line = f.readLine()) != null) {
 				content += line + "\n";
 			}
@@ -263,6 +278,21 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 							+ "/"
 							+ element.getPrefix()
 							+ element.getId()));
+			}
+			// additional files
+			Iterator it = model.getAdditionalFiles().iterator();
+			MDSFile file;
+			while (it.hasNext()) {
+				content = "";
+				file = (MDSFileImpl) it.next();
+				f =
+					new BufferedReader(
+						new FileReader(dir + "/" + file.getName()));
+				while ((line = f.readLine()) != null) {
+					content += line + "\n";
+				}
+				f.close();
+				file.setContent(content);
 			}
 			return model;
 		} catch (MDSHrefFormatException e) {
@@ -294,8 +324,9 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 								nList.item(i).getFirstChild().getNodeValue()));
 					}
 
-				} // alle enthaltenen models laden
-				File[] entries = dir.listFiles(new FileFilter() {
+				}
+				// alle enthaltenen models laden
+				File[] entries = rdir.listFiles(new FileFilter() {
 					public boolean accept(File pathname) {
 						return true;
 					}
@@ -306,36 +337,13 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 					if (!modelID.startsWith("model_")) {
 						continue;
 					}
-					f =
-						new BufferedReader(
-							new FileReader(
-								dir
-									+ "/"
-									+ modelID
-									+ "/version_"
-									+ getMaxVersion(dir + "/" + modelID)
-									+ "/model.xmi"));
-					while ((line = f.readLine()) != null) {
-						content += line + "\n";
-					}
-					f.close();
-					xmiFile.setContent(content);
-					model = new XMIHandlerImpl().mapUML2MDS(xmiFile);
-					model.setId(modelID.substring(6));
-					repository.insertModel(model);
-					Iterator it = model.getElements().iterator();
-					while (it.hasNext()) {
-						MDSElement element = (MDSElementImpl) it.next();
-						element.setHref(
+					model =
+						(MDSModelImpl) new FilesystemHandlerImpl().load(
 							new MDSHrefImpl(
-								model.getHref().getHrefString()
-									+ "/"
-									+ element.getPrefix()
-									+ element.getId()));
-					}
-
+								href.getRepositoryHref() + "/" + modelID),
+							null);
+					repository.insertModel(model);
 				}
-
 				return repository;
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -346,9 +354,10 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 			throw new PersistenceHandlerException("Fehler: FilesystemHandler#load(mod)");
 		}
 	}
+
 	/**
-		* @see PersistenceHandler#getModelVersions(MDSModel)
-	*/
+	 * @see PersistenceHandler#getModelVersions(MDSModel)
+	 */
 	public ArrayList getModelVersions(MDSModel mdsModel)
 		throws PersistenceHandlerException {
 
@@ -375,9 +384,11 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 			}
 		}
 		return versions;
-	} /**
-							 * @see PersistenceHandler#getModelVersions(MDSModel)
-							 */
+	}
+
+	/**
+	 * @see PersistenceHandler#getModelVersions(MDSModel)
+	 */
 	private ArrayList getModelVersions(String path)
 		throws PersistenceHandlerException {
 
@@ -394,8 +405,8 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 			}
 		}
 		return versions;
-	} 	
-	
+	}
+
 	public void load(MetaDataServer server) {
 		// die servereigenschaften aus server.xml parsen
 		File file = new File(MDSGlobals.REPOSITORIES_PATH + "/server.xml");

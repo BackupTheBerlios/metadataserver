@@ -99,7 +99,7 @@ public class MDSAssociationEndImpl implements MDSAssociationEnd {
 		try {
 			MDSHref href = new MDSHrefImpl(bean.getMdsClass().getHref());
 			this.setMdsClass(
-				((MDSClassImpl)) server
+				(MDSClassImpl) server
 					.getRepositoryByHref(href)
 					.getModelByHref(href)
 					.getElementById(href));
