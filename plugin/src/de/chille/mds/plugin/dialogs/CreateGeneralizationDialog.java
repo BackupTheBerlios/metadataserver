@@ -137,8 +137,8 @@ public class CreateGeneralizationDialog
 		} else {
 			superLabel.setText("Superclass: not selected");
 		}
-		GridData data = new GridData(GridData.GRAB_VERTICAL);
-		superLabel.setLayoutData(data);
+		superLabel.setLayoutData(new GridData(
+				GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 		superLabel.setFont(parent.getFont());
 
 		viewer = new TreeViewer(composite, SWT.H_SCROLL | SWT.V_SCROLL);
@@ -165,8 +165,8 @@ public class CreateGeneralizationDialog
 		} else {
 			subLabel.setText("Subclass: not selected");
 		}
-		GridData subdata = new GridData(GridData.GRAB_VERTICAL);
-		subLabel.setLayoutData(subdata);
+		subLabel.setLayoutData(new GridData(
+				GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 		subLabel.setFont(parent.getFont());
 
 		subviewer = new TreeViewer(composite, SWT.H_SCROLL | SWT.V_SCROLL);
@@ -247,6 +247,7 @@ public class CreateGeneralizationDialog
 			ISelection selection = viewer.getSelection();
 			Object obj = ((IStructuredSelection) selection).getFirstElement();
 			superLabel.setText("Superclass: " + obj.toString());
+			superLabel.getParent().update();
 			superClass = (TreeClass) obj;
 			validateInput();
 		}
@@ -257,6 +258,7 @@ public class CreateGeneralizationDialog
 			ISelection selection = subviewer.getSelection();
 			Object obj = ((IStructuredSelection) selection).getFirstElement();
 			subLabel.setText("Subclass: " + obj.toString());
+			subLabel.getParent().update();
 			subClass = (TreeClass) obj;
 			validateInput();
 		}

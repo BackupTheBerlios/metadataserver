@@ -161,7 +161,8 @@ public class CreateAssociationDialog extends org.eclipse.jface.dialogs.Dialog {
 		} else {
 			end1Label.setText("Associationend 1: not selected");
 		}
-		end1Label.setLayoutData(new GridData(GridData.GRAB_VERTICAL));
+		end1Label.setLayoutData(new GridData(
+				GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 		end1Label.setFont(parent.getFont());
 
 		Composite radio_tab = createComposite(composite, 4);
@@ -198,7 +199,8 @@ public class CreateAssociationDialog extends org.eclipse.jface.dialogs.Dialog {
 		} else {
 			end2Label.setText("Associationend 2: not selected");
 		}
-		end2Label.setLayoutData(new GridData(GridData.GRAB_VERTICAL));
+		end2Label.setLayoutData(new GridData(
+				GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 		end2Label.setFont(parent.getFont());
 
 		Composite radio_tab2 = createComposite(composite, 4);

@@ -1,27 +1,42 @@
 package de.chille.mds.plugin.views;
 
+import java.io.FileWriter;
 import java.util.Iterator;
 import java.util.Vector;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.*;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.*;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
 import de.chille.mds.plugin.MDSPlugin;
 import de.chille.mds.plugin.MDSPluginConstants;
-import de.chille.mds.plugin.dialogs.*;
+import de.chille.mds.plugin.Util;
+import de.chille.mds.plugin.dialogs.CreateAssociationDialog;
+import de.chille.mds.plugin.dialogs.CreateGeneralizationDialog;
+import de.chille.mds.plugin.dialogs.CreateModelDialog;
 import de.chille.mds.plugin.tree.*;
 import de.chille.mds.plugin.validator.LabelValidator;
 import de.chille.mds.soap.*;
@@ -31,7 +46,7 @@ public class BrowserView extends ViewPart {
 	private DrillDownAdapter drillDownAdapter;
 	private Action createRepository, createModel, createAssociation;
 	private Action createClass, createGeneralization, delete, update;
-	private Action validate, createJava;
+	private Action validate, createJava, importJava;
 
 	//private Action action2;
 	//private Action doubleClickAction;
@@ -154,9 +169,12 @@ public class BrowserView extends ViewPart {
 						e.printStackTrace();
 					}
 					model.addChild(new TreeClass(classb));
+					((MDSModelBean) model.getBean()).getElements().add(classb);
 					if (model.getChildren().length == 2) {
 						createAssociation.setEnabled(true);
 						createGeneralization.setEnabled(true);
+					} else if (model.getChildren().length == 1) {
+						createJava.setEnabled(true);
 					}
 				}
 
@@ -198,9 +216,13 @@ public class BrowserView extends ViewPart {
 					}
 					TreeGeneralization treeGeneralization =
 						new TreeGeneralization(generalization);
-					treeGeneralization.addChild(dialog.getSuperClass());
-					treeGeneralization.addChild(dialog.getSubClass());
+					treeGeneralization.addChild(
+						new TreeClass(dialog.getSuperClass().getBean()));
+					treeGeneralization.addChild(
+						new TreeClass(dialog.getSubClass().getBean()));
 					model.addChild(treeGeneralization);
+					((MDSModelBean) model.getBean()).getElements().add(
+						generalization);
 				}
 
 			} else if (methodName.equals("createAssociation")) {
@@ -248,9 +270,13 @@ public class BrowserView extends ViewPart {
 					}
 					TreeAssociation treeAssociation =
 						new TreeAssociation(association);
-					treeAssociation.addChild(dialog.getEnd1Class());
-					treeAssociation.addChild(dialog.getEnd2Class());
+					treeAssociation.addChild(
+						new TreeClass(dialog.getEnd1Class().getBean()));
+					treeAssociation.addChild(
+						new TreeClass(dialog.getEnd2Class().getBean()));
 					model.addChild(treeAssociation);
+					((MDSModelBean) model.getBean()).getElements().add(
+						association);
 				}
 
 			} else if (methodName.equals("validateModel")) {
@@ -833,21 +859,146 @@ public class BrowserView extends ViewPart {
 					}
 				}
 			} else if (methodName.equals("createJava")) {
-				String href =
-					((MDSModelBean) ((TreeModel) obj).getBean()).getHref();
-				String[] paramName = { "href" };
-				Class[] paramType = { String.class };
-				Object[] paramValue = { href };
 				try {
-					SOAPClientImpl.call(
-						"test",
-						paramName,
-						paramType,
-						paramValue);
+					MDSModelBean model =
+						(MDSModelBean) ((TreeModel) obj).getBean();
+					InputDialog dialog =
+						new InputDialog(
+							getSite().getShell(),
+							"Create Model With Javacode",
+							"Modelname:",
+							model.getLabel() + "_java",
+							new LabelValidator());
+					dialog.open();
+					if (dialog.getReturnCode() == InputDialog.OK) {
+						// create instance of model
+						String href = model.getHref();
+						String[] paramName1 = { "from", "to", "label" };
+						Class[] paramType1 =
+							{ String.class, String.class, String.class };
+						Object[] paramValue1 =
+							{
+								href,
+								((TreeModel) obj)
+									.getParent()
+									.getBean()
+									.getHref(),
+								dialog.getValue()};
+						String copyHref =
+							(String) SOAPClientImpl.call(
+								"copyModel",
+								paramName1,
+								paramType1,
+								paramValue1);
+						// generate javacode
+						String[] paramName2 = { "href", "mapFrom", "mapTo" };
+						Class[] paramType2 =
+							{ String.class, String.class, String.class };
+						Object[] paramValue2 = { copyHref, "mds", "java" };
+						MDSModelBean newModel =
+							(MDSModelBean) SOAPClientImpl.call(
+								"convertModel",
+								paramName2,
+								paramType2,
+								paramValue2);
+						Util.getInstance().addModel(
+							(TreeRepository) ((TreeModel) obj).getParent(),
+							newModel);
+						// extract files
+						DirectoryDialog saveDialog =
+							new DirectoryDialog(getSite().getShell());
+						saveDialog.setMessage(
+							"Please point the directory to save the java-sourcefiles.");
+						String dir = saveDialog.open();
+						if (dir != null) {
+							Iterator it =
+								newModel.getAdditionalFiles().iterator();
+							FileWriter fw;
+							while (it.hasNext()) {
+								MDSFileBean file = (MDSFileBean) it.next();
+								fw = new FileWriter(dir + "/" + file.getPath());
+								fw.write(file.getContent());
+								fw.close();
+							}
+						}
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-
+			} else if (methodName.equals("importJava")) {
+				try {
+					DirectoryDialog dialog =
+						new DirectoryDialog(getSite().getShell());
+					dialog.setMessage(
+						"Please point to the directory containing the java-sourcefiles.");
+					String dir = dialog.open();
+					if (dir != null) {
+						MDSModelBean model =
+							(MDSModelBean) ((TreeModel) obj).getBean();
+						Util.getInstance().addFiles(model, dir);
+						model.setElements(new Vector());
+						String[] paramName = { "bean" };
+						Class[] paramType = { MDSModelBean.class };
+						Object[] paramValue = { model };
+						SOAPClientImpl.call(
+							"updateElement",
+							paramName,
+							paramType,
+							paramValue);
+						MDSModelBean newModel =
+							(MDSModelBean) SOAPClientImpl.call(
+								"convertModel",
+								new String[] { "href", "mapFrom", "mapTo" },
+								new Class[] {
+									String.class,
+									String.class,
+									String.class },
+								new Object[] {
+									model.getHref(),
+									"java",
+									"mds" });
+						if (!newModel.getId().equals("error")) {
+							TreeRepository rep =
+								(TreeRepository) ((TreeModel) obj).getParent();
+							rep.removeChild((TreeModel) obj);
+							Util.getInstance().addModel(rep, newModel);
+						} else {
+							String msg;
+							if (newModel.getHref().equals("exception")) {
+								msg =
+									"Error.\n Open Details for more information.";
+							} else {
+								msg =
+									"Parsererror in file '"
+										+ newModel.getHref()
+										+ "'.\n Open Details for more information";
+							}
+							MultiStatus multiStatus =
+								new MultiStatus(
+									"de.chille.mds.plugin",
+									0,
+									msg,
+									null);
+							String[] lines = newModel.getLabel().split("\n");
+							for (int i = 0; i < lines.length; i++) {
+								multiStatus.add(
+									new Status(
+										Status.ERROR,
+										"de.chille.mds.plugin",
+										0,
+										lines[i],
+										null));
+							}
+							ErrorDialog.openError(
+								getSite().getShell(),
+								"Import Javacode",
+								"Error occured during import.",
+								multiStatus);
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			} else
 				showMessage(methodName + "::" + obj.toString());
 			viewer.refresh();
@@ -869,6 +1020,7 @@ public class BrowserView extends ViewPart {
 				delete.setEnabled(false);
 				validate.setEnabled(false);
 				createJava.setEnabled(false);
+				importJava.setEnabled(false);
 			} else if (obj instanceof TreeRepository) {
 				createRepository.setEnabled(false);
 				createModel.setEnabled(true);
@@ -879,6 +1031,7 @@ public class BrowserView extends ViewPart {
 				delete.setEnabled(true);
 				validate.setEnabled(false);
 				createJava.setEnabled(false);
+				importJava.setEnabled(false);
 			} else if (obj instanceof TreeModel) {
 				createRepository.setEnabled(false);
 				createModel.setEnabled(false);
@@ -892,6 +1045,7 @@ public class BrowserView extends ViewPart {
 				validate.setEnabled(true);
 				createJava.setEnabled(
 					((TreeModel) obj).getChildren().length > 0);
+				importJava.setEnabled(true);
 			} else if (obj instanceof TreeClass) {
 				createRepository.setEnabled(false);
 				createModel.setEnabled(false);
@@ -903,10 +1057,11 @@ public class BrowserView extends ViewPart {
 					delete.setEnabled(true);
 				} else {
 					update.setEnabled(false);
-					delete.setEnabled(false);
+					delete.setEnabled(true);
 				}
 				validate.setEnabled(false);
 				createJava.setEnabled(false);
+				importJava.setEnabled(false);
 			} else if (obj instanceof TreeAssociation) {
 				createRepository.setEnabled(false);
 				createModel.setEnabled(false);
@@ -917,6 +1072,7 @@ public class BrowserView extends ViewPart {
 				delete.setEnabled(true);
 				validate.setEnabled(false);
 				createJava.setEnabled(false);
+				importJava.setEnabled(false);
 			} else if (obj instanceof TreeGeneralization) {
 				createRepository.setEnabled(false);
 				createModel.setEnabled(false);
@@ -927,6 +1083,7 @@ public class BrowserView extends ViewPart {
 				delete.setEnabled(true);
 				validate.setEnabled(false);
 				createJava.setEnabled(false);
+				importJava.setEnabled(false);
 			}
 		}
 	}
@@ -987,6 +1144,7 @@ public class BrowserView extends ViewPart {
 		manager.add(validate);
 		manager.add(new Separator());
 		manager.add(createJava);
+		manager.add(importJava);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
@@ -1002,6 +1160,7 @@ public class BrowserView extends ViewPart {
 		manager.add(validate);
 		manager.add(new Separator());
 		manager.add(createJava);
+		manager.add(importJava);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
@@ -1028,7 +1187,10 @@ public class BrowserView extends ViewPart {
 			new MDSAction("createAssociation", "create Association", null);
 		createAssociation.setToolTipText("Create New Association");
 		createGeneralization =
-			new MDSAction("createGeneralization", "create Generalization", null);
+			new MDSAction(
+				"createGeneralization",
+				"create Generalization",
+				null);
 		createGeneralization.setToolTipText("Create New Generalization");
 		delete = new MDSAction("delete", "delete", null);
 		delete.setToolTipText("Delete");
@@ -1045,9 +1207,10 @@ public class BrowserView extends ViewPart {
 
 		validate = new MDSAction("validateModel", "validate", null);
 		validate.setToolTipText("Validate This Model");
-		createJava = new MDSAction("createJava", "create Javaproject",null);
-		createJava.setToolTipText("Create Javaproject from Model");
-
+		createJava = new MDSAction("createJava", "create Javacode", null);
+		createJava.setToolTipText("Create Javacode from Model");
+		importJava = new MDSAction("importJava", "import Javacode", null);
+		importJava.setToolTipText("Create Model from Javacode");
 
 		/*
 		action2 = new Action() {

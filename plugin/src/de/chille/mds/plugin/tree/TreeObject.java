@@ -47,4 +47,12 @@ public class TreeObject implements IAdaptable {
 		return bean;
 	}
 
+	/**
+	 * Sets the bean.
+	 * @param bean The bean to set
+	 */
+	public void setBean(MDSObjectBean bean) {
+		this.bean = bean;
+	}
+
 }
