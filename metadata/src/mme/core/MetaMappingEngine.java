@@ -28,12 +28,12 @@ public interface MetaMappingEngine {
    	throws MetaMappingEngineException;
    	
 	/**
-	 * mappt ein Modell bestimmten Typs mit seinen Ressoucen auf ein 
-	 * durchs Mapping spezifziertes Modell anderen Typs mit seinen Ressoucen
+	 * mappt ein Modell bestimmten Typs auf ein 
+	 * durchs Mapping spezifziertes Modell anderen Typs
 	 *
-	 * @param model das Ausgangs-Modell
+	 * @param model das Ausgangs-Modell mit seinen Ressoucen 
 	 * @param mapping das Mapping
-	 * @return des entstandene Modell
+	 * @return des entstandene Modell mit seinen Ressoucen 
 	 * @throws MetaMappingEngineException im Fehlerfall
 	 */
    	public Model map(Model model, Mapping mapping) 
