@@ -31,6 +31,7 @@ public class MDSTest {
 		MDSClass myclass6 = new MDSClassImpl();
 		myclass6.setLabel("myclass6");
 
+
 		AssociationEnd end1 = new AssociationEndImpl();
 		end1.setMultiplicity(AssociationEnd.MULTIPLICITY_0_OR_1);
 		end1.setMdsClass(myclass1);

@@ -202,7 +202,7 @@ public class XMIHandlerImpl implements XMIHandler {
 		System.out.println(object.getNodeName() + ":");
 		System.out.println("  attributes:");
 		NamedNodeMap attribs = object.getAttributes();
-		String[] names, vals;
+		String[] names = null, vals = null;
 		
 		for (int j = 0; j < attribs.getLength(); ++j) {
 			System.out.println(
@@ -214,9 +214,9 @@ public class XMIHandlerImpl implements XMIHandler {
 			names[j] = attribs.item(j).getNodeName();
 			vals[j] = attribs.item(j).getNodeValue();
 		}
-		
+		/*
 		if (object.getNodeName().equals("Class") {
-			xmiObject = new XMIObjectImpl(
+			xmiObject = new XMIObjectImpl(*/
 		
 		
 	}

@@ -4,6 +4,6 @@
     <classpathentry kind="src" path="src"/>
     <classpathentry kind="lib" path="lib/XMIFramework.jar"/>
     <classpathentry kind="lib" path="lib/xerces.jar"/>
-    <classpathentry kind="lib" path="C:/Dokumente und Einstellungen/ich.BIGMAMA/Eigene Dateien/Alles/Studium/diplom/xmlHelper/Labrador-0.5/Labrador-0.5/java/lib/labrador.jar"/>
+    <classpathentry kind="lib" path="lib/labrador.jar"/>
     <classpathentry kind="output" path="build\classes"/>
 </classpath>

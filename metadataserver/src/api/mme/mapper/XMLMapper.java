@@ -1,6 +1,8 @@
 package api.mme.mapper;
 
 import java.io.File;
+import java.util.ArrayList;
+
 import mme.core.MetaMappingEngineException;
 
 /**
@@ -19,7 +21,7 @@ public interface XMLMapper extends MDSMapper {
 	/**
 	 * Method doMapping.
 	 * @param xmi
-	 * @return String
+	 * @return ArrayList
 	 */
-	public String doMapping(String xmi)throws MetaMappingEngineException;
+	public ArrayList doMapping(String xmi)throws MetaMappingEngineException;
 }
