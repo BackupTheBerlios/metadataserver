@@ -1,5 +1,7 @@
 package mds.core;
 
+import java.util.ArrayList;
+
 import api.mds.core.AssociationEnd;
 import api.mds.core.MDSAssociation;
 
@@ -12,28 +14,46 @@ public class MDSAssociationImpl
 	extends MDSElementImpl
 	implements MDSAssociation {
 
-	private AssociationEnd[] associationEnds = null;
+	/**
+	 * die beiden associationEnds einer association
+	 */
+	private ArrayList associationEnds = null;
 
+	/**
+	 * @see MDSAssociationImpl#addAssociationEnd(AssociationEnd)
+	 */
 	public void addAssociationEnd(AssociationEnd associationEnd)
 		throws MDSCoreException {
+
+		if (associationEnds.size() == 2) {
+			throw new MDSCoreException("Fehler: MDSAssociationImpl#addAssociationEnd()");
+		} else if (!associationEnds.add(associationEnd)) {
+			throw new MDSCoreException("Fehler: MDSAssociationImpl#addAssociationEnd()");
+		}
 	}
 
+	/**
+	 * @see MDSAssociationImpl#removeAssociationEnd(AssociationEnd)
+	 */
 	public void removeAssociationEnd(AssociationEnd associationEnd)
 		throws MDSCoreException {
+
+		if (!associationEnds.remove(associationEnd)) {
+			throw new MDSCoreException("Fehler: MDSAssociationImpl#removeAssociationEnd()");
+		}
 	}
 
 	/**
-	 * Gets the associationEnds
-	 * @return Returns a AssociationEnd[]
+	 * @see MDSAssociationImpl#getAssociationEnds()
 	 */
-	public AssociationEnd[] getAssociationEnds() {
+	public ArrayList getAssociationEnds() {
 		return associationEnds;
 	}
+
 	/**
-	 * Sets the associationEnds
-	 * @param associationEnds The associationEnds to set
+	 * @see MDSAssociationImpl#setAssociationEnds(ArrayList)
 	 */
-	public void setAssociationEnds(AssociationEnd[] associationEnds) {
+	public void setAssociationEnds(ArrayList associationEnds) {
 		this.associationEnds = associationEnds;
 	}
 

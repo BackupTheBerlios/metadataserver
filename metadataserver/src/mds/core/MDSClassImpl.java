@@ -1,5 +1,7 @@
 package mds.core;
 
+import java.util.ArrayList;
+
 import api.mds.core.MDSClass;
 
 /**
@@ -12,66 +14,74 @@ public class MDSClassImpl extends MDSElementImpl implements MDSClass {
 	/**
 	 * Lister aller Superklassen dieser klasse
 	 */
-	private MDSClass[] superClasses = null;
+	private ArrayList superClasses = null;
 
 	/**
 	 * Lister aller Unterklassen dieser klasse
 	 */
-	private MDSClass[] subClasses = null;
+	private ArrayList subClasses = null;
 
 	/**
 	 * @see MDSClass#addSuperClass(MDSClass)
 	 */
 	public void addSuperClass(MDSClass superClass) throws MDSCoreException {
+		if (!superClasses.add(superClass)) {
+			throw new MDSCoreException("Fehler: MDSClass#addSuperClass()");
+		}
 	}
 
 	/**
 	 * @see MDSClass#removeSuperClass(MDSClass)
 	 */
 	public void removeSuperClass(MDSClass superClass) throws MDSCoreException {
+		if (!superClasses.remove(superClass)) {
+			throw new MDSCoreException("Fehler: MDSClass#removeSuperClass()");
+		}
 	}
 
 	/**
 	 * @see MDSClass#addSubClass(MDSClass)
 	 */
 	public void addSubClass(MDSClass subClass) throws MDSCoreException {
+		if (!subClasses.add(subClass)) {
+			throw new MDSCoreException("Fehler: MDSClass#addSubClass()");
+		}
 	}
 
 	/**
 	 * @see MDSClass#removeSubClass(MDSClass)
 	 */
 	public void removeSubClass(MDSClass subClass) throws MDSCoreException {
+		if (!subClasses.remove(subClass)) {
+			throw new MDSCoreException("Fehler: MDSClass#removeSubClass()");
+		}
 	}
 
 	/**
-	 * Gets the superClasses
-	 * @return Returns a MDSClass[]
+	 * @see MDSClass#getSuperClasses()
 	 */
-	public MDSClass[] getSuperClasses() throws MDSCoreException {
+	public ArrayList getSuperClasses() throws MDSCoreException {
 		return superClasses;
 	}
 
 	/**
-	 * Sets the superClasses
-	 * @param superClasses The superClasses to set
+	 * @see MDSClass#setSuperClasses(ArrayList)
 	 */
-	public void setSuperClasses(MDSClass[] superClasses) throws MDSCoreException {
+	public void setSuperClasses(ArrayList superClasses) throws MDSCoreException {
 		this.superClasses = superClasses;
 	}
 
 	/**
-	 * Gets the subClasses
-	 * @return Returns a MDSClass[]
+	 * @see MDSClass#getSubClasses()
 	 */
-	public MDSClass[] getSubClasses() throws MDSCoreException {
+	public ArrayList getSubClasses() throws MDSCoreException {
 		return subClasses;
 	}
 
 	/**
-	 * Sets the subClasses
-	 * @param subClasses The subClasses to set
+	 * @see MDSClass#setSubClasses(ArrayList)
 	 */
-	public void setSubClasses(MDSClass[] subClasses) throws MDSCoreException {
+	public void setSubClasses(ArrayList subClasses) throws MDSCoreException {
 		this.subClasses = subClasses;
 	}
 }

@@ -36,4 +36,28 @@ public interface AssociationEnd {
 	 * Multiplicity des AssociationEnd von n
 	 */
 	public static final int MULTIPLICITY_n = 6;
+	
+	/**
+	 * Gets the multiplicity
+	 * @return Returns a int
+	 */
+	public int getMultiplicity();
+
+	/**
+	 * Sets the multiplicity
+	 * @param multiplicity The multiplicity to set
+	 */
+	public void setMultiplicity(int multiplicity);
+
+	/**
+	 * Gets the mdsClass
+	 * @return Returns a MDSClass
+	 */
+	public MDSClass getMdsClass();
+
+	/**
+	 * Sets the mdsClass
+	 * @param mdsClass The mdsClass to set
+	 */
+	public void setMdsClass(MDSClass mdsClass);
 }
