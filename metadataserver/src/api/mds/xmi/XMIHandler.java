@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import mds.xmi.XMIHandlerException;
 
 import api.mds.core.MDSElement;
+import api.mds.core.MDSFile;
 import api.mds.core.MDSModel;
 
 /**
@@ -21,24 +22,27 @@ public interface XMIHandler {
 	 * erzeugt XMI-Repräsentation eines MDSModel
 	 *
 	 * @param mdsModel das betreffende MDSModel
+	 * @return MDSFile
 	 * @throws XMIHandlerException im Fehlerfall
 	 */
-	public void generateXMI(MDSModel mdsModel) throws XMIHandlerException;
+	public MDSFile mapMDS2XMI(MDSModel mdsModel) throws XMIHandlerException;
 
 	/**
 	 * erzeugt oder aktualsiert die zum MDSModel gehörende DTD
 	 *
 	 * @param mdsModel das betreffende MDSModel
+	 * @return MDSFile
 	 * @throws XMIHandlerException im Fehlerfall
 	 */
-	public void generateDTD(MDSModel mdsModel) throws XMIHandlerException;
+	public MDSFile mapMDS2DTD(MDSModel mdsModel) throws XMIHandlerException;
 
 	/**
 	 * erzeugt oder aktualsiert das zum MDSModel gehörende Schema
 	 *
 	 * @param mdsModel das betreffende MDSModel
+	 * @return MDSFile
 	 * @throws XMIHandlerException im Fehlerfall
 	 */
-	public void generateSchema(MDSModel mdsModel) throws XMIHandlerException;
+	public MDSFile mapMDS2Schema(MDSModel mdsModel) throws XMIHandlerException;
 
 }

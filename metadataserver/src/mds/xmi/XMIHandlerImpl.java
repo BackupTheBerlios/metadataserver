@@ -26,8 +26,6 @@ import api.mds.core.MDSFile;
 import api.mds.core.MDSModel;
 import api.mds.xmi.XMIHandler;
 
-import com.ibm.xmi.framework.*;
-
 /**
  * @see XMIHandler
  * 
@@ -35,26 +33,10 @@ import com.ibm.xmi.framework.*;
  */
 public class XMIHandlerImpl implements XMIHandler {
 
-	private static class ObjectFilter implements NodeFilter {
-
-		public short acceptNode(Node n) {
-			if (n.getNodeType() == Node.ELEMENT_NODE) {
-				Element e = (Element) n;
-
-				//if (e.getAttributeNode("xmi:id") != null)
-				return NodeFilter.FILTER_ACCEPT;
-			}
-
-			return NodeFilter.FILTER_REJECT;
-		}
-	}
-
-	Namespace namespace = new Namespace("UML", "org.omg/UML1.3");
-
 	/**
-	 * @see api.mds.xmi.XMIHandler#generateXMI(MDSModel)
+	 * @see api.mds.xmi.XMIHandler#mapMDS2XMI(MDSModel)
 	 */
-	public void generateXMI(MDSModel mdsModel) throws XMIHandlerException {
+	public MDSFile mapMDS2XMI(MDSModel mdsModel) throws XMIHandlerException {
 
 		String xdoc = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 		//xdoc += "<!DOCTYPE XMI SYSTEM \"file:///D:/Eigene Dateien/diplom/metadataserver/uml1998.dtd\">\n";
@@ -85,7 +67,6 @@ public class XMIHandlerImpl implements XMIHandler {
 		ArrayList classes = new ArrayList();
 		ArrayList relations = new ArrayList();
 		MDSElement element = null;
-		XMIObject xmiObject = null;
 		Iterator i = mdsModel.getElements().iterator();
 		Iterator j;
 		MDSClass mdsClass = null, subClass = null;
@@ -111,8 +92,6 @@ public class XMIHandlerImpl implements XMIHandler {
 
 		ArrayList ends;
 		api.mds.core.AssociationEnd end1, end2;
-		XMIObject container, part, parent, child, oend1, oend2;
-
 		i = classes.iterator();
 		while (i.hasNext()) {
 			xdoc += xclass.replaceAll("#id#", ((MDSElement) i.next()).getId());
@@ -165,16 +144,38 @@ public class XMIHandlerImpl implements XMIHandler {
 		xdoc += xfooter;
 		MDSFile mdsFile = new MDSFileImpl();
 		mdsFile.setContent(xdoc);
-		mdsModel.setXmiFile(mdsFile);
 
-		FileWriter f1;
+		return mdsFile;
+	}
+
+	/**
+	 * @see XMIHandler#generateDTD(MDSModel)
+	 */
+	public MDSFile mapMDS2DTD(MDSModel mdsModel) throws XMIHandlerException {
+		MDSFile mdsFile = null;
+
+		return mdsFile;
+	}
+
+	/**
+	 * @see XMIHandler#mapMDS2Schema(MDSModel)
+	 */
+	public MDSFile mapMDS2Schema(MDSModel mdsModel)
+		throws XMIHandlerException {
+		MDSFile mdsFile = null;
+
+		return mdsFile;
+	}
+
+	/**
+	 * @see api.mds.xmi.XMIHandler#mapXMI2MDS(MDSModel)
+	 */
+	public MDSFile mapXMI2MDS(MDSModel mdsModel, MDSFile mdsFile)
+		throws XMIHandlerException {
+
 		try {
-			f1 = new FileWriter("test.xmi");
-			f1.write(xdoc);
-			f1.close();
-			/*
 			DOMParser parser = new DOMParser();
-			parser.parse("test.xmi");
+			parser.parse(mdsFile.getContent());
 
 			Document d = parser.getDocument();
 			DocumentTraversal dt = (DocumentTraversal) d;
@@ -187,178 +188,50 @@ public class XMIHandlerImpl implements XMIHandler {
 					true);
 
 			Node n = it.nextNode();
+			ArrayList names, vals;
+			NamedNodeMap attribs;
 
 			while (n != null) {
-				writeObject(n);
+
+				System.out.println(n.getNodeName() + ":");
+				System.out.println("  attributes:");
+
+				attribs = n.getAttributes();
+				names = new ArrayList();
+				vals = new ArrayList();
+
+				for (int j = 0; j < attribs.getLength(); ++j) {
+
+					System.out.println(
+						"    "
+							+ attribs.item(j).getNodeName()
+							+ ": '"
+							+ attribs.item(j).getNodeValue()
+							+ "'");
+
+					names.add(attribs.item(j).getNodeName());
+					vals.add(attribs.item(j).getNodeValue());
+				}
+				/*
+				if (n.getNodeName().equals("Class") {
+					xmiObject = new XMIObjectImpl(*/
 				n = it.nextNode();
-			}*/
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Fehler beim Erstellen der Datei");
-		}
-		XMIFile xfile;
-		try {
-			xfile = XMIFile.load("test.xmi", XMIFile.DEFAULT, true);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
-	public static void writeObject(Node object) {
-		System.out.println(object.getNodeName() + ":");
-		System.out.println("  attributes:");
-		NamedNodeMap attribs = object.getAttributes();
-		ArrayList names = new ArrayList(), vals = new ArrayList();
-		
-		for (int j = 0; j < attribs.getLength(); ++j) {
-			System.out.println(
-				"    "
-					+ attribs.item(j).getNodeName()
-					+ ": '"
-					+ attribs.item(j).getNodeValue()
-					+ "'");
-			names.add(attribs.item(j).getNodeName());
-			vals.add(attribs.item(j).getNodeValue());
-		}
-		/*
-		if (object.getNodeName().equals("Class") {
-			xmiObject = new XMIObjectImpl(*/
-		
-		
-	}
+	private static class ObjectFilter implements NodeFilter {
 
-	/**
-	 * @see XMIHandler#generateDTD(MDSModel)
-	 */
-	public void generateDTD(MDSModel mdsModel) throws XMIHandlerException {
-		XMIDTD dtd = new XMIDTD("test.dtd");
-		try {
-			dtd.write(map2XMIClasses(mdsModel).iterator());
-			String line, content = "";
-			BufferedReader f = new BufferedReader(new FileReader("test.dtd"));
-			while ((line = f.readLine()) != null) {
-				content += line + "\n";
+		public short acceptNode(Node n) {
+			if (n.getNodeType() == Node.ELEMENT_NODE) {
+				Element e = (Element) n;
+				//if (e.getAttributeNode("xmi:id") != null)
+				return NodeFilter.FILTER_ACCEPT;
 			}
-			MDSFile mdsFile = new MDSFileImpl();
-			mdsFile.setContent(content);
-			mdsModel.setDtdFile(mdsFile);
-		} catch (Exception e) {
-			e.printStackTrace();
+			return NodeFilter.FILTER_REJECT;
 		}
-	}
-
-	/**
-	 * @see XMIHandler#generateSchema(MDSModel)
-	 */
-	public void generateSchema(MDSModel mdsModel) throws XMIHandlerException {
-		XMISchema schema = new XMISchema("test.xsd");
-		//schema.setTargetNamespace(
-		//	new Namespace("test", "http://test.com/test.xsd"));
-		try {
-			schema.write(map2XMIClasses(mdsModel).iterator());
-			String line, content = "";
-			BufferedReader f = new BufferedReader(new FileReader("test.xsd"));
-			while ((line = f.readLine()) != null) {
-				content += line + "\n";
-			}
-			MDSFile mdsFile = new MDSFileImpl();
-			mdsFile.setContent(content);
-			mdsModel.setSchemaFile(mdsFile);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private ArrayList map2XMIClasses(MDSModel mdsModel)
-		throws XMIHandlerException {
-
-		ArrayList classes = new ArrayList();
-		ArrayList relations = new ArrayList();
-		MDSElement element = null;
-		XMIClass xmiClass = null;
-
-		Iterator i = mdsModel.getElements().iterator();
-		while (i.hasNext()) {
-			element = (MDSElement) i.next();
-			if (element instanceof MDSClassImpl) {
-				xmiClass = new XMIClassImpl(element.getLabel());
-				xmiClass.setXMIUserData(element.getId());
-				classes.add(xmiClass);
-			} else {
-				relations.add(element);
-			}
-		}
-
-		ArrayList ends;
-		api.mds.core.AssociationEnd end1, end2;
-		XMIClass container, part, parent, child, xmiEnd1, xmiEnd2;
-		Feature feature;
-
-		i = relations.iterator();
-		while (i.hasNext()) {
-			element = (MDSElement) i.next();
-			if (element instanceof MDSGeneralizationImpl) {
-				parent =
-					getClassById(
-						((MDSGeneralizationImpl) element)
-							.getSuperClass()
-							.getId(),
-						classes);
-				child =
-					getClassById(
-						((MDSGeneralizationImpl) element).getSubClass().getId(),
-						classes);
-				parent.addSubclass(child);
-				child.addSuperclass(parent);
-			} else if (element instanceof MDSAssociationImpl) {
-				ends = ((MDSAssociationImpl) element).getAssociationEnds();
-				end1 = (api.mds.core.AssociationEnd) ends.get(0);
-				end2 = (api.mds.core.AssociationEnd) ends.get(1);
-				xmiEnd1 = getClassById(end1.getMdsClass().getId(), classes);
-				xmiEnd2 = getClassById(end2.getMdsClass().getId(), classes);
-				feature = new FeatureImpl(element.getLabel());
-				feature.setXMIValueType(Value.REFERENCE);
-				feature.setXMIType(xmiEnd2);
-				feature.setXMIMultiplicity(end1.getMultiplicity());
-				xmiEnd1.add(feature);
-			} else if (element instanceof MDSAggregationImpl) {
-				end1 = ((MDSAggregationImpl) element).getContainerEnd();
-				end2 = ((MDSAggregationImpl) element).getContainedEnd();
-				container = getClassById(end1.getMdsClass().getId(), classes);
-				part = getClassById(end2.getMdsClass().getId(), classes);
-				feature = new FeatureImpl(element.getLabel());
-				feature.setXMIValueType(Value.CONTAINED);
-				feature.setXMIType(part);
-				feature.setXMIMultiplicity(end1.getMultiplicity());
-				container.add(feature);
-			}
-		}
-		return classes;
-	}
-
-	private XMIObject getObjectById(String id, ArrayList classes)
-		throws XMIHandlerException {
-		XMIObject object = null;
-		Iterator i = classes.iterator();
-		while (i.hasNext()) {
-			object = (XMIObjectImpl) i.next();
-			if (object.getXMIId().equals(id)) {
-				return object;
-			}
-		}
-		throw new XMIHandlerException("Fehler: XMIHandler#getClassById()");
-	}
-
-	private XMIClass getClassById(String id, ArrayList classes)
-		throws XMIHandlerException {
-		XMIClass xmiClass = null;
-		Iterator i = classes.iterator();
-		while (i.hasNext()) {
-			xmiClass = (XMIClassImpl) i.next();
-			if (xmiClass.getXMIUserData().equals(id)) {
-				return xmiClass;
-			}
-		}
-		throw new XMIHandlerException("Fehler: XMIHandler#getClassById()");
 	}
 }

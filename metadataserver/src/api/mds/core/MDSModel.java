@@ -84,34 +84,16 @@ public interface MDSModel extends MDSObject {
 	public MDSFile getXmiFile();
 
 	/**
-	 * Sets the xmiFile
-	 * @param xmiFile The xmiFile to set
-	 */
-	public void setXmiFile(MDSFile xmiFile);
-
-	/**
 	 * Gets the dtdFile
 	 * @return Returns a MDSFile
 	 */
 	public MDSFile getDtdFile();
 
 	/**
-	 * Sets the dtdFile
-	 * @param dtdFile The dtdFile to set
-	 */
-	public void setDtdFile(MDSFile dtdFile);
-
-	/**
 	 * Gets the schemaFile
 	 * @return Returns a MDSFile
 	 */
 	public MDSFile getSchemaFile();
-
-	/**
-	 * Sets the schemaFile
-	 * @param schemaFile The schemaFile to set
-	 */
-	public void setSchemaFile(MDSFile schemaFile);
 
 	/**
 	 * Gets the metamodel

@@ -34,21 +34,6 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	private ArrayList elements = new ArrayList();
 
 	/**
-	 * xmi-repräsenation des Models
-	 */
-	private MDSFile xmiFile = null;
-
-	/**
-	 * dtd-Repräsenation des Models
-	 */
-	private MDSFile dtdFile = null;
-
-	/**
-	 * schema-repräsenation des Models
-	 */
-	private MDSFile schemaFile = null;
-
-	/**
 	 * wenn nicht null dann ist Model Instance dieses metamodel
 	 */
 	private MDSModel metamodel = null;
@@ -136,17 +121,10 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	 */
 	public MDSFile getXmiFile() {
 		try {
-			xmiHandler.generateXMI(this);
+			return xmiHandler.mapMDS2XMI(this);
 		} catch (XMIHandlerException e) {
 		}
-		return this.xmiFile;
-	}
-
-	/**
-	 * @see MDSModel#setXmiFile(MDSFile)
-	 */
-	public void setXmiFile(MDSFile xmiFile) {
-		this.xmiFile = xmiFile;
+		return null;
 	}
 
 	/**
@@ -154,17 +132,10 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	 */
 	public MDSFile getDtdFile() {
 		try {
-			xmiHandler.generateDTD(this);
+			return xmiHandler.mapMDS2DTD(this);
 		} catch (XMIHandlerException e) {
 		}
-		return this.dtdFile;
-	}
-
-	/**
-	 * @see MDSModel#setDtdFile(MDSFile)
-	 */
-	public void setDtdFile(MDSFile dtdFile) {
-		this.dtdFile = dtdFile;
+		return null;
 	}
 
 	/**
@@ -172,17 +143,10 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	 */
 	public MDSFile getSchemaFile() {
 		try {
-			xmiHandler.generateSchema(this);
+			return xmiHandler.mapMDS2Schema(this);
 		} catch (XMIHandlerException e) {
 		}
-		return this.schemaFile;
-	}
-
-	/**
-	 * @see MDSModel#setSchemaFile(MDSFile)
-	 */
-	public void setSchemaFile(MDSFile schemaFile) {
-		this.schemaFile = schemaFile;
+		return null;
 	}
 
 	/**

@@ -121,11 +121,8 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 				(MDSModel) this.getPersistenceHandler().load(from, null);
 			MDSModel copyModel = new MDSModelImpl();
 			copyModel.setAdditionalFiles(mdsModel.getAdditionalFiles());
-			copyModel.setDtdFile(mdsModel.getDtdFile());
 			copyModel.setElements(mdsModel.getElements());
 			copyModel.setMetamodel(mdsModel.getMetamodel());
-			copyModel.setSchemaFile(mdsModel.getSchemaFile());
-			copyModel.setXmiFile(mdsModel.getXmiFile());
 			copyModel.setXmiHandler(mdsModel.getXmiHandler());
 			copyModel.setPersistenceHandler(mdsModel.getPersistenceHandler());
 			copyModel.setLabel(label);
