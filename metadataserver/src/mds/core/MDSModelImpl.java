@@ -2,6 +2,7 @@ package mds.core;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import mds.persistence.PersistenceHandlerException;
 import mds.xmi.XMIHandlerImpl;
@@ -22,7 +23,7 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	/**
 	 * MDSElement-Repräsenation des Models
 	 */
-	private MDSElement[] elements = null;
+	private ArrayList elements = null;
 
 	/**
 	 * xmi-repräsenation des Models
@@ -52,7 +53,7 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	/**
 	 * Zusätzliche Dateien, welche das model formen (Quelltexte)
 	 */
-	private File[] additionalFiles = null;
+	private ArrayList additionalFiles = null;
 
 	/**
 	 * zum speichern des models
@@ -65,44 +66,6 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	private XMIHandler xmiHandler = null;
 
 	/**
-	 * @see MDSModel#insertModel(String)
-	 */
-	public String insertModel(String href) throws MDSCoreException {
-		this.setXmiHandler(new XMIHandlerImpl());
-		try {
-			MDSRepository mdsRepository =
-				(MDSRepository) persistenceHandler.load(href, null);
-			this.setRepository(mdsRepository);
-			this.setId("neue_unique_id");
-			persistenceHandler.save(this);
-			return href + "." + this.getId();
-		} catch (PersistenceHandlerException e) {
-			return null;
-		}
-	}
-
-	/**
-	 * @see MDSModel#removeModel()
-	 */
-	public void removeModel() throws MDSCoreException {
-		
-	}
-
-	/**
-	 * @see MDSModel#moveModel(String)
-	 */
-	public String moveModel(String to) throws MDSCoreException {
-		return null;
-	}
-
-	/**
-	 * @see MDSModel#copyModel(String, String)
-	 */
-	public String copyModel(String to, String label) throws MDSCoreException {
-		return null;
-	}
-
-	/**
 	 * @see MDSModel#renameModel(String)
 	 */
 	public void renameModel(String label) throws MDSCoreException {
@@ -111,7 +74,7 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	/**
 	 * @see MDSModel#getModelVersions(String)
 	 */
-	public String[] getModelVersions(String href) throws MDSCoreException {
+	public ArrayList getModelVersions() throws MDSCoreException {
 		return null;
 	}
 
@@ -122,17 +85,32 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	}
 
 	/**
-	 * @see MDSModel#insertElement(String, MDSElement)
+	 * @see MDSModel#insertElement(MDSElement)
 	 */
-	public String insertElement(String href, MDSElement mdsElement)
+	public String insertElement(MDSElement mdsElement)
 		throws MDSCoreException {
-		return null;
+		
+		mdsElement.setId("neue_unique_id");
+		if (elements.add(mdsElement)) {
+			return this.getId() + "." + mdsElement.getId();
+		} else {
+			throw new MDSCoreException("Fehler: MDSModel#insertElement()");
+		}
 	}
 
 	/**
 	 * @see MDSModel#removeElement(String)
 	 */
 	public void removeElement(String href) throws MDSCoreException {
+		MDSElement mdsElement;
+		try {
+			mdsElement = getById(href);
+		} catch (MDSCoreException e) {
+			throw new MDSCoreException("Fehler: MDSModels#removeElement()");
+		}
+		if (!elements.remove(mdsElement)) {
+			throw new MDSCoreException("Fehler: MDSModel#removeElement()");
+		}
 	}
 
 	/**
@@ -153,7 +131,7 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	/**
 	 * @see MDSModel#validateModel(int)
 	 */
-	public String[] validateModel(int validateType) throws MDSCoreException {
+	public ArrayList validateModel(int validateType) throws MDSCoreException {
 		return null;
 	}
 
@@ -163,7 +141,7 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	public ArrayList query(String query) throws MDSCoreException {
 		return null;
 	}
-	
+
 	/**
 	 * @see MDSModel#getPersistenceHandler()
 	 */
@@ -191,7 +169,7 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	public void setXmiFile(File xmiFile) {
 		this.xmiFile = xmiFile;
 	}
-	
+
 	/**
 	 * @see MDSModel#getDtdFile()
 	 */
@@ -219,7 +197,7 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	public void setSchemaFile(File schemaFile) {
 		this.schemaFile = schemaFile;
 	}
-	
+
 	/**
 	 * @see MDSModel#getMetamodel()
 	 */
@@ -233,7 +211,7 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	public void setMetamodel(MDSModel metamodel) {
 		this.metamodel = metamodel;
 	}
-	
+
 	/**
 	 * @see MDSModel#getRepository()
 	 */
@@ -247,21 +225,21 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	public void setRepository(MDSRepository repository) {
 		this.repository = repository;
 	}
-	
+
 	/**
 	 * @see MDSModel#getAdditionalFiles()
 	 */
-	public File[] getAdditionalFiles() {
+	public ArrayList getAdditionalFiles() {
 		return additionalFiles;
 	}
 
 	/**
 	 * @see MDSModel#setAdditionalFiles(File[])
 	 */
-	public void setAdditionalFiles(File[] additionalFiles) {
+	public void setAdditionalFiles(ArrayList additionalFiles) {
 		this.additionalFiles = additionalFiles;
 	}
-	
+
 	/**
 	 * @see MDSModel#getXmiHandler()
 	 */
@@ -275,19 +253,31 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	public void setXmiHandler(XMIHandler xmiHandler) {
 		this.xmiHandler = xmiHandler;
 	}
-	
+
 	/**
 	 * @see MDSModel#getElements()
 	 */
-	public MDSElement[] getElements() {
+	public ArrayList getElements() {
 		return elements;
 	}
-	
+
 	/**
-	 * @see MDSModel#setElements(MDSElement[])
+	 * @see MDSModel#setElements(ArrayList)
 	 */
-	public void setElements(MDSElement[] elements) {
+	public void setElements(ArrayList elements) {
 		this.elements = elements;
 	}
-
+	
+	private MDSElement getById(String id) throws MDSCoreException{
+		MDSElement element;
+		Iterator i = elements.iterator();
+		while (i.hasNext()) {
+			element = (MDSElement)i.next();
+			if (element.getId().equals(id)) {
+				return element;
+			}
+		}
+		throw new MDSCoreException("Fehler: MDSModels#getById()");
+	}
+		
 }

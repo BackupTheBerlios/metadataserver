@@ -205,10 +205,10 @@ public class MetaDataServerImpl
 	/**
 	 * @see MetaDataServer#getModelVersions(String)
 	 */
-	public String[] getModelVersions(String href) {
+	public ArrayList getModelVersions(String href) {
 		try {
 			MDSModel mdsModel = (MDSModel) persistenceHandler.load(href, null);
-			String[] versions = mdsModel.getModelVersions(href);
+			ArrayList versions = mdsModel.getModelVersions();
 			return versions;
 		} catch (MDSCoreException e) {
 			return null;
@@ -238,7 +238,7 @@ public class MetaDataServerImpl
 	public String insertElement(String href, MDSElement mdsElement) {
 		try {
 			MDSModel mdsModel = (MDSModel) persistenceHandler.load(href, null);
-			String newHref = mdsModel.insertElement(href, mdsElement);
+			String newHref = mdsModel.insertElement(mdsElement);
 			return newHref;
 		} catch (MDSCoreException e) {
 			return null;
@@ -304,10 +304,10 @@ public class MetaDataServerImpl
 	/**
 	 * @see MetaDataServer#validateModel(String, int)
 	 */
-	public String[] validateModel(String href, int validateType) {
+	public ArrayList validateModel(String href, int validateType) {
 		try {
 			MDSModel mdsModel = (MDSModel) persistenceHandler.load(href, null);
-			String[] result = mdsModel.validateModel(validateType);
+			ArrayList result = mdsModel.validateModel(validateType);
 			return result;
 		} catch (MDSCoreException e) {
 			return null;

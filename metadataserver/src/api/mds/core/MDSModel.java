@@ -29,7 +29,7 @@ public interface MDSModel extends MDSObject {
 	 * @return Liste aller Versionen
 	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public String[] getModelVersions(String href) throws MDSCoreException;
+	public ArrayList getModelVersions() throws MDSCoreException;
 
 	/**
 	 * macht Änderungen an einem MDSModel rückgängig
@@ -42,12 +42,11 @@ public interface MDSModel extends MDSObject {
 	/**
 	 * fügt ein MDSElement in MDSModel ein
 	 *
-	 * @param href an dieser spezifierten Stelle 
 	 * @param mdsElement das MDSElement (Klasse, Assoziation,...)
 	 * @return Pfad zum neu eingefügten MDSElement
 	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public String insertElement(String href, MDSElement mdsElement)
+	public String insertElement(MDSElement mdsElement)
 		throws MDSCoreException;
 
 	/**
@@ -59,11 +58,10 @@ public interface MDSModel extends MDSObject {
 	public void removeElement(String href) throws MDSCoreException;
 
 	/**
-	 * verschiebt ein MDSElement innerhalb des MDSModel
-	 * oder in ein anderes MDSModel
+	 * verschiebt ein MDSElement in ein anderes MDSModel
 	 *
 	 * @param from href spezifierten Stelle 
-	 * @param to an diesee spezifierten Stelle 
+	 * @param to an diese spezifierten Stelle 
 	 * @return Pfad zur neuen MDSElement-Position
 	 * @throws MDSCoreException im Fehlerfall
 	 */
@@ -90,7 +88,7 @@ public interface MDSModel extends MDSObject {
 	 * @return Messages der Validierung
 	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public String[] validateModel(int validateType) throws MDSCoreException;
+	public ArrayList validateModel(int validateType) throws MDSCoreException;
 	
 	/**
 	 * führt eine Abfrage auf MDSModel aus
@@ -163,15 +161,15 @@ public interface MDSModel extends MDSObject {
 	
 	/**
 	 * Gets the additionalFiles
-	 * @return Returns a File[]
+	 * @return Returns a ArrayList
 	 */
-	public File[] getAdditionalFiles();
+	public ArrayList getAdditionalFiles();
 
 	/**
 	 * Sets the additionalFiles
 	 * @param additionalFiles The additionalFiles to set
 	 */
-	public void setAdditionalFiles(File[] additionalFiles);
+	public void setAdditionalFiles(ArrayList additionalFiles);
 	
 	/**
 	 * Gets the xmiHandler
@@ -187,15 +185,15 @@ public interface MDSModel extends MDSObject {
 	
 	/**
 	 * Gets the elements
-	 * @return Returns a MDSElement[]
+	 * @return Returns a ArrayList
 	 */
-	public MDSElement[] getElements();
+	public ArrayList getElements();
 	
 	/**
 	 * Sets the elements
 	 * @param elements The elements to set
 	 */
-	public void setElements(MDSElement[] elements);
+	public void setElements(ArrayList elements);
 
 
 }

@@ -6,7 +6,7 @@ import mds.core.MDSCoreException;
 
 /**
  * Spezialisierung des MDSElements, modelliert eine 
- * Relation zwischen MDSClasses
+ * Association zwischen MDSClasses
  * 
  * @author Thomas Chille
  */

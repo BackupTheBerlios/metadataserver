@@ -113,7 +113,7 @@ public interface MetaDataServer {
 	 * @param href Pfad zum MDSModel
 	 * @return Liste aller Versionen
 	 */
-	public String[] getModelVersions(String href);
+	public ArrayList getModelVersions(String href);
 
 	/**
 	 * macht Änderungen an einem MDSModel rückgängig
@@ -168,7 +168,7 @@ public interface MetaDataServer {
 	 * @param validateType Art der Validierung(dtd, schema, strikt, ...)
 	 * @return Messages der Validierung
 	 */
-	public String[] validateModel(String href, int validateType);
+	public ArrayList validateModel(String href, int validateType);
 
 	/**
 	 * importiert MDSModel, wenn ein Mapping angeben wird

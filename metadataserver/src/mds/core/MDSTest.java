@@ -6,5 +6,6 @@ public class MDSTest {
 
 	public static void main(String[] args) {
 		MetaDataServer server = new MetaDataServerImpl();
+		
 	}
 }
