@@ -13,7 +13,7 @@ import api.mme.mapper.MDSMapper;
 /**
  * @see MDSMapper
  * 
- * @author Thomas Chille
+ * @author Christian Sterr
  */
 public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 
@@ -33,7 +33,7 @@ public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 	private PersistenceHandler persistenceHandler = null;
 
 	/**
-	 * @see MDSMapper#map(MDSModel, Mapping)
+	 * @see Mapper#map(MDSModel, Mapping)
 	 */
 	public MDSModel map(MDSModel mdsModel, Mapping mapping)
 		throws MetaMappingEngineException {
@@ -41,42 +41,48 @@ public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 	}
 
 	/**
-	 * @see MDSMapper#getMapping()
+	 * Gets the mapping
+	 * @return Returns a Mapping
 	 */
 	public Mapping getMapping() {
 		return mapping;
 	}
 
 	/**
-	 * @see MDSMapper#setMapping(Mapping)
+	 * Sets the mapping
+	 * @param mapping The mapping to set
 	 */
 	public void setMapping(Mapping mapping) {
 		this.mapping = mapping;
 	}
 
 	/**
-	 * @see MDSMapper#getMappingFile()
+	 * Gets the mappingFile
+	 * @return Returns a File
 	 */
 	public File getMappingFile() {
 		return mappingFile;
 	}
 
 	/**
-	 * @see MDSMapper#setMappingFile(File)
+	 * Sets the mappingFile
+	 * @param mappingFile The mappingFile to set
 	 */
 	public void setMappingFile(File mappingFile) {
 		this.mappingFile = mappingFile;
 	}
-
+	
 	/**
-	 * @see MDSMapper#getPersistenceHandler()
+	 * Gets the persistenceHandler
+	 * @return Returns a PersistenceHandler
 	 */
 	public PersistenceHandler getPersistenceHandler() {
 		return persistenceHandler;
 	}
 
 	/**
-	 * @see MDSMapper#setPersistenceHandler(PersistenceHandler)
+	 * Sets the persistenceHandler
+	 * @param persistenceHandler The persistenceHandler to set
 	 */
 	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
 		this.persistenceHandler = persistenceHandler;
