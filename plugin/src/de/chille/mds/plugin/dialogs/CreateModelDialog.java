@@ -7,6 +7,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.internal.dialogs.ViewContentProvider;
 import org.eclipse.ui.part.DrillDownAdapter;
@@ -16,8 +17,10 @@ import de.chille.mds.plugin.tree.*;
 public class CreateModelDialog extends InputDialog {
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
-	private Action createRepository, createModel;
-
+	private Label metamodelLabel;
+	private TreeModel metamodel = null;
+	private String metamodelName = null;
+	
 	/**
 	 * Constructor for CreateModelDialog.
 	 * @param parentShell
@@ -41,67 +44,92 @@ public class CreateModelDialog extends InputDialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = (Composite) super.createDialogArea(parent);
 
-		Label label = new Label(composite, SWT.WRAP);
-		label.setText("Metamodel:");
-		GridData data =
+		metamodelLabel = new Label(composite, SWT.WRAP);
+		if (metamodelName != null) {
+			metamodelLabel.setText("Metamodel: " + metamodelName);
+		} else {
+			metamodelLabel.setText("Metamodel: not selected");
+		}
+		GridData data = new GridData(GridData.GRAB_VERTICAL);
+		metamodelLabel.setLayoutData(data);
+		metamodelLabel.setFont(parent.getFont());
+
+		viewer =
+			new TreeViewer(composite, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		drillDownAdapter = new DrillDownAdapter(viewer);
+		viewer.setContentProvider(new TreeContentProvider());
+		viewer.setLabelProvider(new TreeLabelProvider());
+		viewer.setSorter(new NameSorter());
+		viewer.setInput(ResourcesPlugin.getWorkspace());
+		viewer.addSelectionChangedListener(new MDSSelectionChangedListener());
+
+		viewer.addFilter(new ModelFilter());
+		GridData mydata =
 			new GridData(
 				GridData.GRAB_HORIZONTAL
 					| GridData.GRAB_VERTICAL
 					| GridData.HORIZONTAL_ALIGN_FILL
 					| GridData.VERTICAL_ALIGN_CENTER);
-		label.setLayoutData(data);
-		label.setFont(parent.getFont());
-
-		viewer =
-			new TreeViewer(composite, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		drillDownAdapter = new DrillDownAdapter(viewer);
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setSorter(new NameSorter());
-		viewer.setInput(ResourcesPlugin.getWorkspace());
-		//makeActions();
-		viewer.addSelectionChangedListener(new MDSSelectionChangedListener());
-		//hookContextMenu();
-		//hookDoubleClickAction();
-		//contributeToActionBars();
-
-		/*
-		Label = new Label(composite, SWT.NONE);
-		errorMessageLabel.setLayoutData(
-			new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-		errorMessageLabel.setFont(parent.getFont());
-		*/
+		mydata.heightHint = 100;
+		viewer.getTree().setLayoutData(mydata);
 		return composite;
 	}
-	
-	class LabelValidator implements IInputValidator {
-		public String isValid(String newText) {
-			if (newText.length() == 0) {
-				return "";
-			} else if (newText.length() > 50) {
-				return "Maximum are 50 Chars.";
-			} else if (!newText.matches("[0-9a-zA-Z_]*")) {
-				return "Please Use Only Alphanumeric Chars.";
+
+	class ModelFilter extends ViewerFilter {
+
+		public boolean select(
+			Viewer viewer,
+			Object parentElement,
+			Object element) {
+			if (element instanceof TreeServer
+				|| element instanceof TreeRepository
+				|| element instanceof TreeModel) {
+				return true;
 			} else {
-				return null;
+				return false;
 			}
 		}
 	}
-
+	
 	class MDSSelectionChangedListener implements ISelectionChangedListener {
 
 		public void selectionChanged(SelectionChangedEvent event) {
 			ISelection selection = viewer.getSelection();
 			Object obj = ((IStructuredSelection) selection).getFirstElement();
-			if (obj instanceof TreeRepository) {
-				createRepository.setEnabled(false);
-				createModel.setEnabled(true);
+			if (obj instanceof TreeModel) {
+				metamodelLabel.setText("Metamodel: "+ obj.toString());
+				metamodel = (TreeModel)obj;	
 			} else {
-				createRepository.setEnabled(true);
-				createModel.setEnabled(false);
+				metamodelLabel.setText("Metamodel: not selected");
+				metamodelName = null;	
 			}
+			viewer.refresh();
 		}
+	}
+
+	/**
+	 * Returns the metamodel.
+	 * @return TreeModel
+	 */
+	public TreeModel getMetamodel() {
+		return metamodel;
+	}
+
+
+	/**
+	 * Sets the metamodelHref.
+	 * @param metamodelHref The metamodelHref to set
+	 */
+	public void setMetamodelName(String metamodelHref) {
+		this.metamodelName = metamodelHref;
+	}
+
+	/**
+	 * Returns the metamodelName.
+	 * @return String
+	 */
+	public String getMetamodelName() {
+		return metamodelName;
 	}
 
 }

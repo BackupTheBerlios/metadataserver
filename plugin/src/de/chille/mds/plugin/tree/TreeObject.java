@@ -1,12 +1,13 @@
 package de.chille.mds.plugin.tree;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import de.chille.mds.soap.MDSObjectBean;
 
-public class TreeObject {
+public class TreeObject implements IAdaptable {
 
 	private MDSObjectBean bean;
 

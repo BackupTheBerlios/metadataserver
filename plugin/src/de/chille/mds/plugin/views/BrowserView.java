@@ -1,311 +1,40 @@
 package de.chille.mds.plugin.views;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Vector;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.*;
-import org.eclipse.jface.resource.*;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.*;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.*;
+import org.eclipse.ui.part.DrillDownAdapter;
+import org.eclipse.ui.part.ViewPart;
 
-import org.eclipse.ui.part.*;
-
-import de.chille.mds.plugin.*;
+import de.chille.mds.plugin.MDSPlugin;
 import de.chille.mds.plugin.MDSPluginConstants;
-import de.chille.mds.plugin.dialogs.CreateModelDialog;
-//import de.chille.mds.plugin.tree.*;
+import de.chille.mds.plugin.dialogs.*;
+import de.chille.mds.plugin.tree.*;
+import de.chille.mds.plugin.validator.LabelValidator;
 import de.chille.mds.soap.*;
-
-/**
- * This sample class demonstrates how to plug-in a new
- * workbench view. The view shows data obtained from the
- * model. The sample creates a dummy model on the fly,
- * but a real implementation would connect to the model
- * available either in this or another plug-in (e.g. the workspace).
- * The view is connected to the model using a content provider.
- * <p>
- * The view uses a label provider to define how model
- * objects should be presented in the view. Each
- * view can present the same model objects using
- * different labels and icons, if needed. Alternatively,
- * a single label provider can be shared between views
- * in order to ensure that objects of the same type are
- * presented in the same way everywhere.
- * <p>
- */
 
 public class BrowserView extends ViewPart {
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
-	private Action createRepository, createModel;
-	private Action action2;
-	private Action doubleClickAction;
+	private Action createRepository, createModel, createAssociation;
+	private Action createClass, createGeneralization, delete, update;
+	private Action validate;
 
-	/*
-	 * The content provider class is responsible for
-	 * providing objects to the view. It can wrap
-	 * existing objects in adapters or simply return
-	 * objects as-is. These objects may be sensitive
-	 * to the current input of the view, or ignore
-	 * it and always show the same content 
-	 * (like Task List, for example).
-	 */
-
-	class TreeObject implements IAdaptable {
-
-		private MDSObjectBean bean;
-
-		private Image image =
-			PlatformUI.getWorkbench().getSharedImages().getImage(
-				ISharedImages.IMG_OBJ_ELEMENT);
-
-		private TreeParent parent;
-
-		public TreeObject(MDSObjectBean bean) {
-			this.bean = bean;
-		}
-		public void setParent(TreeParent parent) {
-			this.parent = parent;
-		}
-		public TreeParent getParent() {
-			return parent;
-		}
-		public String toString() {
-			return this.bean.getLabel();
-		}
-		public Object getAdapter(Class key) {
-			return null;
-		}
-		public Image getImage() {
-			return image;
-		}
-		public void setImage(Image image) {
-			this.image = image;
-		}
-
-		/**
-		 * Returns the bean.
-		 * @return MDSObjectBean
-		 */
-		public MDSObjectBean getBean() {
-			return bean;
-		}
-
-	}
-
-	class TreeParent extends TreeObject {
-		private ArrayList children;
-		public TreeParent(MDSObjectBean bean) {
-			super(bean);
-			children = new ArrayList();
-			setImage(
-				PlatformUI.getWorkbench().getSharedImages().getImage(
-					ISharedImages.IMG_OBJ_FOLDER));
-		}
-		public void addChild(TreeObject child) {
-			children.add(child);
-			child.setParent(this);
-		}
-		public void removeChild(TreeObject child) {
-			children.remove(child);
-			child.setParent(null);
-		}
-		public TreeObject[] getChildren() {
-			return (TreeObject[]) children.toArray(
-				new TreeObject[children.size()]);
-		}
-		public boolean hasChildren() {
-			return children.size() > 0;
-		}
-	}
-
-	class TreeServer extends TreeParent {
-		public TreeServer(MDSObjectBean bean) {
-			super(bean);
-			setImage(new Image(null, MDSPluginConstants.I_SERVER));
-
-		}
-
-	}
-
-	class TreeRepository extends TreeParent {
-		public TreeRepository(MDSObjectBean bean) {
-			super(bean);
-			setImage(new Image(null, MDSPluginConstants.I_REPOSITORY));
-		}
-
-	}
-
-	class TreeModel extends TreeParent {
-		public TreeModel(MDSObjectBean bean) {
-			super(bean);
-		}
-
-	}
-
-	class TreeAssociation extends TreeParent {
-		public TreeAssociation(MDSObjectBean bean) {
-			super(bean);
-		}
-
-	}
-
-	class TreeGeneralization extends TreeParent {
-		public TreeGeneralization(MDSObjectBean bean) {
-			super(bean);
-		}
-
-	}
-
-	class TreeClass extends TreeObject {
-		public TreeClass(MDSObjectBean bean) {
-			super(bean);
-		}
-
-	}
-
-	class ViewContentProvider
-		implements IStructuredContentProvider, ITreeContentProvider {
-		private TreeParent invisibleRoot;
-
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-		}
-		public void dispose() {
-		}
-		public Object[] getElements(Object parent) {
-			if (parent.equals(ResourcesPlugin.getWorkspace())) {
-				if (invisibleRoot == null)
-					initialize();
-				return getChildren(invisibleRoot);
-			}
-			return getChildren(parent);
-		}
-		public Object getParent(Object child) {
-			if (child instanceof TreeObject) {
-				return ((TreeObject) child).getParent();
-			}
-			return null;
-		}
-		public Object[] getChildren(Object parent) {
-			if (parent instanceof TreeParent) {
-				return ((TreeParent) parent).getChildren();
-			}
-			return new Object[0];
-		}
-		public boolean hasChildren(Object parent) {
-			if (parent instanceof TreeParent)
-				return ((TreeParent) parent).hasChildren();
-			return false;
-		}
-		/*
-		 * We will set up a dummy model to initialize tree heararchy.
-		 * In a real code, you will connect to a real model and
-		 * expose its hierarchy.
-		 */
-		private void initialize() {
-
-			invisibleRoot = new TreeParent(new MDSObjectBean());
-			MDSObjectBean bean = new MDSObjectBean();
-			bean.setLabel("server");
-			TreeParent root = new TreeServer(bean);
-			invisibleRoot.addChild(root);
-
-			SOAPClientImpl.setEndPoint(
-				MDSPlugin.getDefault().getPreferenceStore().getString(
-					MDSPluginConstants.P_ENDPOINT));
-			Vector repositories = new Vector();
-			try {
-				repositories =
-					(Vector) SOAPClientImpl.call("query", null, null, null);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			TreeParent rep = null, mod = null, elem = null;
-			TreeObject obj = null;
-			MDSRepositoryBean repository = null;
-			MDSModelBean model = null;
-			MDSObjectBean element = null;
-			for (int i = 0; i < repositories.size(); i++) {
-				repository = (MDSRepositoryBean) repositories.get(i);
-				rep = new TreeRepository(repository);
-				for (int j = 0; j < repository.getModels().size(); j++) {
-					model = (MDSModelBean) repository.getModels().get(j);
-					mod = new TreeModel(model);
-					for (int k = 0; k < model.getElements().size(); k++) {
-						try {
-							element =
-								(MDSObjectBean) model.getElements().get(k);
-							if (element instanceof MDSClassBean) {
-								obj = new TreeClass(element);
-								mod.addChild(obj);
-							} else if (element instanceof MDSAssociationBean) {
-								elem = new TreeAssociation(element);
-								obj =
-									new TreeClass(
-										(
-											(MDSAssociationEndBean)
-												((MDSAssociationBean) element)
-											.getAssociationEnds()
-											.get(0))
-											.getMdsClass());
-								elem.addChild(obj);
-								obj =
-									new TreeClass(
-										(
-											(MDSAssociationEndBean)
-												((MDSAssociationBean) element)
-											.getAssociationEnds()
-											.get(1))
-											.getMdsClass());
-								elem.addChild(obj);
-								mod.addChild(elem);
-							} else if (
-								element instanceof MDSGeneralizationBean) {
-								elem = new TreeGeneralization(element);
-								obj =
-									new TreeClass(
-										((MDSGeneralizationBean) element)
-											.getSuperClass());
-								elem.addChild(obj);
-								obj =
-									new TreeClass(
-										((MDSGeneralizationBean) element)
-											.getSubClass());
-								elem.addChild(obj);
-
-								mod.addChild(elem);
-							}
-						} catch (RuntimeException e) {
-							e.printStackTrace();
-							System.exit(0);
-						}
-					}
-					rep.addChild(mod);
-				}
-				root.addChild(rep);
-			}
-		}
-	}
-
-	class ViewLabelProvider extends LabelProvider {
-
-		public String getText(Object obj) {
-			return obj.toString();
-		}
-		public Image getImage(Object obj) {
-			return ((TreeObject) obj).getImage();
-		}
-	}
-
-	class NameSorter extends ViewerSorter {
-	}
+	//private Action action2;
+	//private Action doubleClickAction;
 
 	class MDSAction extends Action {
 
@@ -321,15 +50,15 @@ public class BrowserView extends ViewPart {
 		}
 
 		public void run() {
-			ViewContentProvider vcp =
-				(ViewContentProvider) viewer.getContentProvider();
+			TreeContentProvider vcp =
+				(TreeContentProvider) viewer.getContentProvider();
 			ISelection selection = viewer.getSelection();
 			Object obj = ((IStructuredSelection) selection).getFirstElement();
+			SOAPClientImpl.setEndPoint(
+				MDSPlugin.getDefault().getPreferenceStore().getString(
+					MDSPluginConstants.P_ENDPOINT));
 
 			if (methodName.equals("createRepository")) {
-				SOAPClientImpl.setEndPoint(
-					MDSPlugin.getDefault().getPreferenceStore().getString(
-						MDSPluginConstants.P_ENDPOINT));
 				InputDialog dialog =
 					new InputDialog(
 						getSite().getShell(),
@@ -358,17 +87,15 @@ public class BrowserView extends ViewPart {
 						vcp.invisibleRoot.getChildren();
 					((TreeParent) invisibleRootChilds[0]).addChild(
 						new TreeRepository(repository));
-					viewer.refresh();
 				}
 
 			} else if (methodName.equals("createModel")) {
-				SOAPClientImpl.setEndPoint(
-					MDSPlugin.getDefault().getPreferenceStore().getString(
-						MDSPluginConstants.P_ENDPOINT));
-				InputDialog dialog =
+				CreateModelDialog dialog =
 					new CreateModelDialog(
 						getSite().getShell(),
-						"Create New Model in Repository " + obj.toString(),
+						"Create New Model In Repository '"
+							+ obj.toString()
+							+ "'",
 						"Modelname:",
 						"",
 						new LabelValidator());
@@ -377,13 +104,17 @@ public class BrowserView extends ViewPart {
 					TreeRepository repository = (TreeRepository) obj;
 					MDSModelBean model = new MDSModelBean();
 					model.setLabel(dialog.getValue());
-					String[] paramName = { "string", "model" };
+					if (dialog.getMetamodel() != null) {
+						model.setMetamodelHref(
+							dialog.getMetamodel().getBean().getHref());
+						model.setMetamodelName(
+							((MDSModelBean) dialog.getMetamodel().getBean())
+								.getMetamodelName());
+					}
+					String[] paramName = { "href", "model" };
 					Class[] paramType = { String.class, MDSModelBean.class };
 					Object[] paramValue =
-						{
-							"mds://server_0/repository_"
-								+ repository.getBean().getId(),
-							model };
+						{ repository.getBean().getHref(), model };
 					try {
 						model =
 							(MDSModelBean) SOAPClientImpl.call(
@@ -394,27 +125,717 @@ public class BrowserView extends ViewPart {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					repository.addChild(
-						new TreeModel(model));
-					viewer.refresh();
+					repository.addChild(new TreeModel(model));
 				}
 
+			} else if (methodName.equals("createClass")) {
+				InputDialog dialog =
+					new InputDialog(
+						getSite().getShell(),
+						"Create New Class In Model '" + obj.toString() + "'",
+						"Classname:",
+						"",
+						new LabelValidator());
+				dialog.open();
+				if (dialog.getReturnCode() == InputDialog.OK) {
+					TreeModel model = (TreeModel) obj;
+					MDSClassBean classb = new MDSClassBean();
+					classb.setLabel(dialog.getValue());
+					String[] paramName = { "href", "class" };
+					Class[] paramType = { String.class, MDSClassBean.class };
+					Object[] paramValue = { model.getBean().getHref(), classb };
+					try {
+						classb =
+							(MDSClassBean) SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					model.addChild(new TreeClass(classb));
+					if (model.getChildren().length == 2) {
+						createAssociation.setEnabled(true);
+						createGeneralization.setEnabled(true);
+					}
+				}
+
+			} else if (methodName.equals("createGeneralization")) {
+				TreeModel model = (TreeModel) obj;
+				CreateGeneralizationDialog dialog =
+					new CreateGeneralizationDialog(
+						getSite().getShell(),
+						"Create New Generalization In Model '"
+							+ obj.toString()
+							+ "'",
+						"Generalizationname:",
+						"",
+						new LabelValidator(),
+						model);
+				dialog.open();
+				if (dialog.getReturnCode() == InputDialog.OK) {
+					MDSGeneralizationBean generalization =
+						new MDSGeneralizationBean();
+					generalization.setLabel(dialog.getValue());
+					generalization.setSuperClass(
+						(MDSClassBean) dialog.getSuperClass().getBean());
+					generalization.setSubClass(
+						(MDSClassBean) dialog.getSubClass().getBean());
+					String[] paramName = { "href", "generalization" };
+					Class[] paramType =
+						{ String.class, MDSGeneralizationBean.class };
+					Object[] paramValue =
+						{ model.getBean().getHref(), generalization };
+					try {
+						generalization =
+							(MDSGeneralizationBean) SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					TreeGeneralization treeGeneralization =
+						new TreeGeneralization(generalization);
+					treeGeneralization.addChild(dialog.getSuperClass());
+					treeGeneralization.addChild(dialog.getSubClass());
+					model.addChild(treeGeneralization);
+				}
+
+			} else if (methodName.equals("createAssociation")) {
+				TreeModel model = (TreeModel) obj;
+				CreateAssociationDialog dialog =
+					new CreateAssociationDialog(
+						getSite().getShell(),
+						"Create New Association In Model '"
+							+ obj.toString()
+							+ "'",
+						"Associationname:",
+						"",
+						new LabelValidator(),
+						model);
+				dialog.open();
+				if (dialog.getReturnCode() == InputDialog.OK) {
+					MDSAssociationBean association = new MDSAssociationBean();
+					association.setLabel(dialog.getValue());
+					MDSAssociationEndBean end1 = new MDSAssociationEndBean();
+					end1.setAggregation(dialog.getEnd1Aggregation());
+					end1.setMdsClass(
+						(MDSClassBean) dialog.getEnd1Class().getBean());
+					MDSAssociationEndBean end2 = new MDSAssociationEndBean();
+					end2.setAggregation(dialog.getEnd2Aggregation());
+					end2.setMdsClass(
+						(MDSClassBean) dialog.getEnd2Class().getBean());
+					Vector ends = new Vector();
+					ends.add(end1);
+					ends.add(end2);
+					association.setAssociationEnds(ends);
+					String[] paramName = { "href", "association" };
+					Class[] paramType =
+						{ String.class, MDSAssociationBean.class };
+					Object[] paramValue =
+						{ model.getBean().getHref(), association };
+					try {
+						association =
+							(MDSAssociationBean) SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					TreeAssociation treeAssociation =
+						new TreeAssociation(association);
+					treeAssociation.addChild(dialog.getEnd1Class());
+					treeAssociation.addChild(dialog.getEnd2Class());
+					model.addChild(treeAssociation);
+				}
+
+			} else if (methodName.equals("validateModel")) {
+				TreeModel model = (TreeModel) obj;
+
+				String[] paramName = { "href", "type" };
+				Class[] paramType = { String.class, int.class };
+				Object[] paramValue =
+					{ model.getBean().getHref(), new Integer(0)};
+				Vector result = new Vector();
+				try {
+					result =
+						(Vector) SOAPClientImpl.call(
+							methodName,
+							paramName,
+							paramType,
+							paramValue);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				if (result.size() == 0) {
+					MessageDialog.openInformation(
+						getSite().getShell(),
+						"Validate Model",
+						"OK");
+				} else {
+					MultiStatus multiStatus =
+						new MultiStatus(
+							"de.chille.mds.plugin",
+							0,
+							"Open Details for more information",
+							null);
+					Status status = null;
+					Iterator i = result.iterator();
+					while (i.hasNext()) {
+						multiStatus.add(
+							new Status(
+								Status.ERROR,
+								"de.chille.mds.plugin",
+								0,
+								(String) i.next(),
+								null));
+					}
+					ErrorDialog.openError(
+						getSite().getShell(),
+						"Validate Model",
+						"Model Is Not Valide",
+						multiStatus);
+				}
+			} else if (methodName.equals("delete")) {
+				if (obj instanceof TreeGeneralization) {
+					TreeGeneralization generalization =
+						(TreeGeneralization) obj;
+					if (MessageDialog
+						.openConfirm(
+							getSite().getShell(),
+							"Delete Generalization",
+							"You really want delete the generalization '"
+								+ obj.toString()
+								+ "'?")) {
+						String[] paramName = { "href", "confirm" };
+						Class[] paramType = { String.class, boolean.class };
+						Object[] paramValue =
+							{
+								((TreeGeneralization) obj).getBean().getHref(),
+								new Boolean(false)};
+						Vector result = new Vector();
+						try {
+							result =
+								(Vector) SOAPClientImpl.call(
+									methodName,
+									paramName,
+									paramType,
+									paramValue);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						generalization.getParent().removeChild(generalization);
+					}
+				} else if (obj instanceof TreeAssociation) {
+					TreeAssociation association = (TreeAssociation) obj;
+					if (MessageDialog
+						.openConfirm(
+							getSite().getShell(),
+							"Delete Association",
+							"You really want delete the association '"
+								+ obj.toString()
+								+ "'?")) {
+						String[] paramName = { "href", "confirm" };
+						Class[] paramType = { String.class, boolean.class };
+						Object[] paramValue =
+							{
+								association.getBean().getHref(),
+								new Boolean(false)};
+						Vector result = new Vector();
+						try {
+							result =
+								(Vector) SOAPClientImpl.call(
+									methodName,
+									paramName,
+									paramType,
+									paramValue);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						association.getParent().removeChild(association);
+					}
+				} else if (obj instanceof TreeClass) {
+					TreeClass tclass = (TreeClass) obj;
+					String[] paramName = { "href", "confirm" };
+					Class[] paramType = { String.class, boolean.class };
+					Object[] paramValue =
+						{ tclass.getBean().getHref(), new Boolean(true)};
+					Vector result = new Vector();
+					try {
+						result =
+							(Vector) SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					MultiStatus multiStatus =
+						new MultiStatus(
+							"de.chille.mds.plugin",
+							0,
+							"Some relations will be deleted too.\n Open Details for more information",
+							null);
+					Iterator i = result.iterator();
+					while (i.hasNext()) {
+						multiStatus.add(
+							new Status(
+								Status.WARNING,
+								"de.chille.mds.plugin",
+								0,
+								(String) i.next(),
+								null));
+					}
+					boolean doit = false;
+					if (result.size() > 0) {
+						if (ErrorDialog
+							.openError(
+								getSite().getShell(),
+								"Delete Class",
+								"Removing this class could have side-effects on other elements.",
+								multiStatus)
+							== Dialog.OK) {
+							doit = true;
+						}
+					} else if (
+						MessageDialog.openConfirm(
+							getSite().getShell(),
+							"Delete Class",
+							"You really want delete the class '"
+								+ obj.toString()
+								+ "'?")) {
+						doit = true;
+					}
+					if (doit == true) {
+						paramValue[1] = new Boolean(false);
+						try {
+							SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						TreeModel model = (TreeModel) tclass.getParent();
+						model.removeChild(tclass);
+						Iterator it = result.iterator();
+						TreeObject[] children = model.getChildren();
+						TreeObject relation = null;
+						while (it.hasNext()) {
+							String href = (String) it.next();
+							for (int j = 0; j < children.length; j++) {
+								relation = children[j];
+								if (href
+									.equals(relation.getBean().getHref())) {
+									model.removeChild(relation);
+								}
+							}
+						}
+					}
+
+				} else if (obj instanceof TreeModel) {
+					TreeModel model = (TreeModel) obj;
+					String[] paramName = { "href", "confirm" };
+					Class[] paramType = { String.class, boolean.class };
+					Object[] paramValue =
+						{ model.getBean().getHref(), new Boolean(true)};
+					Vector result = new Vector();
+					try {
+						result =
+							(Vector) SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					MultiStatus multiStatus =
+						new MultiStatus(
+							"de.chille.mds.plugin",
+							0,
+							"Some metamodel-entries will be deleted too.\n Open Details for more information",
+							null);
+					Iterator i = result.iterator();
+					while (i.hasNext()) {
+						multiStatus.add(
+							new Status(
+								Status.WARNING,
+								"de.chille.mds.plugin",
+								0,
+								(String) i.next(),
+								null));
+					}
+					boolean doit = false;
+					if (result.size() > 0) {
+						if (ErrorDialog
+							.openError(
+								getSite().getShell(),
+								"Delete Model",
+								"Removing this model could have side-effects on other models.",
+								multiStatus)
+							== Dialog.OK) {
+							doit = true;
+						}
+					} else if (
+						MessageDialog.openConfirm(
+							getSite().getShell(),
+							"Delete Model",
+							"You really want delete the model '"
+								+ obj.toString()
+								+ "'?")) {
+						doit = true;
+					}
+					if (doit == true) {
+						paramValue[1] = new Boolean(false);
+						try {
+							SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						TreeObject repository = (TreeObject) model.getParent();
+						((TreeRepository) repository).removeChild(model);
+
+						TreeServer server = (TreeServer) repository.getParent();
+						TreeObject[] repositories = server.getChildren();
+						TreeObject[] models = null;
+						Iterator it = result.iterator();
+						while (it.hasNext()) {
+							String href = (String) it.next();
+							for (int k = 0; k < repositories.length; k++) {
+								repository = repositories[k];
+								models =
+									((TreeRepository) repository).getChildren();
+								for (int j = 0; j < models.length; j++) {
+									model = (TreeModel) models[j];
+									if (href
+										.equals(
+											((MDSModelBean) model.getBean())
+												.getMetamodelHref())) {
+										(
+											(MDSModelBean) model
+												.getBean())
+												.setMetamodelHref(
+											null);
+									}
+								}
+							}
+						}
+					}
+
+				} else if (obj instanceof TreeRepository) {
+					TreeRepository repository = (TreeRepository) obj;
+					String[] paramName = { "href", "confirm" };
+					Class[] paramType = { String.class, boolean.class };
+					Object[] paramValue =
+						{ repository.getBean().getHref(), new Boolean(true)};
+					Vector result = new Vector();
+					try {
+						result =
+							(Vector) SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					MultiStatus multiStatus =
+						new MultiStatus(
+							"de.chille.mds.plugin",
+							0,
+							"Some metamodel-entries will be deleted too.\n Open Details for more information",
+							null);
+					Iterator i = result.iterator();
+					while (i.hasNext()) {
+						multiStatus.add(
+							new Status(
+								Status.WARNING,
+								"de.chille.mds.plugin",
+								0,
+								(String) i.next(),
+								null));
+					}
+					boolean doit = false;
+					if (result.size() > 0) {
+						if (ErrorDialog
+							.openError(
+								getSite().getShell(),
+								"Delete Repository",
+								"Removing this repository could have side-effects on other models.",
+								multiStatus)
+							== Dialog.OK) {
+							doit = true;
+						}
+					} else if (
+						MessageDialog.openConfirm(
+							getSite().getShell(),
+							"Delete Model",
+							"You really want delete the repository '"
+								+ obj.toString()
+								+ "'?")) {
+						doit = true;
+					}
+					if (doit == true) {
+						paramValue[1] = new Boolean(false);
+						try {
+							SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						TreeServer server = (TreeServer) repository.getParent();
+						server.removeChild(repository);
+						TreeObject[] repositories = server.getChildren();
+						TreeObject[] models = null;
+						TreeModel model = null;
+						Iterator it = result.iterator();
+						while (it.hasNext()) {
+							String href = (String) it.next();
+							for (int k = 0; k < repositories.length; k++) {
+								repository = (TreeRepository) repositories[k];
+								models =
+									((TreeRepository) repository).getChildren();
+								for (int j = 0; j < models.length; j++) {
+									model = (TreeModel) models[j];
+									if (href
+										.equals(
+											((MDSModelBean) model.getBean())
+												.getMetamodelHref())) {
+										(
+											(MDSModelBean) model
+												.getBean())
+												.setMetamodelHref(
+											null);
+									}
+								}
+							}
+						}
+					}
+
+				}
+			} else if (methodName.equals("updateElement")) {
+				if (obj instanceof TreeClass) {
+					TreeClass tclass = (TreeClass) obj;
+
+					InputDialog dialog =
+						new InputDialog(
+							getSite().getShell(),
+							"Update Class Properties",
+							"Classname:",
+							obj.toString(),
+							new LabelValidator());
+					dialog.open();
+					if (dialog.getReturnCode() == InputDialog.OK) {
+						MDSClassBean classb = (MDSClassBean) tclass.getBean();
+						classb.setLabel(dialog.getValue());
+						String[] paramName = { "bean" };
+						Class[] paramType = { MDSClassBean.class };
+						Object[] paramValue = { classb };
+						try {
+							SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				} else if (obj instanceof TreeAssociation) {
+					MDSAssociationBean bean =
+						(MDSAssociationBean) ((TreeAssociation) obj).getBean();
+					CreateAssociationDialog dialog =
+						new CreateAssociationDialog(
+							getSite().getShell(),
+							"Update Association Properties",
+							"Associationname:",
+							obj.toString(),
+							new LabelValidator(),
+							(TreeModel) ((TreeAssociation) obj).getParent());
+					dialog.setEnd1Aggregation(
+						((MDSAssociationEndBean) bean
+							.getAssociationEnds()
+							.get(0))
+							.getAggregation());
+					dialog.setEnd2Aggregation(
+						((MDSAssociationEndBean) bean
+							.getAssociationEnds()
+							.get(1))
+							.getAggregation());
+					TreeObject[] endClasses =
+						((TreeAssociation) obj).getChildren();
+					dialog.setEnd1Class((TreeClass) endClasses[0]);
+					dialog.setEnd2Class((TreeClass) endClasses[1]);
+					dialog.open();
+					if (dialog.getReturnCode() == InputDialog.OK) {
+						bean.setLabel(dialog.getValue());
+						MDSAssociationEndBean end1 =
+							(MDSAssociationEndBean) bean
+								.getAssociationEnds()
+								.get(
+								0);
+						end1.setAggregation(dialog.getEnd1Aggregation());
+						end1.setMdsClass(
+							(MDSClassBean) dialog.getEnd1Class().getBean());
+						((TreeAssociation) obj).removeChild(endClasses[0]);
+						((TreeAssociation) obj).addChild(dialog.getEnd1Class());
+						MDSAssociationEndBean end2 =
+							(MDSAssociationEndBean) bean
+								.getAssociationEnds()
+								.get(
+								1);
+						end2.setAggregation(dialog.getEnd2Aggregation());
+						end2.setMdsClass(
+							(MDSClassBean) dialog.getEnd2Class().getBean());
+						((TreeAssociation) obj).removeChild(endClasses[1]);
+						((TreeAssociation) obj).addChild(dialog.getEnd2Class());
+						Vector ends = new Vector();
+						String[] paramName = { "bean" };
+						Class[] paramType = { MDSAssociationBean.class };
+						Object[] paramValue = { bean };
+						try {
+							SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+					}
+				} else if (obj instanceof TreeGeneralization) {
+					TreeGeneralization generalization =
+						(TreeGeneralization) obj;
+					CreateGeneralizationDialog dialog =
+						new CreateGeneralizationDialog(
+							getSite().getShell(),
+							"Update Generalization Properties",
+							"Generalizationname:",
+							generalization.toString(),
+							new LabelValidator(),
+							(TreeModel) generalization.getParent());
+					TreeObject[] classes = generalization.getChildren();
+					dialog.setSuperClass((TreeClass) classes[0]);
+					dialog.setSubClass((TreeClass) classes[1]);
+					dialog.open();
+					if (dialog.getReturnCode() == InputDialog.OK) {
+						MDSGeneralizationBean bean =
+							(MDSGeneralizationBean) generalization.getBean();
+						bean.setLabel(dialog.getValue());
+						bean.setSuperClass(
+							(MDSClassBean) dialog.getSuperClass().getBean());
+						bean.setSubClass(
+							(MDSClassBean) dialog.getSubClass().getBean());
+						String[] paramName = { "bean" };
+						Class[] paramType = { MDSGeneralizationBean.class };
+						Object[] paramValue = { bean };
+						try {
+							SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						generalization.removeChild(classes[0]);
+						generalization.removeChild(classes[1]);
+						generalization.addChild(dialog.getSuperClass());
+						generalization.addChild(dialog.getSubClass());
+					}
+				} else if (obj instanceof TreeModel) {
+					TreeModel model = (TreeModel) obj;
+					CreateModelDialog dialog =
+						new CreateModelDialog(
+							getSite().getShell(),
+							"Update Model Properties",
+							"Modelname:",
+							obj.toString(),
+							new LabelValidator());
+					if (((MDSModelBean) model.getBean()).getMetamodelHref()
+						!= null) {
+						dialog.setMetamodelName(
+							((MDSModelBean) model.getBean())
+								.getMetamodelName());
+					}
+
+					dialog.open();
+					if (dialog.getReturnCode() == InputDialog.OK) {
+						MDSModelBean bean = (MDSModelBean) model.getBean();
+						bean.setLabel(dialog.getValue());
+						if (dialog.getMetamodel() != null) {
+							bean.setMetamodelHref(
+								dialog.getMetamodel().getBean().getHref());
+							bean.setMetamodelName(
+								((MDSModelBean) dialog
+									.getMetamodel()
+									.getBean())
+									.getLabel());
+						} else if (dialog.getMetamodelName() == null){
+							bean.setMetamodelHref(null);
+							bean.setMetamodelName(null);
+						}
+						String[] paramName = { "bean" };
+						Class[] paramType = { MDSModelBean.class };
+						Object[] paramValue = { bean };
+						try {
+							SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				} else if (obj instanceof TreeRepository) {
+					InputDialog dialog =
+						new InputDialog(
+							getSite().getShell(),
+							"Update Repository Properties",
+							"Repositoryname:",
+							obj.toString(),
+							new LabelValidator());
+					dialog.open();
+					if (dialog.getReturnCode() == InputDialog.OK) {
+						MDSRepositoryBean repository =
+							(MDSRepositoryBean) ((TreeRepository) obj)
+								.getBean();
+						repository.setLabel(dialog.getValue());
+						String[] paramName = { "bean" };
+						Class[] paramType = { MDSRepositoryBean.class };
+						Object[] paramValue = { repository };
+						try {
+							SOAPClientImpl.call(
+								methodName,
+								paramName,
+								paramType,
+								paramValue);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+					}
+				}
 			} else
 				showMessage(methodName + "::" + obj.toString());
-		}
-	}
-
-	class LabelValidator implements IInputValidator {
-		public String isValid(String newText) {
-			if (newText.length() == 0) {
-				return "";
-			} else if (newText.length() > 50) {
-				return "Maximum are 50 Chars.";
-			} else if (!newText.matches("[0-9a-zA-Z_]*")) {
-				return "Please Use Only Alphanumeric Chars.";
-			} else {
-				return null;
-			}
+			viewer.refresh();
 		}
 	}
 
@@ -423,38 +844,89 @@ public class BrowserView extends ViewPart {
 		public void selectionChanged(SelectionChangedEvent event) {
 			ISelection selection = viewer.getSelection();
 			Object obj = ((IStructuredSelection) selection).getFirstElement();
-			if (obj instanceof TreeRepository) {
-				createRepository.setEnabled(false);
-				createModel.setEnabled(true);
-			} else {
+			if (obj instanceof TreeServer) {
 				createRepository.setEnabled(true);
 				createModel.setEnabled(false);
+				createClass.setEnabled(false);
+				createAssociation.setEnabled(false);
+				createGeneralization.setEnabled(false);
+				update.setEnabled(false);
+				delete.setEnabled(false);
+				validate.setEnabled(false);
+			} else if (obj instanceof TreeRepository) {
+				createRepository.setEnabled(false);
+				createModel.setEnabled(true);
+				createClass.setEnabled(false);
+				createAssociation.setEnabled(false);
+				createGeneralization.setEnabled(false);
+				update.setEnabled(true);
+				delete.setEnabled(true);
+				validate.setEnabled(false);
+			} else if (obj instanceof TreeModel) {
+				createRepository.setEnabled(false);
+				createModel.setEnabled(false);
+				createClass.setEnabled(true);
+				createAssociation.setEnabled(
+					((TreeModel) obj).getChildren().length > 1);
+				createGeneralization.setEnabled(
+					((TreeModel) obj).getChildren().length > 1);
+				update.setEnabled(true);
+				delete.setEnabled(true);
+				validate.setEnabled(true);
+			} else if (obj instanceof TreeClass) {
+				createRepository.setEnabled(false);
+				createModel.setEnabled(false);
+				createClass.setEnabled(false);
+				createAssociation.setEnabled(false);
+				createGeneralization.setEnabled(false);
+				if (((TreeClass) obj).getParent() instanceof TreeModel) {
+					update.setEnabled(true);
+					delete.setEnabled(true);
+				} else {
+					update.setEnabled(false);
+					delete.setEnabled(false);
+				}
+				validate.setEnabled(false);
+			} else if (obj instanceof TreeAssociation) {
+				createRepository.setEnabled(false);
+				createModel.setEnabled(false);
+				createClass.setEnabled(false);
+				createAssociation.setEnabled(false);
+				createGeneralization.setEnabled(false);
+				update.setEnabled(true);
+				delete.setEnabled(true);
+				validate.setEnabled(false);
+			} else if (obj instanceof TreeGeneralization) {
+				createRepository.setEnabled(false);
+				createModel.setEnabled(false);
+				createClass.setEnabled(false);
+				createAssociation.setEnabled(false);
+				createGeneralization.setEnabled(false);
+				update.setEnabled(true);
+				delete.setEnabled(true);
+				validate.setEnabled(false);
 			}
 		}
-	}
-
-	/**
-	 * The constructor.
-	 */
+	} /**
+																																		 * The constructor.
+																																		 */
 	public BrowserView() {
-	}
-
-	/**
-	 * This is a callback that will allow us
-	 * to create the viewer and initialize it.
-	 */
+	} /**
+																																		 * This is a callback that will allow us
+																																		 * to create the viewer and initialize it.
+																																		 */
 	public void createPartControl(Composite parent) {
 		viewer =
 			new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		drillDownAdapter = new DrillDownAdapter(viewer);
-		viewer.setContentProvider(new ViewContentProvider());
-		viewer.setLabelProvider(new ViewLabelProvider());
+		viewer.setContentProvider(new TreeContentProvider());
+		viewer.setLabelProvider(new TreeLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(ResourcesPlugin.getWorkspace());
 		makeActions();
 		viewer.addSelectionChangedListener(new MDSSelectionChangedListener());
 		hookContextMenu();
-		hookDoubleClickAction();
+		//hookDoubleClickAction();
 		contributeToActionBars();
 	}
 
@@ -480,11 +952,27 @@ public class BrowserView extends ViewPart {
 	private void fillLocalPullDown(IMenuManager manager) {
 		manager.add(createRepository);
 		manager.add(createModel);
+		manager.add(createClass);
+		manager.add(createAssociation);
+		manager.add(createGeneralization);
+		manager.add(new Separator());
+		manager.add(delete);
+		manager.add(update);
+		manager.add(new Separator());
+		manager.add(validate);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(createRepository);
 		manager.add(createModel);
+		manager.add(createClass);
+		manager.add(createAssociation);
+		manager.add(createGeneralization);
+		manager.add(new Separator());
+		manager.add(delete);
+		manager.add(update);
+		manager.add(new Separator());
+		manager.add(validate);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
@@ -492,32 +980,44 @@ public class BrowserView extends ViewPart {
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(createRepository);
-		manager.add(action2);
-		manager.add(new Separator());
+		//manager.add(createRepository);
+		//manager.add(action2);
+		//manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 	}
 
 	private void makeActions() {
-		
-		createRepository =
-			new MDSAction(
-				"createRepository",
-				"createRepository",
-				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
-					ISharedImages.IMG_OBJS_INFO_TSK));
-		createRepository.setToolTipText("Create New Repository");
-		
-		createModel =
-			new MDSAction(
-				"createModel",
-				"createModel",
-				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
-					ISharedImages.IMG_OBJS_INFO_TSK));
-		createModel.setToolTipText("Create New Model");
 
-		
-		
+		createRepository =
+			new MDSAction("createRepository", "createRepository", null);
+		createRepository.setToolTipText("Create New Repository");
+		createModel = new MDSAction("createModel", "createModel", null);
+		createModel.setToolTipText("Create New Model");
+		createClass = new MDSAction("createClass", "createClass", null);
+		createClass.setToolTipText("Create New Class");
+		createAssociation =
+			new MDSAction("createAssociation", "createAssociation", null);
+		createAssociation.setToolTipText("Create New Association");
+		createGeneralization =
+			new MDSAction("createGeneralization", "createGeneralization", null);
+		createGeneralization.setToolTipText("Create New Generalization");
+		delete = new MDSAction("delete", "delete", null);
+		delete.setToolTipText("Delete");
+		update = new MDSAction("updateElement", "update", null);
+		update.setToolTipText("Update");
+		/*
+				update =
+					new MDSAction(
+						"update",
+						"update",
+						PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
+							ISharedImages.IMG_OBJS_INFO_TSK));
+				update.setToolTipText("Update");*/
+
+		validate = new MDSAction("validateModel", "validate", null);
+		update.setToolTipText("Validate This Model");
+
+		/*
 		action2 = new Action() {
 			public void run() {
 				showMessage("Action 2 executed");
@@ -535,16 +1035,16 @@ public class BrowserView extends ViewPart {
 					((IStructuredSelection) selection).getFirstElement();
 				showMessage("Double-click detected on " + obj.toString());
 			}
-		};
+		};*/
 	}
-
-	private void hookDoubleClickAction() {
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				doubleClickAction.run();
-			}
-		});
-	}
+	/*
+		private void hookDoubleClickAction() {
+			viewer.addDoubleClickListener(new IDoubleClickListener() {
+				public void doubleClick(DoubleClickEvent event) {
+					doubleClickAction.run();
+				}
+			});
+		}*/
 	private void showMessage(String message) {
 		MessageDialog.openInformation(
 			viewer.getControl().getShell(),
@@ -553,8 +1053,8 @@ public class BrowserView extends ViewPart {
 	}
 
 	/**
-	 * Passing the focus request to the viewer's control.
-	 */
+											 * Passing the focus request to the viewer's control.
+											 */
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}

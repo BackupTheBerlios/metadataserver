@@ -6,4 +6,5 @@ public class TreeAssociation extends TreeParent {
 	public TreeAssociation(MDSObjectBean bean) {
 		super(bean);
 	}
+	
 }
