@@ -30,6 +30,13 @@ public class MDSAggregationImpl
 	private boolean composition = false;
 	
 	/**
+	 * Constructor for MDSAggregationImpl.
+	 */
+	public MDSAggregationImpl() {
+		super("aggregation");
+	}
+
+	/**
 	 * @see MDSAggregation#getContainedEnd()
 	 */
 	public AssociationEnd getContainedEnd() {

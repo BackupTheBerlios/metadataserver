@@ -11,7 +11,7 @@ import api.mds.core.MDSGeneralization;
 public class MDSGeneralizationImpl
 	extends MDSElementImpl
 	implements MDSGeneralization {
-
+	
 	/**
 	 * die vererbende Klasse
 	 */
@@ -23,29 +23,38 @@ public class MDSGeneralizationImpl
 	private MDSClass subClass;
 	
 	/**
+	 * Constructor for MDSGeneralizationImpl.
+	 */
+	public MDSGeneralizationImpl() {
+		super("generalization");
+	}
+
+	/**
 	 * @see api.mds.core.MDSGeneralization#getSubClass()
 	 */
 	public MDSClass getSubClass() {
-		return null;
+		return subClass;
 	}
 
 	/**
 	 * @see api.mds.core.MDSGeneralization#getSuperClass()
 	 */
 	public MDSClass getSuperClass() {
-		return null;
+		return superClass;
 	}
 
 	/**
 	 * @see api.mds.core.MDSGeneralization#setSubClass(MDSClass)
 	 */
 	public void setSubClass(MDSClass subClass) {
+		this.subClass = subClass;
 	}
 
 	/**
 	 * @see api.mds.core.MDSGeneralization#setSuperClass(MDSClass)
 	 */
 	public void setSuperClass(MDSClass superClass) {
+		this.superClass = superClass;
 	}
 	
 	/**

@@ -41,14 +41,4 @@ public interface XMIHandler {
 	 */
 	public void generateSchema(MDSModel mdsModel) throws XMIHandlerException;
 
-	/**
-	 * führt eine Abfrage auf dem MDSModel aus
-	 *
-	 * @param mdsModel das betreffende MDSModel
-	 * @param query der Querystring
-	 * @return das Ergebnis der Abfrage
-	 * @throws XMIHandlerException im Fehlerfall
-	 */
-	public ArrayList query(MDSModel mdsModel, String query)
-		throws XMIHandlerException;
 }

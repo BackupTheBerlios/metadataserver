@@ -21,7 +21,13 @@ import api.mds.xmi.XMIHandler;
  * @author Thomas Chille
  */
 public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
-
+	
+	private static int counter = 0;
+	
+	public MDSModelImpl() {
+		this.setId("model_" + counter++);
+	}
+	
 	/**
 	 * MDSElement-Repräsenation des Models
 	 */
@@ -87,7 +93,6 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	public String insertElement(MDSElement mdsElement)
 		throws MDSCoreException {
 
-		mdsElement.setId("element_id");
 		if (elements.add(mdsElement)) {
 			return mdsElement.getId();
 		} else {

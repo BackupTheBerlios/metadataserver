@@ -20,6 +20,13 @@ public class MDSAssociationImpl
 	private ArrayList associationEnds = new ArrayList();
 
 	/**
+	 * Constructor for MDSAssociationImpl.
+	 */
+	public MDSAssociationImpl() {
+		super("association");
+	}
+
+	/**
 	 * @see MDSAssociationImpl#addAssociationEnd(AssociationEnd)
 	 */
 	public void addAssociationEnd(AssociationEnd associationEnd)

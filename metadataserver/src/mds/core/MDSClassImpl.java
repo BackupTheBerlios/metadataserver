@@ -10,6 +10,14 @@ import api.mds.core.MDSClass;
  * @author Thomas Chille
  */
 public class MDSClassImpl extends MDSElementImpl implements MDSClass {
+	
+	/**
+	 * Constructor for MDSClassImpl.
+	 */
+	public MDSClassImpl() {
+		super("class");
+	}
+
 	/**
 	 * @see java.lang.Object#toString()
 	 */

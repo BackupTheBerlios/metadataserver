@@ -41,7 +41,7 @@ public class MetaDataServerImpl
 	 * Constructor for MetaDataServerImpl.
 	 */
 	public MetaDataServerImpl() {
-		this.setId("server_id");
+		this.setId("server_0");
 		MetaMappingEngine metaMappingEngine = new MetaMappingEngineImpl();
 	}
 

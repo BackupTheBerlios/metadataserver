@@ -12,17 +12,22 @@ import api.mds.persistence.PersistenceHandler;
 
 public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 
+	private static int counter = 0;
+
 	/**
 	 * alle auf dem Server vorhandenen Reposititories
 	 */
 	private ArrayList models = new ArrayList();
 
+	public MDSRepositoryImpl() {
+		this.setId("repository_" + counter++);
+	}
+	
 	/**
 	 * @see MDSRepository#insert()
 	 */
 	public String insert() throws MDSCoreException {
-		
-		this.setId("repository_id");
+
 		try {
 			this.getPersistenceHandler().save(this);
 		} catch (PersistenceHandlerException e) {
@@ -58,10 +63,8 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 	/**
 	 * @see MDSRepository#insertModel(MDSModel)
 	 */
-	public String insertModel(MDSModel mdsModel)
-		throws MDSCoreException {
+	public String insertModel(MDSModel mdsModel) throws MDSCoreException {
 
-		mdsModel.setId("model_id");
 		try {
 			this.getPersistenceHandler().save(mdsModel);
 		} catch (PersistenceHandlerException e) {
@@ -80,7 +83,7 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 	public void removeModel(MDSHref href) throws MDSCoreException {
 		MDSModel mdsModel;
 		try {
-			mdsModel = (MDSModel)this.getPersistenceHandler().load(href, null);
+			mdsModel = (MDSModel) this.getPersistenceHandler().load(href, null);
 			this.getPersistenceHandler().delete(mdsModel, null);
 		} catch (PersistenceHandlerException e) {
 			throw new MDSCoreException("Fehler: MDSRepository#removeModel()");
@@ -93,8 +96,7 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 	/**
 	 * @see MDSRepository#moveModel(MDSHref, MDSHref)
 	 */
-	public String moveModel(MDSHref from, MDSHref to)
-		throws MDSCoreException {
+	public String moveModel(MDSHref from, MDSHref to) throws MDSCoreException {
 
 		try {
 			MDSModel mdsModel =
@@ -150,7 +152,7 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 		}
 		throw new MDSCoreException("Fehler: MDSRepository#getModelByHref()");
 	}
-	
+
 	/**
 	 * @see java.lang.Object#toString()
 	 */
@@ -158,7 +160,7 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 		String retString = "\trepository:" + this.getId() + "\n";
 		Iterator i = models.iterator();
 		while (i.hasNext()) {
-			retString += ((MDSModel)i.next()).toString();
+			retString += ((MDSModel) i.next()).toString();
 		}
 		return retString;
 	}
