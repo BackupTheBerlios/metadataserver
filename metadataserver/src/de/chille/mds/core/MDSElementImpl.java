@@ -2,6 +2,7 @@ package de.chille.mds.core;
 
 import de.chille.api.mds.core.MDSElement;
 import de.chille.api.mds.core.MDSHref;
+import de.chille.mds.soap.MDSObjectBean;
 
 /**
  * @see MDSElement
@@ -28,5 +29,5 @@ public class MDSElementImpl extends MDSObjectImpl implements MDSElement {
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
 	}
-
+	
 }

@@ -49,5 +49,4 @@ public interface MDSPersistentObject extends MDSObject {
 	 * @throws PersistenceHandlerException
 	 */
 	public void delete(String version) throws PersistenceHandlerException;
-
 }

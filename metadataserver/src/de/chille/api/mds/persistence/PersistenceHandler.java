@@ -61,15 +61,6 @@ public interface PersistenceHandler {
 	public ArrayList getModelVersions(MDSModel mdsModel)
 		throws PersistenceHandlerException;
 
-	/**
-	 * lädt alle Mapper
-	 * 
-	 * @return Liste aller geladenen Mapper
-	 * @throws PersistenceHandlerException im Fehlerfall
-	 */
-	public MDSMapper[] loadMapper() throws PersistenceHandlerException;
-	
 	public void load(MetaDataServer server);
 	
-	public void save(MetaDataServer server) throws PersistenceHandlerException;
 }

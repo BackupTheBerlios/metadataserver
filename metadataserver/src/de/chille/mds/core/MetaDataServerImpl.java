@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Vector;
 
 import de.chille.mds.MDSGlobals;
 import de.chille.mds.persistence.FilesystemHandlerImpl;
 import de.chille.mds.persistence.PersistenceHandlerException;
+import de.chille.mme.core.*;
 import de.chille.mme.core.MetaMappingEngineException;
 import de.chille.mme.core.MetaMappingEngineImpl;
 
@@ -30,34 +32,21 @@ public final class MetaDataServerImpl
 	extends MDSPersistentObjectImpl
 	implements MetaDataServer {
 
-	private int counter = 0;
+	private static int counter = 0;
 
 	/**
 	 * der Server kennt seine MME
 	 */
-	private MetaMappingEngine metaMappingEngine = null;
+	private static MetaMappingEngine metaMappingEngine = null;
 
 	/**
 	 * alle auf dem Server vorhandenen Reposititories
 	 */
 	private ArrayList repositories = new ArrayList();
 
-	/**
-	 * Constructor for MetaDataServerImpl.
-	 */
-	public MetaDataServerImpl() {
-		this.setId("0");
-		this.setLabel("metadata.server");
-		try {
-			this.setHref(new MDSHrefImpl("mds://server_" + this.getId()));
-		} catch (MDSHrefFormatException e) {
-			e.printStackTrace();
-		}
-		MetaMappingEngine metaMappingEngine = new MetaMappingEngineImpl();
-	}
-
 	public void startup() {
 		this.getPersistenceHandler().load(this);
+		metaMappingEngine = new MetaMappingEngineImpl();
 	}
 
 	/**
@@ -65,9 +54,11 @@ public final class MetaDataServerImpl
 	 */
 	public MDSHref insertReposititory(MDSRepository mdsRepository) {
 		try {
+			boolean doSave = false;
 			if (repositories.add(mdsRepository)) {
 				if (mdsRepository.getId() == null) {
 					mdsRepository.setId(this.getId() + "_" + this.counter++);
+					doSave = true;
 				}
 				MDSHref href =
 					new MDSHrefImpl(
@@ -75,6 +66,9 @@ public final class MetaDataServerImpl
 							+ "/repository_"
 							+ mdsRepository.getId());
 				mdsRepository.setHref(href);
+				if (doSave) {
+					save();
+				}
 				return href;
 			} else {
 				return null;
@@ -88,20 +82,45 @@ public final class MetaDataServerImpl
 	/**
 	 * @see MetaDataServer#deleteRepository(String)
 	 */
-	public boolean deleteRepository(MDSHref href) {
+	public Vector removeRepository(MDSHref href, boolean confirm) {
+		Vector result = new Vector();
+		Vector temp = new Vector();
 		try {
 			MDSRepository mdsRepository = getRepositoryByHref(href);
-			mdsRepository.delete();
-			if (repositories.remove(mdsRepository)) {
-				return true;
+			int i = mdsRepository.getModels().size();
+			for (--i; i >= 0; i--) {
+				result.addAll(
+					mdsRepository.removeModel(
+						((MDSModelImpl) mdsRepository.getModels().get(i))
+							.getHref(),
+						confirm));
+			}
+			if (!confirm) {
+				mdsRepository.delete(null);
+				if (repositories.remove(mdsRepository)) {
+					save();
+				}
 			} else {
-				return false;
+				// alle confirm-msg's die andere repositories betreffen herausfiltern
+				Iterator j = result.iterator();
+				while (j.hasNext()) {
+					String msg = (String) j.next();
+					if (!msg
+						.startsWith(
+							mdsRepository.getHref().getRepositoryHref())) {
+						temp.add(msg);
+					}
+				}
+				result = temp;
 			}
 		} catch (MDSCoreException e) {
-			return false;
+			e.printStackTrace();
 		} catch (MDSHrefFormatException e) {
-			return false;
+			e.printStackTrace();
+		} catch (PersistenceHandlerException e) {
+			e.printStackTrace();
 		}
+		return result;
 	}
 
 	/**
@@ -111,6 +130,7 @@ public final class MetaDataServerImpl
 		try {
 			MDSRepository mdsRepository = getRepositoryByHref(href);
 			mdsRepository.setLabel(label);
+			save();
 			return true;
 		} catch (MDSCoreException e) {
 			return false;
@@ -141,6 +161,7 @@ public final class MetaDataServerImpl
 		try {
 			MDSRepository mdsRepository = getRepositoryByHref(href);
 			String id = mdsRepository.insertModel(mdsModel);
+			save();
 			return mdsModel.getHref();
 		} catch (MDSCoreException e) {
 			return null;
@@ -152,16 +173,18 @@ public final class MetaDataServerImpl
 	/**
 	 * @see MetaDataServer#removeModel(MDSHref)
 	 */
-	public boolean removeModel(MDSHref href) {
+	public Vector removeModel(MDSHref href, boolean confirm) {
+		Vector result = new Vector();
 		try {
 			MDSRepository mdsRepository = getRepositoryByHref(href);
-			mdsRepository.removeModel(href);
-			return true;
+			result = mdsRepository.removeModel(href, confirm);
+			save();
 		} catch (MDSCoreException e) {
-			return false;
+			e.printStackTrace();
 		} catch (MDSHrefFormatException e) {
-			return false;
+			e.printStackTrace();
 		}
+		return result;
 	}
 
 	/**
@@ -171,6 +194,7 @@ public final class MetaDataServerImpl
 		try {
 			MDSRepository mdsRepository = getRepositoryByHref(from);
 			String id = mdsRepository.moveModel(from, to);
+			save();
 			return new MDSHrefImpl(to.getHrefString() + "/" + id);
 		} catch (MDSCoreException e) {
 			return null;
@@ -186,6 +210,7 @@ public final class MetaDataServerImpl
 		try {
 			MDSRepository mdsRepository = getRepositoryByHref(from);
 			String id = mdsRepository.copyModel(from, to, label);
+			save();
 			return new MDSHrefImpl(to.getHrefString() + "/" + id);
 		} catch (MDSCoreException e) {
 			return null;
@@ -202,6 +227,7 @@ public final class MetaDataServerImpl
 			MDSRepository mdsRepository = getRepositoryByHref(href);
 			MDSModel mdsModel = mdsRepository.getModelByHref(href);
 			mdsModel.renameModel(label);
+			save();
 			return true;
 		} catch (MDSCoreException e) {
 			return false;
@@ -234,6 +260,7 @@ public final class MetaDataServerImpl
 			MDSRepository mdsRepository = getRepositoryByHref(href);
 			MDSModel mdsModel = mdsRepository.getModelByHref(href);
 			mdsModel.restoreModel(version);
+			save();
 			return true;
 		} catch (MDSCoreException e) {
 			return false;
@@ -250,6 +277,7 @@ public final class MetaDataServerImpl
 			MDSRepository mdsRepository = getRepositoryByHref(href);
 			MDSModel mdsModel = mdsRepository.getModelByHref(href);
 			String id = mdsModel.insertElement(mdsElement);
+			save();
 			return mdsElement.getHref();
 		} catch (MDSCoreException e) {
 			e.printStackTrace();
@@ -263,27 +291,29 @@ public final class MetaDataServerImpl
 	/**
 	 * @see MetaDataServer#removeElement(MDSHref)
 	 */
-	public boolean removeElement(MDSHref href) {
+	public Vector removeElement(MDSHref href, boolean confirm) {
+		Vector result = new Vector();
 		try {
 			MDSRepository mdsRepository = getRepositoryByHref(href);
 			MDSModel mdsModel = mdsRepository.getModelByHref(href);
-			mdsModel.removeElement(href);
-			return true;
+			result = mdsModel.removeElement(href, confirm);
+			save();
 		} catch (MDSCoreException e) {
-			return false;
+			e.printStackTrace();
 		} catch (MDSHrefFormatException e) {
-			return false;
+			e.printStackTrace();
 		}
+		return result;
 	}
 
 	/**
 	 * @see MetaDataServer#validateModel(MDSHref, int)
 	 */
-	public ArrayList validateModel(MDSHref href, int validateType) {
+	public Vector validateModel(MDSHref href, int validateType) {
 		try {
 			MDSRepository mdsRepository = getRepositoryByHref(href);
 			MDSModel mdsModel = mdsRepository.getModelByHref(href);
-			ArrayList result = mdsModel.validateModel(validateType);
+			Vector result = mdsModel.validateModel(validateType);
 			return result;
 		} catch (MDSCoreException e) {
 			return null;
@@ -295,26 +325,27 @@ public final class MetaDataServerImpl
 	/**
 	 * @see MetaDataServer#importModel(MDSHref, MDSModel, Mapping)
 	 */
-	public MDSHref importModel(
+	/*public MDSHref importModel(
 		MDSHref href,
 		MDSModel mdsModel,
 		Mapping mapping) {
-
+	
 		try {
 			if (mapping != null) {
 				mdsModel = metaMappingEngine.map(mdsModel, mapping);
 			}
 			MDSHref newHref = this.insertModel(href, mdsModel);
+			save();
 			return newHref;
 		} catch (MetaMappingEngineException e) {
 			return null;
 		}
-	}
+	}*/
 
 	/**
 	 * @see MetaDataServer#exportModel(MDSHref, Mapping)
 	 */
-	public MDSModel exportModel(MDSHref href, Mapping mapping) {
+	/*public MDSModel exportModel(MDSHref href, Mapping mapping) {
 		try {
 			MDSRepository mdsRepository = getRepositoryByHref(href);
 			MDSModel mdsModel = mdsRepository.getModelByHref(href);
@@ -329,7 +360,7 @@ public final class MetaDataServerImpl
 		} catch (MDSHrefFormatException e) {
 			return null;
 		}
-	}
+	}*/
 
 	/**
 	 * @see MetaDataServer#registerMapper(MDSMapper)
@@ -370,20 +401,12 @@ public final class MetaDataServerImpl
 	/**
 	 * @see MetaDataServer#convertModel(MDSHref, Mapping, String)
 	 */
-	public MDSHref convertModel(MDSHref href, Mapping mapping, String label) {
+	public void convertModel(MDSHref href, Mapping mapping) {
 		try {
-			MDSRepository mdsRepository = getRepositoryByHref(href);
-			MDSModel mdsModel = mdsRepository.getModelByHref(href);
-			MDSModel newModel = metaMappingEngine.map(mdsModel, mapping);
-			newModel.setLabel(label);
-			MDSHref newHref = this.insertModel(href, mdsModel);
-			return newHref;
-		} catch (MDSCoreException e) {
-			return null;
-		} catch (MetaMappingEngineException e) {
-			return null;
-		} catch (MDSHrefFormatException e) {
-			return null;
+			MDSModel mdsModel = getRepositoryByHref(href).getModelByHref(href);
+			metaMappingEngine.map(mdsModel, mapping);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -401,7 +424,7 @@ public final class MetaDataServerImpl
 		this.metaMappingEngine = metaMappingEngine;
 	}
 
-	private MDSRepository getRepositoryByHref(MDSHref href)
+	public MDSRepository getRepositoryByHref(MDSHref href)
 		throws MDSCoreException, MDSHrefFormatException {
 
 		String id = href.getRepositoryId();
@@ -430,21 +453,21 @@ public final class MetaDataServerImpl
 	}
 
 	/**
-	 * @see de.chille.api.de.chille.de.chille.mds.core.MetaDataServer#getCounter()
+	 * @see de.chille.mds.core.MetaDataServer#getCounter()
 	 */
 	public int getCounter() {
 		return counter;
 	}
 
 	/**
-	 * @see de.chille.api.de.chille.de.chille.mds.core.MetaDataServer#getRepositories()
+	 * @see de.chille.mds.core.MetaDataServer#getRepositories()
 	 */
 	public ArrayList getRepositories() {
 		return repositories;
 	}
 
 	/**
-	 * @see de.chille.api.de.chille.de.chille.mds.core.MetaDataServer#setCounter(int)
+	 * @see de.chille.mds.core.MetaDataServer#setCounter(int)
 	 */
 	public void setCounter(int counter) {
 		this.counter = counter;
@@ -458,20 +481,22 @@ public final class MetaDataServerImpl
 		this.repositories = repositories;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		MetaDataServer server = MetaDataServerImpl.getInstance();
 		System.out.println(server);
-		//while (true);
-		//server.shutdown();
+		server.convertModel(
+			new MDSHrefImpl("mds://server_0/repository_0_0/model_0_0_0"),
+			new MappingImpl("mds", "java"));
 	}
 
 	public void shutdown() {
-		try {
-			this.getPersistenceHandler().save(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		save();
 		System.exit(0);
+	}
+
+	public void reset() {
+		MetaDataServerImpl.defaultInstance = null;
+		MetaDataServerImpl.getInstance();
 	}
 
 	/** This is the default instance used for this singleton. */
@@ -482,12 +507,20 @@ public final class MetaDataServerImpl
 	 *
 	 * @return the unique instance of this class
 	 */
-	public final synchronized static MetaDataServerImpl getInstance() {
+	public synchronized static MetaDataServerImpl getInstance() {
 		if (MetaDataServerImpl.defaultInstance == null) {
 			MetaDataServerImpl.defaultInstance = new MetaDataServerImpl();
 			defaultInstance.startup();
-			//MDSGlobals.log("new");
 		}
 		return MetaDataServerImpl.defaultInstance;
 	}
+
+	public void save() {
+		try {
+			super.save();
+		} catch (PersistenceHandlerException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

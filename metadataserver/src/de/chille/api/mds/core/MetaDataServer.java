@@ -1,11 +1,13 @@
 package de.chille.api.mds.core;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
-import de.chille.api.mds.persistence.PersistenceHandler;
 import de.chille.api.mme.core.Mapping;
 import de.chille.api.mme.core.MetaMappingEngine;
 import de.chille.api.mme.mapper.MDSMapper;
+import de.chille.mds.core.MDSCoreException;
+import de.chille.mds.core.MDSHrefFormatException;
 
 /**
  * stellt die Schnittstelle zu den Clients dar
@@ -44,7 +46,7 @@ public interface MetaDataServer extends MDSPersistentObject {
 	 * @param href Pfad zum MDSRepository
 	 * @return true bei Erfolg
 	 */
-	public boolean deleteRepository(MDSHref href);
+	public Vector removeRepository(MDSHref href, boolean confirm);
 
 	/**
 	 * umbenennen eines MDSRepository
@@ -73,13 +75,7 @@ public interface MetaDataServer extends MDSPersistentObject {
 	 */
 	public MDSHref insertModel(MDSHref href, MDSModel mdsModel);
 
-	/**
-	 * entfernt ein MDSModel aus einem MDSRepository
-	 *
-	 * @param href an dieser spezifierten Stelle 
-	 * @return true bei Erfolg
-	 */
-	public boolean removeModel(MDSHref href);
+	public Vector removeModel(MDSHref href, boolean conffirm);
 
 	/**
 	 * verschiebt ein MDSModel in ein anderes MDSRepository
@@ -140,7 +136,7 @@ public interface MetaDataServer extends MDSPersistentObject {
 	 * @param href an dieser spezifierten Stelle 
 	 * @return true bei Erfolg
 	 */
-	public boolean removeElement(MDSHref href);
+	public Vector removeElement(MDSHref href, boolean conffirm);
 
 	/**
 	 * validiert MDSModel
@@ -149,7 +145,7 @@ public interface MetaDataServer extends MDSPersistentObject {
 	 * @param validateType Art der Validierung(dtd, schema, strikt, ...)
 	 * @return Messages der Validierung
 	 */
-	public ArrayList validateModel(MDSHref href, int validateType);
+	public Vector validateModel(MDSHref href, int validateType);
 
 	/**
 	 * importiert MDSModel, wenn ein Mapping angeben wird
@@ -161,7 +157,7 @@ public interface MetaDataServer extends MDSPersistentObject {
 	 * @param mapping das evtl. zu verwendende Mapping
 	 * @return Pfad zum neu entstandenen MDSModel
 	 */
-	public MDSHref importModel(MDSHref href, MDSModel mdsModel, Mapping mapping);
+	//public MDSHref importModel(MDSHref href, MDSModel mdsModel, Mapping mapping);
 
 	/**
 	 * exportiert MDSModel, wenn ein Mapping angeben wird
@@ -172,7 +168,7 @@ public interface MetaDataServer extends MDSPersistentObject {
 	 * @param mapping das evtl. zu verwendende Mapping
 	 * @return des exportierte MDSModel
 	 */
-	public MDSModel exportModel(MDSHref href, Mapping mapping);
+	//public MDSModel exportModel(MDSHref href, Mapping mapping);
 
 	/**
 	 * meldet neuen Mapper bei MME an
@@ -203,14 +199,11 @@ public interface MetaDataServer extends MDSPersistentObject {
 	 * konvertiert ein MDSModel bestimmten Typs auf ein 
 	 * durchs Mapping spezifziertes MDSModel anderen Typs,
 	 * evtl. sind dabei mehrere Mapping-Vorgänge notwendig -
-	 * das neue MDSModel wird automatisch im selben MDSRepository abgelegt
 	 *
 	 * @param href Pfad zum Ausgangs-MDSModel
 	 * @param mapping das Mapping
-	 * @param label des neuen MDSModels, id wird automatisch vergeben
-	 * @return Pfad zum neu entstandenen MDSModel
 	 */
-	public MDSHref convertModel(MDSHref href, Mapping mapping, String label);
+	public void convertModel(MDSHref href, Mapping mapping);
 
 	/**
 	 * Gets the metaMappingEngine
@@ -252,5 +245,8 @@ public interface MetaDataServer extends MDSPersistentObject {
 	public void startup();
 	
 	public void shutdown();
+	
+	public MDSRepository getRepositoryByHref(MDSHref href)
+		throws MDSCoreException, MDSHrefFormatException;
 	
 }

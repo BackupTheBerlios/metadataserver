@@ -1,75 +1,36 @@
 package de.chille.mme.mapper;
 
-import java.io.File;
-
-import de.chille.mds.core.MDSObjectImpl;
-import de.chille.mme.core.MetaMappingEngineException;
-
 import de.chille.api.mds.core.MDSModel;
-import de.chille.api.mds.persistence.PersistenceHandler;
 import de.chille.api.mme.core.Mapping;
 import de.chille.api.mme.mapper.MDSMapper;
-import de.chille.api.mme.mapper.UnicodeMapper;
-import de.chille.api.mme.mapper.XMLMapper;
-
-import java.util.ArrayList;
+import de.chille.mds.core.*;
+import de.chille.mme.core.MetaMappingEngineException;
 
 /**
  * @see MDSMapper
  * 
- * @author Christian Sterr
+ * @author Thomas Chille
  */
-public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
-
-	/**
-	 * soll dieser Mapper die Packetstrucktur nachbilden
-	 */
-	private boolean buildPackage = true;
+abstract class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 
 	/**
 	 * das von diesem Mapper durchführbare Mapping
 	 */
 	private Mapping mapping = null;
 
-	/**
-	 * Datei mit den globalen Mappinginstruktionen
-	 */
-	private File mappingFile = null;
-	
-	/**
-	 * der eigendliche Mapper
-	 */
-	public XMLMapper xmlMapper = null;
+	private static int counter = 0;
 
-	/**
-	 * 
-	 */
-	public UnicodeMapper unicodeMapper = null;
-
-	/**
-	 * zum speichern des models
-	 */
-	private PersistenceHandler persistenceHandler = null;
-
-	/**
-	 * @see Mapper#map(MDSModel, Mapping)
-	 */
-	public MDSModel map(MDSModel mdsModel)
-		throws MetaMappingEngineException {
-		String xmlContend = mdsModel.getUmlFile().getContent();
-		System.out.println("map: " + xmlContend);
-		ArrayList fileList = null;
-		if(xmlMapper != null){
-			this.xmlMapper.setBuildPackage(this.getBuildPackage());
-			fileList = this.xmlMapper.doMapping(xmlContend);
-			// dann handelt es sich um einen XmlMapper
-		}else{
-			if(unicodeMapper != null)
-			// dann handelt es sich um einen unicodeMapper
-			this.unicodeMapper.setBuildPackage(this.getBuildPackage());
+	public MDSMapperImpl(String id) {
+		try {
+			setId(id == null ? "" + counter++ : id);
+			setHref(
+				new MDSHrefImpl(
+					MetaDataServerImpl.getInstance().getHref().getHrefString()
+						+ "/mapper_"
+						+ getId()));
+		} catch (MDSHrefFormatException e) {
+			e.printStackTrace();
 		}
-		mdsModel.setAdditionalFiles(fileList);
-		return mdsModel;
 	}
 
 	/**
@@ -87,51 +48,37 @@ public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 	public void setMapping(Mapping mapping) {
 		this.mapping = mapping;
 	}
-
 	/**
-	 * Gets the mappingFile
-	 * @return Returns a File
+	 * Returns the counter.
+	 * @return int
 	 */
-	public File getMappingFile() {
-		return mappingFile;
+	public static int getCounter() {
+		return counter;
 	}
 
 	/**
-	 * Sets the mappingFile
-	 * @param mappingFile The mappingFile to set
+	 * Sets the counter.
+	 * @param counter The counter to set
 	 */
-	public void setMappingFile(File mappingFile) {
-		this.mappingFile = mappingFile;
-	}
-	
-	/**
-	 * Gets the persistenceHandler
-	 * @return Returns a PersistenceHandler
-	 */
-	public PersistenceHandler getPersistenceHandler() {
-		return persistenceHandler;
+	public static void setCounter(int counter) {
+		MDSMapperImpl.counter = counter;
 	}
 
 	/**
-	 * Sets the persistenceHandler
-	 * @param persistenceHandler The persistenceHandler to set
+	 * @see de.chille.api.mme.mapper.MDSMapper#map(MDSModel)
 	 */
-	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
-		this.persistenceHandler = persistenceHandler;
-	}
-	
-	/**
-	 * @see de.chille.api.de.chille.de.chille.mme.mapper.MDSMapper#setBuildPackage(boolean)
-	 */
-	public void setBuildPackage(boolean buildPackage){
-		this.buildPackage = buildPackage;
+	public void map(MDSModel mdsModel) throws MetaMappingEngineException {
 	}
 
-
 	/**
-	 * @see de.chille.api.de.chille.de.chille.mme.mapper.MDSMapper#getBuildPackage()
+	 * @see java.lang.Object#toString()
 	 */
-	public boolean getBuildPackage(){
-		return buildPackage;
-	}	
+	public String toString() {
+		return getLabel()
+			+ ": "
+			+ getMapping().getFrom()
+			+ " >> "
+			+ getMapping().getTo();
+	}
+
 }

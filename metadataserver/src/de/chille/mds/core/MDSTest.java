@@ -13,7 +13,7 @@ public class MDSTest {
 	public static void main(String[] args)
 		throws MDSHrefFormatException, MDSCoreException {
 		
-		MetaDataServer server = new MetaDataServerImpl();
+		MetaDataServer server = MetaDataServerImpl.getInstance();
 
 		MDSRepository rep = new MDSRepositoryImpl();
 		MDSHref rhref = server.insertReposititory(rep);

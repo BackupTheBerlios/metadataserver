@@ -5,7 +5,7 @@ import de.chille.mme.core.MetaMappingEngineException;
 /**
  * Spezialisierung des Mappers für Unicode-Quellen
  * 
- * @author Christian Sterr
+ * @author Thomas Chille
  */
 public interface UnicodeMapper extends MDSMapper {
 
@@ -17,11 +17,4 @@ public interface UnicodeMapper extends MDSMapper {
 	 */
 	public void generateParser() throws MetaMappingEngineException;
 	
-	/**
-	 * Method doMapping.
-	 * @param xmi
-	 * @return String
-	 * @throws MetaMappingEngineException
-	 */
-	public String doMapping(String xmi)throws MetaMappingEngineException;	
 }

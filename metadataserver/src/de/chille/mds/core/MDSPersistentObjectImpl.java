@@ -2,6 +2,7 @@ package de.chille.mds.core;
 
 import de.chille.mds.persistence.FilesystemHandlerImpl;
 import de.chille.mds.persistence.PersistenceHandlerException;
+import de.chille.mds.soap.MDSObjectBean;
 
 import de.chille.api.mds.core.MDSHref;
 import de.chille.api.mds.core.MDSObject;
@@ -21,21 +22,7 @@ public class MDSPersistentObjectImpl
 	 * zum speichern 
 	 */
 	private PersistenceHandler persistenceHandler = new FilesystemHandlerImpl();
-
-	/**
-	 * @see MDSObject#getPersistenceHandler()
-	 */
-	public PersistenceHandler getPersistenceHandler() {
-		return persistenceHandler;
-	}
-
-	/**
-	 * @see MDSObject#setPersistenceHandler(PersistenceHandler)
-	 */
-	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
-		this.persistenceHandler = persistenceHandler;
-	}
-
+	
 	/**
 	 * @see de.chille.api.de.chille.de.chille.mds.core.MDSPersistentObject#save()
 	 */
@@ -48,6 +35,7 @@ public class MDSPersistentObjectImpl
 	 */
 	public MDSPersistentObject load(String version)
 		throws PersistenceHandlerException {
+		
 		return getPersistenceHandler().load(getHref(), version);
 	}
 
@@ -57,6 +45,22 @@ public class MDSPersistentObjectImpl
 	public void delete(String version)
 		throws PersistenceHandlerException {
 		getPersistenceHandler().delete(this, version);
+	}
+	
+	/**
+	 * Returns the persistenceHandler.
+	 * @return PersistenceHandler
+	 */
+	public PersistenceHandler getPersistenceHandler() {
+		return persistenceHandler;
+	}
+
+	/**
+	 * Sets the persistenceHandler.
+	 * @param persistenceHandler The persistenceHandler to set
+	 */
+	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
+		this.persistenceHandler = persistenceHandler;
 	}
 
 }

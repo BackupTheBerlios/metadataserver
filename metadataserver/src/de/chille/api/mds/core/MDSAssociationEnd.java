@@ -1,5 +1,7 @@
 package de.chille.api.mds.core;
 
+import de.chille.mds.soap.MDSAssociationEndBean;
+
 /**
  * Modelliert MOF-MDSAssociationEnd
  * 
@@ -78,4 +80,8 @@ public interface MDSAssociationEnd {
 	 * @param aggregation The aggregation to set
 	 */
 	public void setAggregation(int aggregation);
+	
+	public MDSAssociationEndBean exportBean();
+	
+	public void importBean(MDSAssociationEndBean bean);
 }

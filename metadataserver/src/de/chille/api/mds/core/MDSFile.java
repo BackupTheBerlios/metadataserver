@@ -1,5 +1,7 @@
 package de.chille.api.mds.core;
 
+import de.chille.mds.soap.MDSFileBean;
+
 /**
  * Repräsentation der in den Models genutzten Files
  * 
@@ -60,4 +62,8 @@ public interface MDSFile {
 	 * @param type The type to set
 	 */
 	public void setType(String type);
+	
+	public MDSFileBean exportBean();
+	
+	public void importBean(MDSFileBean bean);
 }

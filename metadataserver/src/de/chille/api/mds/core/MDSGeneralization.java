@@ -1,6 +1,7 @@
 package de.chille.api.mds.core;
 
 import de.chille.mds.core.MDSCoreException;
+import de.chille.mds.soap.MDSGeneralizationBean;
 
 /**
  * Spezialisierung des MDSElements, modelliert eine 
@@ -33,4 +34,8 @@ public interface MDSGeneralization extends MDSElement {
 	 * @param superClass The superClass to set
 	 */
 	public void setSuperClass(MDSClass superClass);
+	
+	public MDSGeneralizationBean exportBean();
+	
+	public void importBean(MDSGeneralizationBean bean);
 }

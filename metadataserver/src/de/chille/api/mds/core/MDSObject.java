@@ -1,5 +1,9 @@
 package de.chille.api.mds.core;
 
+import org.apache.soap.util.Bean;
+
+import de.chille.mds.soap.MDSObjectBean;
+
 /**
  * Superinterface aller MDS-Datatypes
  * 
@@ -42,5 +46,6 @@ public interface MDSObject {
 	 * @param label The label to set
 	 */
 	public void setLabel(String label);
+
 	
 }

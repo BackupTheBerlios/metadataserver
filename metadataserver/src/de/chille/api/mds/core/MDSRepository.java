@@ -1,12 +1,12 @@
 package de.chille.api.mds.core;
 
 import java.util.ArrayList;
-
-import de.chille.api.mds.persistence.PersistenceHandler;
+import java.util.Vector;
 
 import de.chille.mds.core.MDSCoreException;
 import de.chille.mds.core.MDSHrefFormatException;
 import de.chille.mds.persistence.PersistenceHandlerException;
+import de.chille.mds.soap.MDSRepositoryBean;
 
 /**
  * beinhaltet die MDSModels
@@ -14,13 +14,6 @@ import de.chille.mds.persistence.PersistenceHandlerException;
  * @author Thomas Chille
  */
 public interface MDSRepository extends MDSPersistentObject {
-
-	/**
-	 * entfernt MDSRepository und alle beinhaltenden MDSModels
-	 * 
-	 * @throws MDSCoreException im Fehlerfall
-	 */
-	public void delete() throws MDSCoreException;
 
 	/**
 	 * führt eine Abfrage auf MDSRepository und seinen MDSModels aus
@@ -41,13 +34,7 @@ public interface MDSRepository extends MDSPersistentObject {
 	public String insertModel(MDSModel mdsModel)
 		throws MDSHrefFormatException, MDSCoreException;
 
-	/**
-	 * löscht MDSModel
-	 * 
-	 * @param href Pfad des zu löschenden Model
-	 * @throws MDSCoreException im Fehlerfall
-	 */
-	public void removeModel(MDSHref href) throws MDSCoreException;
+	public Vector removeModel(MDSHref href, boolean confirm) throws MDSCoreException;
 
 	/**
 	 * verschiebt MDSModel in ein anderes MDSRepository
@@ -100,4 +87,8 @@ public interface MDSRepository extends MDSPersistentObject {
 	public void setCounter(int counter);
 	
 	public void update() throws PersistenceHandlerException;
+	
+	public MDSRepositoryBean exportBean();
+	
+	public void importBean(MDSRepositoryBean bean);
 }

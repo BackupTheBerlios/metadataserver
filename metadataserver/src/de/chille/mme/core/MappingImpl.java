@@ -5,7 +5,7 @@ import de.chille.api.mme.mapper.MDSMapper;
 
 /**
  *	@see Mapping
- *  @author Christian Sterr
+ *  @author Thomas Chille
  *
  */
 public class MappingImpl implements Mapping {
@@ -20,6 +20,20 @@ public class MappingImpl implements Mapping {
 	 */
 	private String to = null;
 	
+	/**
+	 * Constructor for MappingImpl.
+	 */
+	public MappingImpl() {
+	}
+
+	/**
+	 * Constructor for MappingImpl.
+	 */
+	public MappingImpl(String from, String to) {
+		this.from = from;
+		this.to = to;
+	}
+
 	/**
 	 * Gets the from
 	 * @return Returns a String
@@ -56,7 +70,6 @@ public class MappingImpl implements Mapping {
 	 * @see java.lang.Object#equals(Object)
 	 */
 	public boolean equals(Object o){
-		System.out.println("-> equals Test!");
 		Mapping mapping = (Mapping)o;
 		if( mapping.getFrom().compareToIgnoreCase(this.getFrom()) == 0 &&
 			mapping.getTo().compareToIgnoreCase(this.getTo()) == 0 ){

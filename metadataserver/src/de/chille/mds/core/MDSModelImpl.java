@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.soap.util.Bean;
 import org.apache.xerces.parsers.DOMParser;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -20,11 +22,21 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import de.chille.mds.MDSGlobals;
 import de.chille.mds.persistence.PersistenceHandlerException;
+import de.chille.mds.soap.MDSAssociationBean;
+import de.chille.mds.soap.MDSClassBean;
+import de.chille.mds.soap.MDSFileBean;
+import de.chille.mds.soap.MDSGeneralizationBean;
+import de.chille.mds.soap.MDSModelBean;
+import de.chille.mds.soap.MDSObjectBean;
 import de.chille.mds.xmi.XMIHandlerException;
 import de.chille.mds.xmi.XMIHandlerImpl;
 
+import de.chille.api.mds.core.*;
+import de.chille.api.mds.core.MDSAssociation;
+import de.chille.api.mds.core.MDSClass;
 import de.chille.api.mds.core.MDSElement;
 import de.chille.api.mds.core.MDSFile;
+import de.chille.api.mds.core.MDSGeneralization;
 import de.chille.api.mds.core.MDSHref;
 import de.chille.api.mds.core.MDSModel;
 import de.chille.api.mds.core.MDSRepository;
@@ -39,6 +51,10 @@ import de.chille.api.mds.xmi.XMIHandler;
 public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 
 	private int counter = 0;
+
+	private boolean unsavedChanges = false;
+
+	private Vector messages;
 
 	public MDSModelImpl() {
 	}
@@ -85,6 +101,7 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 	 * @see MDSModel#restoreModel(String)
 	 */
 	public void restoreModel(String version) throws MDSCoreException {
+		touch();
 	}
 
 	/**
@@ -103,6 +120,7 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 						+ "/"
 						+ mdsElement.getPrefix()
 						+ mdsElement.getId()));
+			touch();
 			return mdsElement.getId();
 		} else {
 			throw new MDSCoreException("Fehler: MDSModel#insertElement()");
@@ -112,27 +130,100 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 	/**
 	 * @see MDSModel#removeElement(MDSHref)
 	 */
-	public void removeElement(MDSHref href)
+	public Vector removeElement(MDSHref href, boolean confirm)
 		throws MDSCoreException, MDSHrefFormatException {
 
+		Vector result = new Vector();
+		Vector collect = new Vector();
 		MDSElement mdsElement;
 		try {
-			mdsElement = getById(href);
+			mdsElement = getElementById(href);
+			if (mdsElement instanceof MDSClassImpl) {
+				// mdsElement-beziehungen löschen 
+				Iterator iter = getElements().iterator();
+				while (iter.hasNext()) {
+					MDSElementImpl element = (MDSElementImpl) iter.next();
+					if (element instanceof MDSAssociationImpl) {
+						if (
+							(
+								(MDSAssociationEndImpl)
+									((MDSAssociationImpl) element)
+							.getAssociationEnds()
+							.get(0))
+							.getMdsClass()
+							.equals(mdsElement)
+							|| (
+								(MDSAssociationEndImpl)
+									((MDSAssociationImpl) element)
+								.getAssociationEnds()
+								.get(1))
+								.getMdsClass()
+								.equals(mdsElement)) {
+							collect.add(element);
+						}
+					} else if (element instanceof MDSGeneralizationImpl) {
+						if (((MDSGeneralizationImpl) element)
+							.getSuperClass()
+							.equals(mdsElement)
+							|| ((MDSGeneralizationImpl) element)
+								.getSubClass()
+								.equals(
+								mdsElement)) {
+							collect.add(element);
+						}
+					}
+				}
+			}
 		} catch (MDSCoreException e) {
 			throw new MDSCoreException("Fehler: MDSModels#removeElement()");
 		}
-		if (!elements.remove(mdsElement)) {
-			throw new MDSCoreException("Fehler: MDSModel#removeElement()");
+		if (!confirm) {
+			elements.remove(mdsElement);
+			touch();
 		}
+		Iterator iter = collect.iterator();
+		while (iter.hasNext()) {
+			if (confirm) {
+				result.add(
+					((MDSElementImpl) iter.next()).getHref().getHrefString());
+			} else {
+				elements.remove(iter.next());
+			}
+		}
+		return result;
 	}
 
 	/**
 	 * @see MDSModel#validateModel(int)
 	 */
-	public ArrayList validateModel(int validateType) throws MDSCoreException {
-		/*
+	public Vector validateModel(int validateType) throws MDSCoreException {
+
+		messages = new Vector();
 		// ohne metamodel gibt es nichts zu validieren
 		if (getMetamodel() != null) {
+			// Vollständigkeitstest
+			Iterator i = getMetamodel().getElements().iterator();
+			Iterator j = null;
+			boolean ok = false;
+			while (i.hasNext()) {
+				MDSElement element = (MDSElementImpl) i.next();
+				j = elements.iterator();
+				ok = false;
+				while (j.hasNext()) {
+					if (((MDSElementImpl) j.next())
+						.getLabel()
+						.equals(element.getLabel())) {
+						ok = true;
+						break;
+					}
+				}
+				if (!ok) {
+					messages.add(
+						"Missing Element: "
+							+ element.getPrefix().replaceFirst("_", "::")
+							+ element.getLabel());
+				}
+			}
 			try {
 				// dtd des metamodels erzeugen und temporär im filesystem ablegen
 				MDSFile dtdFile = xmiHandler.mapMDS2DTD(getMetamodel());
@@ -143,7 +234,7 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 						this,
 						MDSGlobals.TEMP_PATH + "validate.dtd");
 				// debug
-				System.out.println(xmiFile.getContent());
+				//System.out.println(xmiFile.getContent());
 
 				// mittels SAXParser validieren
 				SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -167,10 +258,8 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			return null;
-		} else {
-			return null;
-		}*/return null;
+		}
+		return messages;
 	}
 
 	/**
@@ -240,6 +329,7 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 	 */
 	public void setMetamodel(MDSModel metamodel) {
 		this.metamodel = metamodel;
+		touch();
 	}
 
 	/**
@@ -254,6 +344,7 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 	 */
 	public void setAdditionalFiles(ArrayList additionalFiles) {
 		this.additionalFiles = additionalFiles;
+		touch();
 	}
 
 	/**
@@ -282,9 +373,10 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 	 */
 	public void setElements(ArrayList elements) {
 		this.elements = elements;
+		touch();
 	}
 
-	private MDSElement getById(MDSHref href)
+	public MDSElement getElementById(MDSHref href)
 		throws MDSCoreException, MDSHrefFormatException {
 
 		String id = href.getElementId();
@@ -305,6 +397,7 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 		this.setAdditionalFiles(model.getAdditionalFiles());
 		this.setElements(model.getElements());
 		this.setMetamodel(model.getMetamodel());
+		untouch();
 	}
 
 	/**
@@ -347,19 +440,16 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 		// The following methods are standard SAX ErrorHandler methods.
 		// See SAX documentation for more info.
 		public void warning(SAXParseException spe) throws SAXException {
-			out.println("Warning: " + getParseExceptionInfo(spe));
+			messages.add("Warning: " + getParseExceptionInfo(spe));
 		}
 		public void error(SAXParseException spe) throws SAXException {
-			String message = "Error: " + getParseExceptionInfo(spe);
-			System.out.println(message);
-			//throw new SAXException(message);
+			messages.add("Error: " + getParseExceptionInfo(spe));
 		}
 		public void fatalError(SAXParseException spe) throws SAXException {
-			String message = "Fatal Error: " + getParseExceptionInfo(spe);
-			//throw new SAXException(message);
+			messages.add("Fatal Error: " + getParseExceptionInfo(spe));
 		}
 	}
-	
+
 	/**
 	 * @see de.chille.api.de.chille.de.chille.mds.core.MDSModel#getCounter()
 	 */
@@ -372,6 +462,100 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 	 */
 	public void setCounter(int counter) {
 		this.counter = counter;
+		touch();
+	}
+
+	public MDSModelBean exportBean() {
+		MDSModelBean bean = new MDSModelBean();
+		bean.setHref(this.getHref().getHrefString());
+		bean.setId(this.getId());
+		bean.setLabel(this.getLabel());
+		bean.setCounter(this.getCounter());
+		if (this.getMetamodel() != null) {
+			bean.setMetamodelHref(
+				this.getMetamodel().getHref().getHrefString());
+			bean.setMetamodelName(this.getMetamodel().getLabel());
+		}
+		MDSElement element = null;
+
+		Vector elementBeans = new Vector();
+		Iterator i = this.getElements().iterator();
+		while (i.hasNext()) {
+			element = (MDSElementImpl) i.next();
+			if (element.getPrefix().equals("class_")) {
+				elementBeans.add(((MDSClassImpl) element).exportBean());
+			} else if (element.getPrefix().equals("association_")) {
+				elementBeans.add(((MDSAssociationImpl) element).exportBean());
+			} else if (element.getPrefix().equals("generalization_")) {
+				elementBeans.add(
+					((MDSGeneralizationImpl) element).exportBean());
+			}
+		}
+		bean.setElements(elementBeans);
+		Vector files = new Vector();
+		i = this.getAdditionalFiles().iterator();
+		while (i.hasNext()) {
+			files.add(((MDSFileImpl) i.next()).exportBean());
+		}
+		bean.setAdditionalFiles(files);
+		return bean;
+	}
+
+	public void importBean(MDSModelBean bean) {
+		MDSHref href = null;
+		MetaDataServer server = MetaDataServerImpl.getInstance();
+		ArrayList elements = new ArrayList();
+		Iterator i = bean.getElements().iterator();
+		try {
+			if (bean.getHref() != null)
+				this.setHref(new MDSHrefImpl(bean.getHref()));
+			if (bean.getId() != null)
+				this.setId(bean.getId());
+			if (bean.getLabel() != null)
+				this.setLabel(bean.getLabel());
+			this.setCounter(bean.getCounter());
+			if (bean.getMetamodelHref() != null) {
+				href = new MDSHrefImpl(bean.getMetamodelHref());
+				this.setMetamodel(
+					server.getRepositoryByHref(href).getModelByHref(href));
+			}
+			while (i.hasNext()) {
+
+				href = new MDSHrefImpl(((MDSObjectBean) i.next()).getHref());
+				elements.add(
+					server.getRepositoryByHref(href).getModelByHref(
+						href).getElementById(
+						href));
+			}
+		} catch (MDSHrefFormatException e) {
+			e.printStackTrace();
+		} catch (MDSCoreException e) {
+			e.printStackTrace();
+		}
+		this.setElements(elements);
+		ArrayList files = new ArrayList();
+		MDSFile file = null;
+		i = bean.getAdditionalFiles().iterator();
+		while (i.hasNext()) {
+			file.importBean((MDSFileBean) i.next());
+			files.add(file);
+		}
+		this.setAdditionalFiles(files);
+	}
+
+	public void touch() {
+		unsavedChanges = true;
+	}
+
+	public void untouch() {
+		unsavedChanges = false;
+	}
+	/**
+	 * Returns the unsavedChanges.
+	 * @return boolean
+	 */
+	public boolean hasUnsavedChanges() {
+		return unsavedChanges;
 	}
 
 }

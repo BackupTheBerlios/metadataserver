@@ -2,9 +2,9 @@ package de.chille.mme.mapper;
 
 import java.io.File;
 
-import de.chille.mme.core.MetaMappingEngineException;
-
+import de.chille.api.mds.core.MDSModel;
 import de.chille.api.mme.mapper.UnicodeMapper;
+import de.chille.mme.core.MetaMappingEngineException;
 
 /**
  * @see UnicodeMapper
@@ -15,11 +15,6 @@ public class UnicodeMapperImpl extends MDSMapperImpl implements UnicodeMapper {
 
 
 	/**
-	 * soll die Packetstrucktur nachgebildet werden.
-	 */
-	private boolean buildPackage = true;
-
-	/**
 	 * *.jj - Datei um parserFile zu generieren
 	 */
 	private File grammarFile = null;
@@ -28,6 +23,14 @@ public class UnicodeMapperImpl extends MDSMapperImpl implements UnicodeMapper {
 	 * der generierte Parser für diesen Mapper
 	 */
 	private File parserFile = null;
+
+	/**
+	 * Constructor for UnicodeMapperImpl.
+	 * @param id
+	 */
+	public UnicodeMapperImpl(String id) {
+		super(id);
+	}
 
 	/**
 	 * @see UnicodeMapper#generateParser()
@@ -68,24 +71,10 @@ public class UnicodeMapperImpl extends MDSMapperImpl implements UnicodeMapper {
 	}
 	
 	/**
-	 * @see de.chille.api.de.chille.de.chille.mme.mapper.UnicodeMapper#doMapping(String)
+	 * @see Mapper#map(MDSModel, Mapping)
 	 */
-	public String doMapping(String xmi)throws MetaMappingEngineException{
-		return null;
-	}
-	
-	/**
-	 * @see de.chille.api.de.chille.de.chille.mme.mapper.MDSMapper#setBuildPackage(boolean)
-	 */
-	public void setBuildPackage(boolean buildPackage){
-		this.buildPackage = buildPackage;
+	public void map(MDSModel mdsModel) throws MetaMappingEngineException {
 	}
 
-	/**
-	 * @see de.chille.api.de.chille.de.chille.mme.mapper.MDSMapper#getBuildPackage()
-	 */
-	public boolean getBuildPackage(){
-		return buildPackage;
-	}
 
 }

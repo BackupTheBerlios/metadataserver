@@ -1,19 +1,7 @@
-package de.chille.mds.core;
+package de.chille.mds.soap;
 
-import java.io.FileWriter;
-import java.util.Iterator;
-import java.util.Vector;
-
-import de.chille.api.mds.core.MDSFile;
-import de.chille.mds.soap.MDSFileBean;
-
-/**
- * @see de.chille.api.de.chille.de.chille.mds.core.MDSFile#getContent()
- * 
- * @author Thomas Chille
- */
-public class MDSFileImpl implements MDSFile {
-
+public class MDSFileBean extends MDSObjectBean {
+	
 	private String content = null;
 	
 	private String name = null;
@@ -77,40 +65,12 @@ public class MDSFileImpl implements MDSFile {
 	public void setPath(String path) {
 		this.path = path;
 	}
-
-	/**
-	 * @see de.chille.api.de.chille.de.chille.mds.core.MDSFile#save(String)
-	 */
-	public boolean save(String path) {
-		try {
-			FileWriter f1 = new FileWriter(path);
-			f1.write(getContent());
-			f1.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-	
-	public MDSFileBean exportBean() {
-		MDSFileBean bean = new MDSFileBean();
-		bean.setContent(this.getContent());
-		bean.setName(this.getName());
-		bean.setPath(this.getPath());
-		bean.setType(this.getType());
-		return bean;
-	}
-	
 	
 	/**
-	 * @see de.chille.api.mds.core.MDSFile#importBean(MDSFileBean)
+	 * Constructor for MDSFileBean.
 	 */
-	public void importBean(MDSFileBean bean) {
-		this.setContent(bean.getContent());
-		this.setName(bean.getName());
-		this.setPath(bean.getPath());
-		this.setType(bean.getType());
+	public MDSFileBean() {
+		super();
 	}
 
 }

@@ -1,13 +1,13 @@
 package de.chille.api.mds.core;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
-import de.chille.api.mds.persistence.PersistenceHandler;
 import de.chille.api.mds.xmi.XMIHandler;
-
 import de.chille.mds.core.MDSCoreException;
 import de.chille.mds.core.MDSHrefFormatException;
 import de.chille.mds.persistence.PersistenceHandlerException;
+import de.chille.mds.soap.MDSModelBean;
 
 /**
  * Abbildung eines UML- o. MOF- Models, besteht aus seiner 
@@ -50,13 +50,7 @@ public interface MDSModel extends MDSPersistentObject {
 	public String insertElement(MDSElement mdsElement)
 		throws MDSCoreException, MDSHrefFormatException;
 
-	/**
-	 * entfernt ein MDSElement aus dem MDSModel
-	 *
-	 * @param href an dieser spezifierten Stelle 
-	 * @throws MDSCoreException im Fehlerfall
-	 */
-	public void removeElement(MDSHref href)
+	public Vector removeElement(MDSHref href, boolean confirm)
 		throws MDSCoreException, MDSHrefFormatException;
 
 	/**
@@ -67,7 +61,7 @@ public interface MDSModel extends MDSPersistentObject {
 	 * @return Messages der Validierung
 	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public ArrayList validateModel(int validateType) throws MDSCoreException;
+	public Vector validateModel(int validateType) throws MDSCoreException;
 
 	/**
 	 * führt eine Abfrage auf MDSModel aus
@@ -163,5 +157,18 @@ public interface MDSModel extends MDSPersistentObject {
 	public void setCounter(int counter);
 	
 	public void update() throws PersistenceHandlerException;
+	
+	public MDSModelBean exportBean();
+	
+	public void importBean(MDSModelBean bean);
+	
+	public void touch();
+	
+	public void untouch();
+
+	public boolean hasUnsavedChanges();
+	
+	public MDSElement getElementById(MDSHref href)
+		throws MDSCoreException, MDSHrefFormatException;
 
 }

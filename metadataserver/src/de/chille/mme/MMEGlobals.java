@@ -8,8 +8,16 @@ package de.chille.mme;
  * @author Christian Sterr
  * 
  */
-public class MmeGlobals {
+public class MMEGlobals {
 
+	public static final String MAPPER_PATH =
+		"C:/Programme/eclipse/workspace/metadata.server/mapper/";
+	
+	public static final String TEMP_PATH =
+		"C:/Programme/eclipse/workspace/metadata.server/tmp/";
+
+	
+	
 	/**
 	 * Default output Path
 	 */

@@ -145,4 +145,13 @@ public class MDSHrefImpl implements MDSHref {
 			throw new MDSHrefFormatException("Fehler: MDSHref#getElementHref");
 		}
 	}
+	
+	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return getHrefString();
+	}
+
 }

@@ -36,10 +36,9 @@ public interface MetaMappingEngine {
 	 *
 	 * @param model das Ausgangs-MDSModel mit seinen Ressoucen 
 	 * @param mapping das Mapping
-	 * @return des entstandene MDSModel mit seinen Ressoucen 
 	 * @throws MetaMappingEngineException im Fehlerfall
 	 */
-	public MDSModel map(MDSModel mdsModel, Mapping mapping)
+	public void map(MDSModel mdsModel, Mapping mapping)
 		throws MetaMappingEngineException;
 
 	/**

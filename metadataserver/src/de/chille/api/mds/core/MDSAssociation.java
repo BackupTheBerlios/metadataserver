@@ -3,6 +3,7 @@ package de.chille.api.mds.core;
 import java.util.ArrayList;
 
 import de.chille.mds.core.MDSCoreException;
+import de.chille.mds.soap.MDSAssociationBean;
 
 /**
  * Spezialisierung des MDSElements, modelliert eine 
@@ -41,4 +42,8 @@ public interface MDSAssociation extends MDSElement {
 	 * @param associationEnds The associationEnds to set
 	 */
 	public void setAssociationEnds(ArrayList associationEnds);
+	
+	public MDSAssociationBean exportBean();
+	
+	public void importBean(MDSAssociationBean bean);
 }

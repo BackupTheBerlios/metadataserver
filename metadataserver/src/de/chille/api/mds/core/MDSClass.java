@@ -1,8 +1,6 @@
 package de.chille.api.mds.core;
 
-import java.util.ArrayList;
-
-import de.chille.mds.core.MDSCoreException;
+import de.chille.mds.soap.MDSClassBean;
 
 /**
  * Spezialisierung des MDSElements, modelliert eine Klasse 
@@ -11,5 +9,7 @@ import de.chille.mds.core.MDSCoreException;
  */
 public interface MDSClass extends MDSElement {
 
+	public MDSClassBean exportBean();
 	
+	public void importBean(MDSClassBean bean);
 }

@@ -1,6 +1,9 @@
 package de.chille.mds.core;
 
+import org.apache.soap.util.Bean;
+
 import de.chille.mds.persistence.FilesystemHandlerImpl;
+import de.chille.mds.soap.MDSObjectBean;
 
 import de.chille.api.mds.core.MDSHref;
 import de.chille.api.mds.core.MDSObject;
@@ -16,7 +19,7 @@ public class MDSObjectImpl implements MDSObject {
 	/**
 	 * zum speichern 
 	 */
-	private PersistenceHandler persistenceHandler = new FilesystemHandlerImpl();
+	//private PersistenceHandler persistenceHandler = new FilesystemHandlerImpl();
 
 	/**
 	 * in Hierarchieebene eindeutige Kennung
@@ -64,16 +67,16 @@ public class MDSObjectImpl implements MDSObject {
 	/**
 	 * @see MDSObject#getPersistenceHandler()
 	 */
-	public PersistenceHandler getPersistenceHandler() {
+	/*public PersistenceHandler getPersistenceHandler() {
 		return persistenceHandler;
 	}
-
+*/
 	/**
 	 * @see MDSObject#setPersistenceHandler(PersistenceHandler)
 	 */
-	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
+	/*public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
 		this.persistenceHandler = persistenceHandler;
-	}
+	}*/
 
 	/**
 	 * @see de.chille.api.de.chille.de.chille.mds.core.MDSObject#getHref()
@@ -88,5 +91,6 @@ public class MDSObjectImpl implements MDSObject {
 	public void setHref(MDSHref href) {
 		this.href = href;
 	}
+	
 
 }
