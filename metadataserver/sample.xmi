@@ -17,46 +17,46 @@
 		<XMI.model xmi.name="erstes" href="mds://server_0/repository_0/model_0"/>
 	</XMI.header>
 	<XMI.content>
-		<UML:Class xmi.id="class_0" name="myclass0"/>
-		<UML:Class xmi.id="class_9" name="myclass9"/>
-		<UML:Class xmi.id="class_1" name="myclass1"/>
-		<UML:Class xmi.id="class_2" name="myclass2">
+		<UML:Class xmi.id="class_0" name="MyClass0"/>
+		<UML:Class xmi.id="class_9" name="MyClass9"/>
+		<UML:Class xmi.id="class_1" name="MyClass1"/>
+		<UML:Class xmi.id="class_2" name="MyClass2">
 			<UML:Namespace.ownedElement>
-				<UML:Generalization xmi.id="generalization_13" name="geni3" child="class_2" parent="class_1"/>
+				<UML:Generalization xmi.id="generalization_13" name="Geni3" child="class_2" parent="class_1"/>
 			</UML:Namespace.ownedElement>
 		</UML:Class>
-		<UML:Class xmi.id="class_3" name="myclass3"/>
-		<UML:Class xmi.id="class_4" name="myclass4"/>
-		<UML:Class xmi.id="class_7" name="myclass7"/>
-		<UML:Class xmi.id="class_6" name="myclass6" generalization="class_2">
+		<UML:Class xmi.id="class_3" name="MyClass3"/>
+		<UML:Class xmi.id="class_4" name="MyClass4"/>
+		<UML:Class xmi.id="class_7" name="MyClass7"/>
+		<UML:Class xmi.id="class_6" name="MyClass6" generalization="class_2">
 			<UML:Namespace.ownedElement>
-				<UML:Generalization xmi.id="generalization_12" name="geni2" child="class_6" parent="class_2"/>
+				<UML:Generalization xmi.id="Generalization_12" name="Geni2" child="class_6" parent="class_2"/>
 			</UML:Namespace.ownedElement>
 		</UML:Class>
-		<UML:Class xmi.id="class_5" name="myclass5" generalization="class_0">
+		<UML:Class xmi.id="class_5" name="MyClass5" generalization="class_0">
 			<UML:Namespace.ownedElement>
-				<UML:Generalization xmi.id="generalization_11" name="geni" child="class_5" parent="class_0"/>
+				<UML:Generalization xmi.id="Generalization_11" name="Geni" child="class_5" parent="class_0"/>
 			</UML:Namespace.ownedElement>
 		</UML:Class>
-		<UML:Association xmi.id="association_9" name="asso">
+		<UML:Association xmi.id="association_9" name="Asso">
 			<UML:Association.connection>
 				<UML:AssociationEnd aggregation="none" type="class_0"/>
 				<UML:AssociationEnd aggregation="none" type="class_1"/>
 			</UML:Association.connection>
 		</UML:Association>
-		<UML:Association xmi.id="association_1" name="asso2">
+		<UML:Association xmi.id="association_1" name="Asso2">
 			<UML:Association.connection>
 				<UML:AssociationEnd aggregation="composite" type="class_0"/>
 				<UML:AssociationEnd aggregation="none" type="class_9"/>
 			</UML:Association.connection>
 		</UML:Association>
-		<UML:Association xmi.id="association_10" name="aggi">
+		<UML:Association xmi.id="association_10" name="Aggi">
 			<UML:Association.connection>
-				<UML:AssociationEnd aggregation="none" type="class_2"/>
+				<UML:AssociationEnd aggregation="composite" type="class_2"/>
 				<UML:AssociationEnd aggregation="none" type="class_3"/>
 			</UML:Association.connection>
 		</UML:Association>
-		<UML:Association xmi.id="association_8" name="compo">
+		<UML:Association xmi.id="association_8" name="Compo">
 			<UML:Association.connection>
 				<UML:AssociationEnd aggregation="none" type="class_6"/>
 				<UML:AssociationEnd aggregation="none" type="class_7"/>

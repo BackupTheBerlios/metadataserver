@@ -273,7 +273,6 @@ public class XMIHandlerImpl implements XMIHandler {
 						break;
 					}
 				}
-				//classes.remove(mdsClass);
 				generalizations.add(element);
 			} else {
 				associations.add(element);
@@ -287,7 +286,7 @@ public class XMIHandlerImpl implements XMIHandler {
 			// rules 6e,6f
 			j = getClassAssociations(mdsClass, "all").iterator();
 			while (j.hasNext()) {
-				dtd += ((MDSClassImpl) j.next()).getLabel() + " | ";
+				dtd += (String) j.next() + " | ";
 			}
 			// rule 6c
 			dtd += "XMI.extension)*>\n";
@@ -302,31 +301,39 @@ public class XMIHandlerImpl implements XMIHandler {
 	private ArrayList getClassAssociations(MDSClass mdsClass, String mode) {
 
 		MDSAssociation association = null;
-		AssociationEnd end = null;
-		MDSClass endClass = null;
+		AssociationEnd end1 = null, end2 = null;
+		MDSClass end1Class = null, end2Class = null;
 		ArrayList ends = null, classAssociations = new ArrayList();
 		Iterator i = associations.iterator();
 		while (i.hasNext()) {
 			association = (MDSAssociationImpl) i.next();
 			ends = association.getAssociationEnds();
 			for (int j = 0; j < 2; j++) {
-				end = (AssociationEndImpl) ends.get(j);
-				endClass = end.getMdsClass();
-				if (endClass.getId().equals(mdsClass.getId())) {
-					classAssociations.add(
-						((AssociationEndImpl) ends.get(j == 0 ? 1 : 0))
-							.getMdsClass());
-					if (((AssociationEndImpl) ends.get(j == 0 ? 1 : 0)).getAggregation()
+				end1 = (AssociationEndImpl) ends.get(j);
+				end1Class = end1.getMdsClass();
+				end2 = (AssociationEndImpl) ends.get(j == 0 ? 1 : 0);
+				end2Class = end2.getMdsClass();
+				// wenn end==mdsClass
+				if (end1Class.getId().equals(mdsClass.getId())) {
+					// wenn anderes ende ==composite		
+					if (end2.getAggregation()
 						== AssociationEnd.COMPOSITE_AGGREGATION) {
+						// alles subclasses des anderen endes hinzufügen
 						// bei rekursion nur non-composite-refs
+						// in regel nicht klar beschrieben ???
 						if (mode.equals("all")) {
+							// anderes ende hinzufügen
+							classAssociations.add(end2Class.getLabel());
 							// rule 6e
-							classAssociations.addAll(getSubClasses(((AssociationEndImpl) ends.get(j == 0 ? 1 : 0))
-							.getMdsClass()));
-							// classAssociations.addAll(getSubClasses(mdsClass));
+							classAssociations.addAll(getSubClasses(end2Class));
 						}
 					} else {
+						// anderes ende hinzufügen mit mdsClass.-prefix
+						classAssociations.add(
+							mdsClass.getLabel() + "." + end2Class.getLabel().toLowerCase());
 						// rule 6f
+						// wenn non-composite alle non-composite-refs der
+						// superclasses hinzufügen
 						classAssociations.addAll(
 							getSuperClassAssociations(mdsClass));
 					}
@@ -355,7 +362,7 @@ public class XMIHandlerImpl implements XMIHandler {
 				.getId()
 				.equals(superClass.getId())) {
 				subClass = generalization.getSubClass();
-				subClasses.add(subClass);
+				subClasses.add(subClass.getLabel());
 				subClasses.addAll(getSubClasses(subClass));
 			}
 		}

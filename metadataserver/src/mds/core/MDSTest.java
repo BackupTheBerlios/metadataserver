@@ -22,28 +22,28 @@ public class MDSTest {
 		model.setLabel("erstes");
 		
 		MDSClass myclass1 = new MDSClassImpl();
-		myclass1.setLabel("myclass0");
+		myclass1.setLabel("MyClass0");
 
 		MDSClass myclass2 = new MDSClassImpl();
-		myclass2.setLabel("myclass1");
+		myclass2.setLabel("MyClass1");
 
 		MDSClass myclass3 = new MDSClassImpl();
-		myclass3.setLabel("myclass2");
+		myclass3.setLabel("MyClass2");
 
 		MDSClass myclass4 = new MDSClassImpl();
-		myclass4.setLabel("myclass3");
+		myclass4.setLabel("MyClass3");
 
 		MDSClass myclass5 = new MDSClassImpl();
-		myclass5.setLabel("myclass4");
+		myclass5.setLabel("MyClass4");
 
 		MDSClass myclass6 = new MDSClassImpl();
-		myclass6.setLabel("myclass5");
+		myclass6.setLabel("MyClass5");
 
 		MDSClass myclass7 = new MDSClassImpl();
-		myclass7.setLabel("myclass6");
+		myclass7.setLabel("MyClass6");
 
 		MDSClass myclass8 = new MDSClassImpl();
-		myclass8.setLabel("myclass7");
+		myclass8.setLabel("MyClass7");
 
 		AssociationEnd end1 = new AssociationEndImpl();
 		//end1.setMultiplicity(AssociationEnd.MULTIPLICITY_0_OR_1);
@@ -67,25 +67,25 @@ public class MDSTest {
 
 		MDSAssociation compo =
 			new MDSAssociationImpl();
-		compo.setLabel("compo");
+		compo.setLabel("Compo");
 		end5.setAggregation(AssociationEnd.COMPOSITE_AGGREGATION);
 		compo.addAssociationEnd(end5);
 		compo.addAssociationEnd(end6);
 
 		MDSAssociation asso = new MDSAssociationImpl();
-		asso.setLabel("asso");
+		asso.setLabel("Asso");
 		asso.addAssociationEnd(end1);
 		asso.addAssociationEnd(end2);
 
 		MDSAssociation aggi =
 			new MDSAssociationImpl();
-		aggi.setLabel("aggi");
+		aggi.setLabel("Aggi");
 		end3.setAggregation(AssociationEnd.SHARED_AGGREGATION);
 		aggi.addAssociationEnd(end3);
 		aggi.addAssociationEnd(end4);
 
 		MDSGeneralization geni = new MDSGeneralizationImpl();
-		geni.setLabel("geni");
+		geni.setLabel("Geni");
 		geni.setSuperClass(myclass5);
 		geni.setSubClass(myclass6);
 		*/
