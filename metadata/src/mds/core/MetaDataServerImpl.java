@@ -8,6 +8,7 @@ import api.mds.core.MDSRepository;
 import api.mds.core.MetaDataServer;
 import api.mds.persistence.PersistenceHandler;
 import api.mme.core.Mapping;
+import api.mme.core.MetaMappingEngine;
 import api.mme.mapper.MDSMapper;
 
 /**
@@ -17,6 +18,11 @@ import api.mme.mapper.MDSMapper;
  */
 public class MetaDataServerImpl implements MetaDataServer {
 
+	/**
+	 * der Server kennt seine MME
+	 */
+	private MetaMappingEngine[] metaMappingEngine = null;
+	
 	/**
 	 * alle auf dem Server vorhandenen Reposititories
 	 */
@@ -196,5 +202,22 @@ public class MetaDataServerImpl implements MetaDataServer {
 	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
 		this.persistenceHandler = persistenceHandler;
 	}
+	
+	/**
+	 * Gets the metaMappingEngine
+	 * @return Returns a MetaMappingEngine[]
+	 */
+	public MetaMappingEngine[] getMetaMappingEngine() {
+		return metaMappingEngine;
+	}
+	
+	/**
+	 * Sets the metaMappingEngine
+	 * @param metaMappingEngine The metaMappingEngine to set
+	 */
+	public void setMetaMappingEngine(MetaMappingEngine[] metaMappingEngine) {
+		this.metaMappingEngine = metaMappingEngine;
+	}
+
 }
 

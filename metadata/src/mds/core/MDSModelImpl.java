@@ -16,6 +16,11 @@ import api.mds.xmi.XMIHandler;
 public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 
 	/**
+	 * MDSElement-Repräsenation des Models
+	 */
+	private MDSElement[] elements = null;
+
+	/**
 	 * xmi-repräsenation des Models
 	 */
 	private File xmiFile = null;
@@ -259,4 +264,21 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	public void setXmiHandler(XMIHandler xmiHandler) {
 		this.xmiHandler = xmiHandler;
 	}
+	
+	/**
+	 * Gets the elements
+	 * @return Returns a MDSElement[]
+	 */
+	public MDSElement[] getElements() {
+		return elements;
+	}
+	
+	/**
+	 * Sets the elements
+	 * @param elements The elements to set
+	 */
+	public void setElements(MDSElement[] elements) {
+		this.elements = elements;
+	}
+
 }

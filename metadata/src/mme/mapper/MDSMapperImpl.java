@@ -6,6 +6,7 @@ import mds.core.MDSObjectImpl;
 import mme.core.MetaMappingEngineException;
 
 import api.mds.core.MDSModel;
+import api.mds.persistence.PersistenceHandler;
 import api.mme.core.Mapping;
 import api.mme.mapper.MDSMapper;
 
@@ -25,6 +26,11 @@ public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 	 * Datei mit den globalen Mappinginstruktionen
 	 */
 	private File mappingFile = null;
+
+	/**
+	 * zum speichern des models
+	 */
+	private PersistenceHandler persistenceHandler = null;
 
 	/**
 	 * @see Mapper#map(MDSModel, Mapping)
@@ -64,5 +70,21 @@ public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 	 */
 	public void setMappingFile(File mappingFile) {
 		this.mappingFile = mappingFile;
+	}
+	
+	/**
+	 * Gets the persistenceHandler
+	 * @return Returns a PersistenceHandler
+	 */
+	public PersistenceHandler getPersistenceHandler() {
+		return persistenceHandler;
+	}
+
+	/**
+	 * Sets the persistenceHandler
+	 * @param persistenceHandler The persistenceHandler to set
+	 */
+	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
+		this.persistenceHandler = persistenceHandler;
 	}
 }

@@ -14,10 +14,14 @@ public class MappingImpl implements Mapping {
 	 */
 	private String from = null;
 	
+	/**
+	 * Ziel
+	 */
 	private String to = null;
 	
 	/**
-	 * Ziel
+	 * Gets the from
+	 * @return Returns a String
 	 */
 	public String getFrom() {
 		return from;
