@@ -6,7 +6,7 @@ import mds.persistence.PersistenceHandlerException;
 
 import api.mds.core.MDSHref;
 import api.mds.core.MDSModel;
-import api.mds.core.MDSObject;
+import api.mds.core.MDSPersistentObject;
 import api.mme.mapper.MDSMapper;
 
 /**
@@ -24,30 +24,30 @@ public interface PersistenceHandler {
 	 * 
 	 * aktualisiert automatisch die Versionsnummer in einem MDSModel
 	 *
-	 * @param mdsObject das zu sichernde MDSObject
+	 * @param mdsObject das zu sichernde MDSPersistentObject
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-	public void save(MDSObject mdsObject) throws PersistenceHandlerException;
+	public void save(MDSPersistentObject mdsObject) throws PersistenceHandlerException;
 
 	/**
-	 * lädt komplettes MDSObject
+	 * lädt komplettes MDSPersistentObject
 	 * 
-	 * @param href das MDSObject wird anhand diesen Pfades identifiziert
+	 * @param href das MDSPersistentObject wird anhand diesen Pfades identifiziert
 	 * @param version Versionsnummer, wenn null dann die aktuellste Version laden
-	 * @return das geladene MDSObject
+	 * @return das geladene MDSPersistentObject
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-	public MDSObject load(MDSHref href, String version)
+	public MDSPersistentObject load(MDSHref href, String version)
 		throws PersistenceHandlerException;
 
 	/**
-	 * löscht komplettes MDSObject 
+	 * löscht komplettes MDSPersistentObject 
 	 * 
-	 * @param mdsObject das zu löschende MDSObject
+	 * @param mdsObject das zu löschende MDSPersistentObject
 	 * @param version Versionsnummer, wenn null dann alle Versionen löschen
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-	public void delete(MDSObject mdsObject, String version)
+	public void delete(MDSPersistentObject mdsObject, String version)
 		throws PersistenceHandlerException;
 
 	/**

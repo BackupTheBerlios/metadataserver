@@ -13,21 +13,21 @@ import mds.core.MDSCoreException;
 public interface MDSAssociation extends MDSElement {
 	
 	/**
-	 * fügt ein AssociationEnd hinzu
+	 * fügt ein MDSAssociationEnd hinzu
 	 * 
-	 * @param associationEnd das AssociationEnd
+	 * @param associationEnd das MDSAssociationEnd
 	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public void addAssociationEnd(AssociationEnd associationEnd)
+	public void addAssociationEnd(MDSAssociationEnd associationEnd)
 		throws MDSCoreException;
 
 	/**
-	 * entfernt ein AssociationEnd
+	 * entfernt ein MDSAssociationEnd
 	 * 
-	 * @param associationEnd das AssociationEnd
+	 * @param associationEnd das MDSAssociationEnd
 	 * @throws MDSCoreException im Fehlerfall
 	 */
-	public void removeAssociationEnd(AssociationEnd associationEnd)
+	public void removeAssociationEnd(MDSAssociationEnd associationEnd)
 		throws MDSCoreException;
 
 	/**

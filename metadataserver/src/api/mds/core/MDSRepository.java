@@ -12,7 +12,7 @@ import mds.core.MDSHrefFormatException;
  * 
  * @author Thomas Chille
  */
-public interface MDSRepository extends MDSObject {
+public interface MDSRepository extends MDSPersistentObject {
 
 	/**
 	 * legt MDSRepository auf Server ab

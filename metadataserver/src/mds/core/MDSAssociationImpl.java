@@ -2,7 +2,7 @@ package mds.core;
 
 import java.util.ArrayList;
 
-import api.mds.core.AssociationEnd;
+import api.mds.core.MDSAssociationEnd;
 import api.mds.core.MDSAssociation;
 import api.mds.core.MDSHref;
 
@@ -28,9 +28,9 @@ public class MDSAssociationImpl
 	}
 	
 	/**
-	 * @see MDSAssociationImpl#addAssociationEnd(AssociationEnd)
+	 * @see MDSAssociationImpl#addAssociationEnd(MDSAssociationEnd)
 	 */
-	public void addAssociationEnd(AssociationEnd associationEnd)
+	public void addAssociationEnd(MDSAssociationEnd associationEnd)
 		throws MDSCoreException {
 
 		if (associationEnds.size() == 2) {
@@ -41,9 +41,9 @@ public class MDSAssociationImpl
 	}
 
 	/**
-	 * @see MDSAssociationImpl#removeAssociationEnd(AssociationEnd)
+	 * @see MDSAssociationImpl#removeAssociationEnd(MDSAssociationEnd)
 	 */
-	public void removeAssociationEnd(AssociationEnd associationEnd)
+	public void removeAssociationEnd(MDSAssociationEnd associationEnd)
 		throws MDSCoreException {
 
 		if (!associationEnds.remove(associationEnd)) {

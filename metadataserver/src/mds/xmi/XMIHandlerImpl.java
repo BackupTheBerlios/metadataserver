@@ -18,7 +18,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import mds.MDSGlobals;
-import mds.core.AssociationEndImpl;
+import mds.core.MDSAssociationEndImpl;
 import mds.core.MDSAssociationImpl;
 import mds.core.MDSClassImpl;
 import mds.core.MDSCoreException;
@@ -29,7 +29,7 @@ import mds.core.MDSHrefImpl;
 import mds.core.MDSModelImpl;
 import mds.persistence.PersistenceHandlerException;
 
-import api.mds.core.AssociationEnd;
+import api.mds.core.MDSAssociationEnd;
 import api.mds.core.MDSAssociation;
 import api.mds.core.MDSClass;
 import api.mds.core.MDSElement;
@@ -152,7 +152,7 @@ public class XMIHandlerImpl implements XMIHandler {
 		}
 
 		ArrayList ends;
-		AssociationEnd end1, end2;
+		MDSAssociationEnd end1, end2;
 		i = classes.iterator();
 		while (i.hasNext()) {
 			element = (MDSElement) i.next();
@@ -188,17 +188,17 @@ public class XMIHandlerImpl implements XMIHandler {
 		while (i.hasNext()) {
 			element = (MDSElement) i.next();
 			ends = ((MDSAssociationImpl) element).getAssociationEnds();
-			end1 = (AssociationEnd) ends.get(0);
-			end2 = (AssociationEnd) ends.get(1);
+			end1 = (MDSAssociationEnd) ends.get(0);
+			end2 = (MDSAssociationEnd) ends.get(1);
 			String aggregation = null;
 			switch (end1.getAggregation()) {
-				case AssociationEnd.NONE_AGGREGATION :
+				case MDSAssociationEnd.NONE_AGGREGATION :
 					aggregation = "none";
 					break;
-				case AssociationEnd.SHARED_AGGREGATION :
+				case MDSAssociationEnd.SHARED_AGGREGATION :
 					aggregation = "aggregate";
 					break;
-				case AssociationEnd.COMPOSITE_AGGREGATION :
+				case MDSAssociationEnd.COMPOSITE_AGGREGATION :
 					aggregation = "composite";
 					break;
 			}
@@ -209,13 +209,13 @@ public class XMIHandlerImpl implements XMIHandler {
 					.replaceAll("#aggregation#", aggregation)
 					.replaceAll("#name#", element.getLabel());
 			switch (end2.getAggregation()) {
-				case AssociationEnd.NONE_AGGREGATION :
+				case MDSAssociationEnd.NONE_AGGREGATION :
 					aggregation = "none";
 					break;
-				case AssociationEnd.SHARED_AGGREGATION :
+				case MDSAssociationEnd.SHARED_AGGREGATION :
 					aggregation = "aggregate";
 					break;
-				case AssociationEnd.COMPOSITE_AGGREGATION :
+				case MDSAssociationEnd.COMPOSITE_AGGREGATION :
 					aggregation = "composite";
 					break;
 			}
@@ -339,7 +339,7 @@ public class XMIHandlerImpl implements XMIHandler {
 	private ArrayList getClassAssociations(MDSClass mdsClass, String mode) {
 
 		MDSAssociation association = null;
-		AssociationEnd end1 = null, end2 = null;
+		MDSAssociationEnd end1 = null, end2 = null;
 		MDSClass end1Class = null, end2Class = null;
 		ArrayList ends = null, classAssociations = new ArrayList();
 		Iterator i = associations.iterator();
@@ -348,15 +348,15 @@ public class XMIHandlerImpl implements XMIHandler {
 			association = (MDSAssociationImpl) i.next();
 			ends = association.getAssociationEnds();
 			for (int j = 0; j < 2; j++) {
-				end1 = (AssociationEndImpl) ends.get(j);
+				end1 = (MDSAssociationEndImpl) ends.get(j);
 				end1Class = end1.getMdsClass();
-				end2 = (AssociationEndImpl) ends.get(j == 0 ? 1 : 0);
+				end2 = (MDSAssociationEndImpl) ends.get(j == 0 ? 1 : 0);
 				end2Class = end2.getMdsClass();
 				// wenn end==mdsClass
 				if (end1Class.getId().equals(mdsClass.getId())) {
 					// wenn anderes ende ==composite		
 					if (end2.getAggregation()
-						== AssociationEnd.COMPOSITE_AGGREGATION) {
+						== MDSAssociationEnd.COMPOSITE_AGGREGATION) {
 						// alles subclasses des anderen endes hinzufügen
 						// bei rekursion nur non-composite-refs
 						// in regel nicht klar beschrieben ???
@@ -444,7 +444,7 @@ public class XMIHandlerImpl implements XMIHandler {
 					getClassAssociations(
 						generalization.getSuperClass(),
 						"refs only"));
-			} //getClassAssociations(generalization.getSuperClass()));
+			}
 		}
 		return superClassAssociations;
 	}
@@ -561,7 +561,7 @@ public class XMIHandlerImpl implements XMIHandler {
 			n = it.nextNode();
 			MDSAssociation newAssociation = null;
 			MDSGeneralization newGeneralization = null;
-			AssociationEnd newAssociationEnd = null;
+			MDSAssociationEnd newAssociationEnd = null;
 			String aggregation = "";
 			while (n != null) {
 				nodeName = n.getNodeName();
@@ -605,19 +605,19 @@ public class XMIHandlerImpl implements XMIHandler {
 				} else if (nodeName.equals("UML:AssociationEnd")) {
 					if (nodeAttribs.containsKey("aggregation")
 						&& nodeAttribs.containsKey("type")) {
-						newAssociationEnd = new AssociationEndImpl();
+						newAssociationEnd = new MDSAssociationEndImpl();
 						newAssociationEnd.setMdsClass(
 							getClassById((String) nodeAttribs.get("type")));
 						aggregation = (String) nodeAttribs.get("aggregation");
 						if (aggregation.equals("none")) {
 							newAssociationEnd.setAggregation(
-								AssociationEnd.NONE_AGGREGATION);
+								MDSAssociationEnd.NONE_AGGREGATION);
 						} else if (aggregation.equals("aggregate")) {
 							newAssociationEnd.setAggregation(
-								AssociationEnd.SHARED_AGGREGATION);
+								MDSAssociationEnd.SHARED_AGGREGATION);
 						} else if (aggregation.equals("composite")) {
 							newAssociationEnd.setAggregation(
-								AssociationEnd.COMPOSITE_AGGREGATION);
+								MDSAssociationEnd.COMPOSITE_AGGREGATION);
 						} else {
 							throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:AssociationEnd");
 						}

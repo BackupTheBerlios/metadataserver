@@ -10,7 +10,7 @@ import api.mds.core.MDSModel;
 import api.mds.core.MDSRepository;
 import api.mds.persistence.PersistenceHandler;
 
-public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
+public class MDSRepositoryImpl extends MDSPersistentObjectImpl implements MDSRepository {
 
 	private static int counter = 0;
 
@@ -29,7 +29,8 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 	public String insert() throws MDSCoreException {
 
 		try {
-			this.getPersistenceHandler().save(this);
+			// TODO: save all contained models
+			save();
 		} catch (PersistenceHandlerException e) {
 			throw new MDSCoreException("Fehler: MDSRepository#insert()");
 		}
@@ -41,7 +42,7 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 	 */
 	public void delete() throws MDSCoreException {
 		try {
-			this.getPersistenceHandler().delete(this, null);
+			delete(null);
 		} catch (PersistenceHandlerException e) {
 			throw new MDSCoreException("Fehler: MDSRepository#delete()");
 		}
@@ -65,18 +66,18 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 	 */
 	public String insertModel(MDSModel mdsModel)
 		throws MDSHrefFormatException, MDSCoreException {
-
-		try {
-			this.getPersistenceHandler().save(mdsModel);
-		} catch (PersistenceHandlerException e) {
-			throw new MDSCoreException("Fehler: MDSRepository#insertModel()");
-		}
-		if (models.add(mdsModel)) {
-			mdsModel.setHref(
+		
+		mdsModel.setHref(
 				new MDSHrefImpl(
 					this.getHref().getRepositoryHref()
 						+ "/"
 						+ mdsModel.getId()));
+		try {
+			mdsModel.save();
+		} catch (PersistenceHandlerException e) {
+			throw new MDSCoreException("Fehler: MDSRepository#insertModel()");
+		}
+		if (models.add(mdsModel)) {
 			return mdsModel.getId();
 		} else {
 			throw new MDSCoreException("Fehler: MDSRepository#insertModel()");
@@ -87,10 +88,10 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 	 * @see MDSRepository#removeModel(MDSHref)
 	 */
 	public void removeModel(MDSHref href) throws MDSCoreException {
-		MDSModel mdsModel;
+		MDSModel mdsModel = new MDSModelImpl();
+		mdsModel.setHref(href);
 		try {
-			mdsModel = (MDSModel) this.getPersistenceHandler().load(href, null);
-			this.getPersistenceHandler().delete(mdsModel, null);
+			mdsModel.delete(null);
 		} catch (PersistenceHandlerException e) {
 			throw new MDSCoreException("Fehler: MDSRepository#removeModel()");
 		}
@@ -103,13 +104,14 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 	 * @see MDSRepository#moveModel(MDSHref, MDSHref)
 	 */
 	public String moveModel(MDSHref from, MDSHref to) throws MDSCoreException {
-
+		MDSModel mdsModel = new MDSModelImpl();
+		mdsModel.setHref(from);
+		MDSRepository mdsRepository = new MDSRepositoryImpl();
+		mdsRepository.setHref(to);
 		try {
-			MDSModel mdsModel =
-				(MDSModel) this.getPersistenceHandler().load(from, null);
-			this.removeModel(from);
-			MDSRepository mdsRepository =
-				(MDSRepository) this.getPersistenceHandler().load(to, null);
+			mdsModel.load(null);
+			removeModel(from);
+			mdsRepository.load(null);
 			String id = mdsRepository.insertModel(mdsModel);
 			return id;
 		} catch (PersistenceHandlerException e) {
@@ -124,9 +126,12 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 	 */
 	public String copyModel(MDSHref from, MDSHref to, String label)
 		throws MDSCoreException {
+		MDSModel mdsModel = new MDSModelImpl();
+		mdsModel.setHref(from);
+		MDSRepository mdsRepository = new MDSRepositoryImpl();
+		mdsRepository.setHref(to);
 		try {
-			MDSModel mdsModel =
-				(MDSModel) this.getPersistenceHandler().load(from, null);
+			mdsModel.load(null);
 			MDSModel copyModel = new MDSModelImpl();
 			copyModel.setAdditionalFiles(mdsModel.getAdditionalFiles());
 			copyModel.setElements(mdsModel.getElements());
@@ -134,9 +139,8 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 			copyModel.setXmiHandler(mdsModel.getXmiHandler());
 			copyModel.setPersistenceHandler(mdsModel.getPersistenceHandler());
 			copyModel.setLabel(label);
-			MDSRepository mdsRepository =
-				(MDSRepository) this.getPersistenceHandler().load(to, null);
-			String id = mdsRepository.insertModel(mdsModel);
+			mdsRepository.load(null);
+			String id = mdsRepository.insertModel(copyModel);
 			return id;
 		} catch (PersistenceHandlerException e) {
 			throw new MDSCoreException("Fehler: MDSRepository#moveModel()");

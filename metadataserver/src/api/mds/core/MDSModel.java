@@ -14,7 +14,7 @@ import mds.core.MDSHrefFormatException;
  * 
  * @author Thomas Chille
  */
-public interface MDSModel extends MDSObject {
+public interface MDSModel extends MDSPersistentObject {
 
 	/**
 	 * umbenennen des MDSModel

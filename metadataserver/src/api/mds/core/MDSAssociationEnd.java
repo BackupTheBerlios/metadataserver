@@ -1,11 +1,11 @@
 package api.mds.core;
 
 /**
- * Modelliert MOF-AssociationEnd
+ * Modelliert MOF-MDSAssociationEnd
  * 
  * @author Thomas Chille
  */
-public interface AssociationEnd {
+public interface MDSAssociationEnd {
 
 	public static final int NONE_AGGREGATION = 0;
 	
@@ -14,32 +14,32 @@ public interface AssociationEnd {
 	public static final int COMPOSITE_AGGREGATION = 2;
 	
 	/**
-	 * Multiplicity des AssociationEnd von 0
+	 * Multiplicity des MDSAssociationEnd von 0
 	 */
 	public static final String MULTIPLICITY_0 = "0";
 
 	/**
-	 * Multiplicity des AssociationEnd von 1
+	 * Multiplicity des MDSAssociationEnd von 1
 	 */
 	public static final String MULTIPLICITY_1 = "1";
 
 	/**
-	 * Multiplicity des AssociationEnd von 0 oder mehr
+	 * Multiplicity des MDSAssociationEnd von 0 oder mehr
 	 */
 	public static final String MULTIPLICITY_0_OR_MORE = "0..*";
 
 	/**
-	 * Multiplicity des AssociationEnd von 1 oder mehr
+	 * Multiplicity des MDSAssociationEnd von 1 oder mehr
 	 */
 	public static final String MULTIPLICITY_1_OR_MORE = "..*";
 
 	/**
-	 * Multiplicity des AssociationEnd von 0 oder 1
+	 * Multiplicity des MDSAssociationEnd von 0 oder 1
 	 */
 	public static final String MULTIPLICITY_0_OR_1 = "0..1";
 
 	/**
-	 * Multiplicity des AssociationEnd von n
+	 * Multiplicity des MDSAssociationEnd von n
 	 */
 	public static final String MULTIPLICITY_n = "*";
 	

@@ -1,14 +1,14 @@
 package mds.core;
 
-import api.mds.core.AssociationEnd;
+import api.mds.core.MDSAssociationEnd;
 import api.mds.core.MDSClass;
 
 /**
- * @see AssociationEnd
+ * @see MDSAssociationEnd
  * 
  * @author Thomas Chille
  */
-public class AssociationEndImpl implements AssociationEnd {
+public class MDSAssociationEndImpl implements MDSAssociationEnd {
 
 	/**
 	 * die multiplicity dieses AssociationEndes
@@ -26,55 +26,55 @@ public class AssociationEndImpl implements AssociationEnd {
 	private MDSClass mdsClass = null;
 
 	/**
-	 * Constructor for AssociationEndImpl.
+	 * Constructor for MDSAssociationEndImpl.
 	 */
-	public AssociationEndImpl(int aggregation) {
+	public MDSAssociationEndImpl(int aggregation) {
 		this.aggregation = aggregation;
 	}
 
 	/**
-	 * Constructor for AssociationEndImpl.
+	 * Constructor for MDSAssociationEndImpl.
 	 */
-	public AssociationEndImpl() {
+	public MDSAssociationEndImpl() {
 	}
 
 	/**
-	 * @see AssociationEnd#getMultiplicity()
+	 * @see MDSAssociationEnd#getMultiplicity()
 	 */
 	public String getMultiplicity() {
 		return multiplicity;
 	}
 
 	/**
-	 * @see AssociationEnd#setMultiplicity(String)
+	 * @see MDSAssociationEnd#setMultiplicity(String)
 	 */
 	public void setMultiplicity(String multiplicity) {
 		this.multiplicity = multiplicity;
 	}
 
 	/**
-	 * @see AssociationEnd#getMdsClass()
+	 * @see MDSAssociationEnd#getMdsClass()
 	 */
 	public MDSClass getMdsClass() {
 		return mdsClass;
 	}
 
 	/**
-	 * @see AssociationEnd#setMdsClass(MDSClass)
+	 * @see MDSAssociationEnd#setMdsClass(MDSClass)
 	 */
 	public void setMdsClass(MDSClass mdsClass) {
 		this.mdsClass = mdsClass;
 	}
 	
 	/**
-	 * @see AssociationEnd#getAggregation()
+	 * @see MDSAssociationEnd#getAggregation()
 	 */
 	public int getAggregation() {
 		return aggregation;
 	}
 
 	/**
-	 * @see AssociationEnd#setAggregation(int)
+	 * @see MDSAssociationEnd#setAggregation(int)
 	 */
 	public void setAggregation(int aggregation) {
 		this.aggregation = aggregation;

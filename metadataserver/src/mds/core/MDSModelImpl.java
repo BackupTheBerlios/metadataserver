@@ -20,7 +20,7 @@ import api.mds.xmi.XMIHandler;
  * 
  * @author Thomas Chille
  */
-public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
+public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 
 	private static int counter = 0;
 
