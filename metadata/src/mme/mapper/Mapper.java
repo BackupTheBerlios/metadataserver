@@ -10,8 +10,8 @@ import mme.core.*;
  * 
  * @author Thomas Chille
  */
-public interface Mapper extends MDSObject
-{	
+public interface Mapper extends MDSObject {
+
 	/**
 	 * mappt ein MDSModel bestimmten Typs auf ein 
 	 * durchs Mapping spezifziertes MDSModel anderen Typs
@@ -21,9 +21,6 @@ public interface Mapper extends MDSObject
 	 * @return des entstandene MDSModel mit seinen Ressoucen 
 	 * @throws MetaMappingEngineException im Fehlerfall
 	 */
-   	public MDSModel map(MDSModel mdsModel, Mapping mapping) 
-   	throws MetaMappingEngineException;
+	public MDSModel map(MDSModel mdsModel, Mapping mapping)
+		throws MetaMappingEngineException;
 }
-
-
-

@@ -1,6 +1,9 @@
 package mme.mapper;
 
-public interface XMLMapper extends Mapper 
-{
+/**
+ * Spezialisierung des Mappers für XML-Quellen
+ * 
+ * @author Thomas Chille
+ */
+public interface XMLMapper extends Mapper {
 }
-

@@ -11,17 +11,16 @@ import mds.core.*;
  * 
  * @author Thomas Chille
  */
-public interface XMIHandler 
-{
+public interface XMIHandler {
+
 	/**
 	 * erzeugt XMI-Repräsentation eines MDSModel
 	 *
 	 * @param mdsModel das betreffende MDSModel
 	 * @throws XMIHandlerException im Fehlerfall
 	 */
-   	public void generateXMI(MDSModel mdsModel)
-   	throws XMIHandlerException;
-   	
+	public void generateXMI(MDSModel mdsModel) throws XMIHandlerException;
+
 	/**
 	 * fügt ein MDSElement in MDSModel ein
 	 *
@@ -30,9 +29,9 @@ public interface XMIHandler
 	 * @param mdsElement das MDSElement (Klasse, Assoziation,...)
 	 * @throws XMIHandlerException im Fehlerfall
 	 */
-   	public void insertElement(MDSModel mdsModel, String id, MDSElement mdsElement)
-   	throws XMIHandlerException;
-   	
+	public void insertElement(MDSModel mdsModel, String id, MDSElement mdsElement)
+		throws XMIHandlerException;
+
 	/**
 	 * entfernt ein MDSElement aus dem MDSModel
 	 *
@@ -40,27 +39,25 @@ public interface XMIHandler
 	 * @param id an dieser spezifierten Stelle 
 	 * @throws XMIHandlerException im Fehlerfall
 	 */
-   	public void removeElement(MDSModel mdsModel, String id)
-   	throws XMIHandlerException;
-	
+	public void removeElement(MDSModel mdsModel, String id)
+		throws XMIHandlerException;
+
 	/**
 	 * erzeugt oder aktualsiert die zum MDSModel gehörende DTD
 	 *
 	 * @param mdsModel das betreffende MDSModel
 	 * @throws XMIHandlerException im Fehlerfall
 	 */
-   	public void generateDTD(MDSModel mdsModel)
-   	throws XMIHandlerException;
-	
+	public void generateDTD(MDSModel mdsModel) throws XMIHandlerException;
+
 	/**
 	 * erzeugt oder aktualsiert das zum MDSModel gehörende Schema
 	 *
 	 * @param mdsModel das betreffende MDSModel
 	 * @throws XMIHandlerException im Fehlerfall
 	 */
-   	public void generateSchema(MDSModel mdsModel)
-   	throws XMIHandlerException;
-   	
+	public void generateSchema(MDSModel mdsModel) throws XMIHandlerException;
+
 	/**
 	 * führt eine Abfrage auf dem MDSModel aus
 	 *
@@ -69,7 +66,6 @@ public interface XMIHandler
 	 * @return das Ergebnis der Abfrage
 	 * @throws XMIHandlerException im Fehlerfall
 	 */
-   	public ArrayList query(MDSModel mdsModel, String query)
-   	throws XMIHandlerException;
+	public ArrayList query(MDSModel mdsModel, String query)
+		throws XMIHandlerException;
 }
-

@@ -1,6 +1,9 @@
 package mds.core;
 
-public interface MDSClass extends MDSElement 
-{
+/**
+ * Spezialisierung des MDSElements, modelliert eine Klasse 
+ * 
+ * @author Thomas Chille
+ */
+public interface MDSClass extends MDSElement {
 }
-

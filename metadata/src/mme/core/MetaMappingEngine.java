@@ -10,25 +10,22 @@ import mme.mapper.*;
  * 
  * @author Thomas Chille
  */
-public interface MetaMappingEngine
-{
+public interface MetaMappingEngine {
+
 	/**
 	 * meldet neuen Mapper bei MME an
 	 *
 	 * @param mapper der Mapper
-	 * @return true bei Erfolg
 	 */
-   	public void registerMapper(Mapper mapper) 
-   	throws MetaMappingEngineException;
-   	
+	public void registerMapper(Mapper mapper) throws MetaMappingEngineException;
+
 	/**
 	 * meldet Mapper ab
 	 *
 	 * @param mapper der abzumeldende Mapper
 	 */
-   	public void unregisterMapper(Mapper mapper)
-	throws MetaMappingEngineException;
-   	
+	public void unregisterMapper(Mapper mapper) throws MetaMappingEngineException;
+
 	/**
 	 * mappt ein MDSModel bestimmten Typs auf ein 
 	 * durchs Mapping spezifziertes MDSModel anderen Typs
@@ -38,9 +35,9 @@ public interface MetaMappingEngine
 	 * @return des entstandene MDSModel mit seinen Ressoucen 
 	 * @throws MetaMappingEngineException im Fehlerfall
 	 */
-   	public MDSModel map(MDSModel mdsModel, Mapping mapping) 
-   	throws MetaMappingEngineException;
-   	
+	public MDSModel map(MDSModel mdsModel, Mapping mapping)
+		throws MetaMappingEngineException;
+
 	/**
 	 * gibt eine Liste aller angemeldeten Mappings zurück
 	 *
@@ -49,7 +46,6 @@ public interface MetaMappingEngine
 	 * @return die Mappings
 	 * @throws MetaMappingEngineException im Fehlerfall
 	 */
-   	public ArrayList getMappings(String from, String to) 
-   	throws MetaMappingEngineException;
+	public ArrayList getMappings(String from, String to)
+		throws MetaMappingEngineException;
 }
-

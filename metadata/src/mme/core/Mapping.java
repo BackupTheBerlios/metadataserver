@@ -1,5 +1,9 @@
 package mme.core;
 
-public interface Mapping 
-{
+/**
+ * modelliert eine Mappingmöglichkeit(Ziel, Quelle)
+ * 
+ * @author Thomas Chille
+ */
+public interface Mapping {
 }

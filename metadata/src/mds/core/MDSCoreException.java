@@ -6,23 +6,20 @@ package mds.core;
  * 
  * @author Thomas Chille
  */
-public class MDSCoreException extends Exception 
-{
+public class MDSCoreException extends Exception {
+	
 	/**
-     * ohne Nachricht
-     */
-    public MDSCoreException() 
-    {
-    }
+	 * ohne Nachricht
+	 */
+	public MDSCoreException() {
+	}
 
-    /**
-     * mit Nachricht
-     * 
-     * @param msg die Nachricht
-     */
-    public MDSCoreException(String msg) 
-    {
-        super(msg);
-    }
+	/**
+	 * mit Nachricht
+	 * 
+	 * @param msg die Nachricht
+	 */
+	public MDSCoreException(String msg) {
+		super(msg);
+	}
 }
-

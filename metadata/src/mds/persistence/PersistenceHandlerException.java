@@ -6,23 +6,20 @@ package mds.persistence;
  * 
  * @author Thomas Chille
  */
-public class PersistenceHandlerException extends Exception 
-{
+public class PersistenceHandlerException extends Exception {
+	
 	/**
-     * ohne Nachricht
-     */
-    public PersistenceHandlerException() 
-    {
-    }
+	 * ohne Nachricht
+	 */
+	public PersistenceHandlerException() {
+	}
 
-    /**
-     * mit Nachricht
-     * 
-     * @param msg die Nachricht
-     */
-    public PersistenceHandlerException(String msg) 
-    {
-        super(msg);
-    }
+	/**
+	 * mit Nachricht
+	 * 
+	 * @param msg die Nachricht
+	 */
+	public PersistenceHandlerException(String msg) {
+		super(msg);
+	}
 }
-

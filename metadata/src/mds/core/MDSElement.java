@@ -1,6 +1,9 @@
 package mds.core;
 
-public interface MDSElement extends MDSObject
-{
+/**
+ * Strukturelemnt eiens MDSModels, dient als Datatype
+ * 
+ * @author Thomas Chille
+ */
+public interface MDSElement extends MDSObject {
 }
-

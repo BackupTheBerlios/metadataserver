@@ -6,23 +6,20 @@ package mds.xmi;
  * 
  * @author Thomas Chille
  */
-public class XMIHandlerException extends Exception 
-{
+public class XMIHandlerException extends Exception {
+	
 	/**
-     * ohne Nachricht
-     */
-    public XMIHandlerException() 
-    {
-    }
+	 * ohne Nachricht
+	 */
+	public XMIHandlerException() {
+	}
 
-    /**
-     * mit Nachricht
-     * 
-     * @param msg die Nachricht
-     */
-    public XMIHandlerException(String msg) 
-    {
-        super(msg);
-    }
+	/**
+	 * mit Nachricht
+	 * 
+	 * @param msg die Nachricht
+	 */
+	public XMIHandlerException(String msg) {
+		super(msg);
+	}
 }
-

@@ -11,8 +11,8 @@ import mds.core.*;
  * 
  * @author Thomas Chille
  */
-public interface PersistenceHandler 
-{
+public interface PersistenceHandler {
+
 	/**
 	 * sichert komplettes MDSModel (xmi, [dtd], [xsd]),
 	 * 
@@ -21,9 +21,8 @@ public interface PersistenceHandler
 	 * @param mdsModel das zu sichernde MDSModel
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-   	public void save(MDSModel mdsModel)
-   	throws PersistenceHandlerException;
-	
+	public void save(MDSModel mdsModel) throws PersistenceHandlerException;
+
 	/**
 	 * lädt komplettes MDSModel (xmi, [dtd], [xsd]),
 	 * 
@@ -32,9 +31,9 @@ public interface PersistenceHandler
 	 * @return das geladene MDSModel
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-   	public MDSModel load(String mdsPfad, String version)
-   	throws PersistenceHandlerException;
-	
+	public MDSModel load(String mdsPfad, String version)
+		throws PersistenceHandlerException;
+
 	/**
 	 * löscht komplettes MDSModel (xmi, [dtd], [xsd]),
 	 * 
@@ -42,9 +41,9 @@ public interface PersistenceHandler
 	 * @param version Versionsnummer, wenn null dann alle Versionen löschen
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-   	public void delete(MDSModel mdsModel, String version)
-   	throws PersistenceHandlerException;
-	
+	public void delete(MDSModel mdsModel, String version)
+		throws PersistenceHandlerException;
+
 	/**
 	 * gibt Liste aller vorhandenen Versionen eines MDSModel zurück
 	 *
@@ -52,7 +51,6 @@ public interface PersistenceHandler
 	 * @return Liste aller Versionen
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-   	public ArrayList getVersions(MDSModel mdsModel)
-   	throws PersistenceHandlerException;
+	public ArrayList getVersions(MDSModel mdsModel)
+		throws PersistenceHandlerException;
 }
-

@@ -10,24 +10,24 @@ import mme.mapper.*;
  * 
  * @author Thomas Chille
  */
-public interface MetaDataServer 
-{
+public interface MetaDataServer {
+	
 	/**
 	 * erzeugt neues MDSRepository
 	 *
 	 * @param mdsRepository das einzufügende MDSRepository, id wird automatisch vergeben
 	 * @return Pfad zum MDSRepository
 	 */
-   	public String insertReposititory(MDSRepository mdsRepository);
-	
+	public String insertReposititory(MDSRepository mdsRepository);
+
 	/**
 	 * löscht ein MDSRepository
 	 *
 	 * @param href Pfad zum MDSRepository
 	 * @return true bei Erfolg
 	 */
-   	public boolean deleteRepository(String href);
-	
+	public boolean deleteRepository(String href);
+
 	/**
 	 * umbenennen eines MDSRepository
 	 *
@@ -35,8 +35,8 @@ public interface MetaDataServer
 	 * @param label neuer Name
 	 * @return true bei Erfolg
 	 */
-   	public boolean renameRepository(String href, String label);
-	
+	public boolean renameRepository(String href, String label);
+
 	/**
 	 * führt eine Abfrage auf einem MDSRepository aus
 	 *
@@ -44,8 +44,8 @@ public interface MetaDataServer
 	 * @param query der Querystring
 	 * @return das Ergebnis der Abfrage
 	 */
-   	public ArrayList queryRepository(String href, String query);
-	
+	public ArrayList queryRepository(String href, String query);
+
 	/**
 	 * fügt ein MDSModel in MDSRepository ein
 	 *
@@ -53,16 +53,16 @@ public interface MetaDataServer
 	 * @param mdsModel das einzufügende MDSModel
 	 * @return Pfad zum neu eingefügten MDSModel
 	 */
-   	public String insertModel(String href, MDSModel mdsModel);
-	
+	public String insertModel(String href, MDSModel mdsModel);
+
 	/**
 	 * entfernt ein MDSModel aus einem MDSRepository
 	 *
 	 * @param href an dieser spezifierten Stelle 
 	 * @return true bei Erfolg
 	 */
-   	public boolean removeModel(String href);
-	
+	public boolean removeModel(String href);
+
 	/**
 	 * verschiebt ein MDSModel in ein anderes MDSRepository
 	 *
@@ -70,8 +70,8 @@ public interface MetaDataServer
 	 * @param to an dieser spezifierten Stelle 
 	 * @return Pfad zur neuen MDSModel-Position
 	 */
-   	public String moveModel(String from, String to);
-	
+	public String moveModel(String from, String to);
+
 	/**
 	 * kopiert ein MDSModel
 	 *
@@ -80,8 +80,8 @@ public interface MetaDataServer
 	 * @param label des neuen MDSModels, id wird automatisch vergeben
 	 * @return Pfad zur Kopie des MDSModel
 	 */
-   	public String copyModel(String from, String to, String label);
-	
+	public String copyModel(String from, String to, String label);
+
 	/**
 	 * umbenennen eines MDSModel
 	 *
@@ -89,24 +89,24 @@ public interface MetaDataServer
 	 * @param label neuer Name
 	 * @return true bei Erfolg
 	 */
-   	public boolean renameModel(String href, String label);
-	
+	public boolean renameModel(String href, String label);
+
 	/**
 	 * gibt Liste aller vorhandenen Versionen eines MDSModel zurück
 	 *
 	 * @param href Pfad zum MDSModel
 	 * @return Liste aller Versionen
 	 */
-   	public ArrayList getModelVersions(String href);
-	
+	public ArrayList getModelVersions(String href);
+
 	/**
 	 * macht Änderungen an einem MDSModel rückgängig
 	 *
 	 * @param version Versionsnummer
 	 * @return true bei Erfolg
 	 */
-   	public boolean restoreModel(String href, String version);
-	
+	public boolean restoreModel(String href, String version);
+
 	/**
 	 * fügt ein MDSElement in MDSModel ein
 	 *
@@ -114,16 +114,16 @@ public interface MetaDataServer
 	 * @param mdsElement das MDSElement (Klasse, Assoziation,...)
 	 * @return Pfad zum neu eingefügten MDSElement
 	 */
-   	public String insertElement(String href, MDSElement mdsElement);
-	
+	public String insertElement(String href, MDSElement mdsElement);
+
 	/**
 	 * entfernt ein MDSElement aus einem MDSModel
 	 *
 	 * @param href an dieser spezifierten Stelle 
 	 * @return true bei Erfolg
 	 */
-   	public boolean removeElement(String href);
-	
+	public boolean removeElement(String href);
+
 	/**
 	 * verschiebt ein MDSElement innerhalb eines MDSModel
 	 * oder in ein anderes MDSModel
@@ -132,8 +132,8 @@ public interface MetaDataServer
 	 * @param to an dieser spezifierten Stelle 
 	 * @return Pfad zur neuen MDSElement-Position
 	 */
-   	public String moveElement(String from, String to);
-	
+	public String moveElement(String from, String to);
+
 	/**
 	 * kopiert ein MDSElement innerhalb eines MDSModel
 	 * oder in ein anderes MDSModel
@@ -143,8 +143,8 @@ public interface MetaDataServer
 	 * @param label des neuen MDSElement, id wird automatisch vergeben
 	 * @return Pfad zur Kopie des MDSElement
 	 */
-   	public String copyElement(String from, String to, String label);
-	
+	public String copyElement(String from, String to, String label);
+
 	/**
 	 * validiert MDSModel
 	 *
@@ -152,8 +152,8 @@ public interface MetaDataServer
 	 * @param validateType Art der Validierung(dtd, schema, strikt, ...)
 	 * @return Messages der Validierung
 	 */
-   	public ArrayList validateModel(String href, String validateType);
-	
+	public ArrayList validateModel(String href, String validateType);
+
 	/**
 	 * importiert MDSModel, wenn ein Mapping angeben wird
 	 * wirkt dieses als Importfilter -  
@@ -164,8 +164,8 @@ public interface MetaDataServer
 	 * @param mapping das evtl. zu verwendende Mapping
 	 * @return Pfad zum neu entstandenen MDSModel
 	 */
-   	public String importModel(String label, MDSModel mdsModel, Mapping mapping);
-	
+	public String importModel(String label, MDSModel mdsModel, Mapping mapping);
+
 	/**
 	 * exportiert MDSModel, wenn ein Mapping angeben wird
 	 * wirkt dieses als Exportfilter - das evtl. neue MDSModel 
@@ -175,24 +175,24 @@ public interface MetaDataServer
 	 * @param mapping das evtl. zu verwendende Mapping
 	 * @return des exportierte MDSModel
 	 */
-   	public MDSModel exportModel(String href, Mapping mapping);
-		
+	public MDSModel exportModel(String href, Mapping mapping);
+
 	/**
 	 * meldet neuen Mapper bei MME an
 	 *
 	 * @param mapper der Mapper
 	 * @return true bei Erfolg
 	 */
-   	public boolean registerMapper(Mapper mapper);
-	
+	public boolean registerMapper(Mapper mapper);
+
 	/**
 	 * meldet Mapper ab
 	 *
 	 * @param mapper der abzumeldende Mapper
 	 * @return true bei Erfolg
 	 */
-   	public boolean unregisterMapper(Mapper mapper);
-	
+	public boolean unregisterMapper(Mapper mapper);
+
 	/**
 	 * gibt eine Liste aller angemeldeten Mappings zurück
 	 *
@@ -200,8 +200,8 @@ public interface MetaDataServer
 	 * @param to mit diesem Zieltyp, wenn null mit allen Zieltypen
 	 * @return die Mappings
 	 */
-   	public ArrayList getMappings(String from, String to);
-   		
+	public ArrayList getMappings(String from, String to);
+
 	/**
 	 * konvertiert ein MDSModel bestimmten Typs auf ein 
 	 * durchs Mapping spezifziertes MDSModel anderen Typs,
@@ -213,6 +213,5 @@ public interface MetaDataServer
 	 * @param label des neuen MDSModels, id wird automatisch vergeben
 	 * @return Pfad zum neu entstandenen MDSModel
 	 */
-   	public String convertModel(String href, Mapping mapping, String label);
+	public String convertModel(String href, Mapping mapping, String label);
 }
-
