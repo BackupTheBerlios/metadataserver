@@ -22,7 +22,7 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 	public MDSRepositoryImpl() {
 		this.setId("repository_" + counter++);
 	}
-	
+
 	/**
 	 * @see MDSRepository#insert()
 	 */
@@ -63,7 +63,8 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 	/**
 	 * @see MDSRepository#insertModel(MDSModel)
 	 */
-	public String insertModel(MDSModel mdsModel) throws MDSCoreException {
+	public String insertModel(MDSModel mdsModel)
+		throws MDSHrefFormatException, MDSCoreException {
 
 		try {
 			this.getPersistenceHandler().save(mdsModel);
@@ -71,6 +72,11 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 			throw new MDSCoreException("Fehler: MDSRepository#insertModel()");
 		}
 		if (models.add(mdsModel)) {
+			mdsModel.setHref(
+				new MDSHrefImpl(
+					this.getHref().getRepositoryHref()
+						+ "/"
+						+ mdsModel.getId()));
 			return mdsModel.getId();
 		} else {
 			throw new MDSCoreException("Fehler: MDSRepository#insertModel()");
@@ -108,6 +114,8 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 			return id;
 		} catch (PersistenceHandlerException e) {
 			throw new MDSCoreException("Fehler: MDSRepository#moveModel()");
+		} catch (MDSHrefFormatException e) {
+			throw new MDSCoreException("Fehler: MDSRepository#moveModel()");
 		}
 	}
 
@@ -131,6 +139,8 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 			String id = mdsRepository.insertModel(mdsModel);
 			return id;
 		} catch (PersistenceHandlerException e) {
+			throw new MDSCoreException("Fehler: MDSRepository#moveModel()");
+		} catch (MDSHrefFormatException e) {
 			throw new MDSCoreException("Fehler: MDSRepository#moveModel()");
 		}
 	}

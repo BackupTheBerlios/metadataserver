@@ -12,6 +12,12 @@ import mds.core.MDSCoreException;
  */
 public interface MDSAssociation extends MDSElement {
 	
+	public static final int NONE_AGGREGATION = 0;
+	
+	public static final int SHARED_AGGREGATION = 1;
+	
+	public static final int COMPOSITE_AGGREGATION = 2;
+	
 	/**
 	 * fügt ein AssociationEnd hinzu
 	 * 
@@ -41,4 +47,16 @@ public interface MDSAssociation extends MDSElement {
 	 * @param associationEnds The associationEnds to set
 	 */
 	public void setAssociationEnds(ArrayList associationEnds);
+	
+	/**
+	 * Returns the aggregation.
+	 * @return int
+	 */
+	public int getAggregation();
+
+	/**
+	 * Sets the aggregation.
+	 * @param aggregation The aggregation to set
+	 */
+	public void setAggregation(int aggregation);
 }

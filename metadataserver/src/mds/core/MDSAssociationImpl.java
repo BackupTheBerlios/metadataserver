@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import api.mds.core.AssociationEnd;
 import api.mds.core.MDSAssociation;
+import api.mds.core.MDSHref;
 
 /**
  * @see MDSAssociation
@@ -20,12 +21,25 @@ public class MDSAssociationImpl
 	private ArrayList associationEnds = new ArrayList();
 
 	/**
+	 * type der Aggregation
+	 */
+	private int aggregation = NONE_AGGREGATION;
+
+	/**
 	 * Constructor for MDSAssociationImpl.
 	 */
 	public MDSAssociationImpl() {
 		super("association");
 	}
-
+	
+	/**
+	 * Constructor for MDSAssociationImpl.
+	 */
+	public MDSAssociationImpl(int aggregation) {
+		super("association");
+		this.aggregation = aggregation;
+	}
+	
 	/**
 	 * @see MDSAssociationImpl#addAssociationEnd(AssociationEnd)
 	 */
@@ -58,13 +72,27 @@ public class MDSAssociationImpl
 	}
 
 	/**
+	 * @see MDSAssociationImpl#getAggregation()
+	 */
+	public int getAggregation() {
+		return aggregation;
+	}
+
+	/**
+	 * @see MDSAssociationImpl#setAggregation(int)
+	 */
+	public void setAggregation(int aggregation) {
+		this.aggregation = aggregation;
+	}
+
+	/**
 	 * @see MDSAssociationImpl#setAssociationEnds(ArrayList)
 	 */
 	public void setAssociationEnds(ArrayList associationEnds) {
 		this.associationEnds = associationEnds;
 	}
-	
-		/**
+
+	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {

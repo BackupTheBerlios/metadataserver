@@ -2,6 +2,7 @@ package mds.core;
 
 import mds.persistence.FilesystemHandlerImpl;
 
+import api.mds.core.MDSHref;
 import api.mds.core.MDSObject;
 import api.mds.persistence.PersistenceHandler;
 
@@ -21,7 +22,12 @@ public class MDSObjectImpl implements MDSObject {
 	 * in Hierarchieebene eindeutige Kennung
 	 */
 	private String id = null;
-	
+
+	/**
+	 * global eindeutige Kennung
+	 */
+	private MDSHref href = null;
+
 	/**
 	 * Bezeichnung des Objektes
 	 */
@@ -33,28 +39,28 @@ public class MDSObjectImpl implements MDSObject {
 	public String getId() {
 		return id;
 	}
-	
+
 	/**
 	 * @see api.mds.core.MDSObject#setId(String)
 	 */
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * @see api.mds.core.MDSObject#getLabel()
 	 */
 	public String getLabel() {
 		return label;
 	}
-	
+
 	/**
 	 * @see api.mds.core.MDSObject#setLabel(String)
 	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
-	
+
 	/**
 	 * @see MDSObject#getPersistenceHandler()
 	 */
@@ -68,5 +74,19 @@ public class MDSObjectImpl implements MDSObject {
 	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
 		this.persistenceHandler = persistenceHandler;
 	}
-}
 
+	/**
+	 * @see api.mds.core.MDSObject#getHref()
+	 */
+	public MDSHref getHref() {
+		return href;
+	}
+
+	/**
+	 * @see api.mds.core.MDSObject#setHref(MDSHref)
+	 */
+	public void setHref(MDSHref href) {
+		this.href = href;
+	}
+
+}

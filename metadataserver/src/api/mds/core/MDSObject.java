@@ -22,6 +22,18 @@ public interface MDSObject {
 	public void setId(String id);
 	
 	/**
+	 * Gets the href
+	 * @return Returns a MDSHref
+	 */
+	public MDSHref getHref();
+	
+	/**
+	 * Sets the href
+	 * @param href The href to set
+	 */
+	public void setHref(MDSHref href);
+	
+	/**
 	 * Gets the label
 	 * @return Returns a String
 	 */

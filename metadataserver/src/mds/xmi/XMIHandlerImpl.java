@@ -14,12 +14,13 @@ import org.w3c.dom.traversal.DocumentTraversal;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.NodeIterator;
 
-import mds.core.MDSAggregationImpl;
 import mds.core.MDSAssociationImpl;
 import mds.core.MDSClassImpl;
 import mds.core.MDSFileImpl;
 import mds.core.MDSGeneralizationImpl;
 
+import api.mds.core.AssociationEnd;
+import api.mds.core.MDSAssociation;
 import api.mds.core.MDSClass;
 import api.mds.core.MDSElement;
 import api.mds.core.MDSFile;
@@ -56,6 +57,7 @@ public class XMIHandlerImpl implements XMIHandler {
 		xassociation1 += "\t\t<UML:Association.connection>\n";
 		xassociation1
 			+= "\t\t\t<UML:AssociationEnd name=\"#id#\" aggregation=\"#aggregation#\" type=\"#endId#\"/>\n";
+
 		String xassociation2 =
 			"\t\t\t<UML:AssociationEnd name=\"#id#\" aggregation=\"#aggregation#\" type=\"#endId#\"/>\n";
 		xassociation2 += "\t\t</UML:Association.connection>\n";
@@ -65,7 +67,8 @@ public class XMIHandlerImpl implements XMIHandler {
 		xfooter += "</XMI>";
 
 		ArrayList classes = new ArrayList();
-		ArrayList relations = new ArrayList();
+		ArrayList associations = new ArrayList();
+		ArrayList generalizations = new ArrayList();
 		MDSElement element = null;
 		Iterator i = mdsModel.getElements().iterator();
 		Iterator j;
@@ -78,15 +81,16 @@ public class XMIHandlerImpl implements XMIHandler {
 			} else if (element instanceof MDSGeneralizationImpl) {
 				subClass = ((MDSGeneralizationImpl) element).getSubClass();
 				j = classes.iterator();
-				while (i.hasNext()) {
-					mdsClass = (MDSClassImpl) i.next();
+				while (j.hasNext()) {
+					mdsClass = (MDSClassImpl) j.next();
 					if (mdsClass.getId().equals(subClass.getId())) {
 						classes.remove(subClass);
 					}
-					relations.add(element);
+					generalizations.add(element);
+					break;
 				}
 			} else {
-				relations.add(element);
+				associations.add(element);
 			}
 		}
 
@@ -96,51 +100,52 @@ public class XMIHandlerImpl implements XMIHandler {
 		while (i.hasNext()) {
 			xdoc += xclass.replaceAll("#id#", ((MDSElement) i.next()).getId());
 		}
-		i = relations.iterator();
+		i = generalizations.iterator();
 		while (i.hasNext()) {
 			element = (MDSElement) i.next();
-			if (element instanceof MDSGeneralizationImpl) {
-				xdoc
-					+= xgeneralization.replaceAll(
+			xdoc
+				+= xgeneralization
+					.replaceAll(
 						"#id#",
-						element.getId()).replaceAll(
+						((MDSGeneralizationImpl) element)
+							.getSubClass()
+							.getId())
+					.replaceAll(
 						"#superId#",
 						((MDSGeneralizationImpl) element)
 							.getSuperClass()
 							.getId());
-			} else if (element instanceof MDSAssociationImpl) {
-				ends = ((MDSAssociationImpl) element).getAssociationEnds();
-				end1 = (api.mds.core.AssociationEnd) ends.get(0);
-				end2 = (api.mds.core.AssociationEnd) ends.get(1);
-				xdoc
-					+= xassociation1
-						.replaceAll("#id#", element.getId())
-						.replaceAll("#endId#", end1.getMdsClass().getId())
-						.replaceAll("#aggregation#", "none");
-				;
-				xdoc
-					+= xassociation2
-						.replaceAll("#id#", element.getId())
-						.replaceAll("#endId#", end2.getMdsClass().getId())
-						.replaceAll("#aggregation#", "none");
-				;
-			} else if (element instanceof MDSAggregationImpl) {
-				end1 = ((MDSAggregationImpl) element).getContainedEnd();
-				end2 = ((MDSAggregationImpl) element).getContainerEnd();
-				xdoc
-					+= xassociation1
-						.replaceAll("#id#", element.getId())
-						.replaceAll("#endId#", end1.getMdsClass().getId())
-						.replaceAll("#aggregation#", "shared");
-				;
-				xdoc
-					+= xassociation2
-						.replaceAll("#id#", element.getId())
-						.replaceAll("#endId#", end2.getMdsClass().getId())
-						.replaceAll("#aggregation#", "shared");
-				;
-			}
 		}
+		i = associations.iterator();
+		while (i.hasNext()) {
+			element = (MDSElement) i.next();
+			ends = ((MDSAssociationImpl) element).getAssociationEnds();
+			end1 = (AssociationEnd) ends.get(0);
+			end2 = (AssociationEnd) ends.get(1);
+			String aggregation = null;
+			switch (((MDSAssociationImpl) element).getAggregation()) {
+				case MDSAssociation.NONE_AGGREGATION :
+					aggregation = "none";
+					break;
+				case MDSAssociation.SHARED_AGGREGATION :
+					aggregation = "shared";
+					break;
+				case MDSAssociation.COMPOSITE_AGGREGATION :
+					aggregation = "composite";
+					break;
+			}
+			xdoc
+				+= xassociation1
+					.replaceAll("#id#", element.getId())
+					.replaceAll("#endId#", end1.getMdsClass().getId())
+					.replaceAll("#aggregation#", aggregation);
+			xdoc
+				+= xassociation2
+					.replaceAll("#id#", element.getId())
+					.replaceAll("#endId#", end2.getMdsClass().getId())
+					.replaceAll("#aggregation#", aggregation);
+		}
+
 		xdoc += xfooter;
 		MDSFile mdsFile = new MDSFileImpl();
 		mdsFile.setContent(xdoc);

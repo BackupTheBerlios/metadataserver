@@ -47,7 +47,7 @@ public interface MDSModel extends MDSObject {
 	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public String insertElement(MDSElement mdsElement)
-		throws MDSCoreException;
+		throws MDSCoreException, MDSHrefFormatException;
 
 	/**
 	 * entfernt ein MDSElement aus dem MDSModel

@@ -46,7 +46,7 @@ public interface MDSRepository extends MDSObject {
 	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public String insertModel(MDSModel mdsModel)
-		throws MDSCoreException;
+		throws MDSHrefFormatException, MDSCoreException;
 
 	/**
 	 * löscht MDSModel

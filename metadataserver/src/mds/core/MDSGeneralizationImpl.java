@@ -2,6 +2,7 @@ package mds.core;
 
 import api.mds.core.MDSClass;
 import api.mds.core.MDSGeneralization;
+import api.mds.core.MDSHref;
 
 /**
  * @author Thomas Chille
@@ -28,7 +29,7 @@ public class MDSGeneralizationImpl
 	public MDSGeneralizationImpl() {
 		super("generalization");
 	}
-
+	
 	/**
 	 * @see api.mds.core.MDSGeneralization#getSubClass()
 	 */

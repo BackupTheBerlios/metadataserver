@@ -21,13 +21,13 @@ import api.mds.xmi.XMIHandler;
  * @author Thomas Chille
  */
 public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
-	
+
 	private static int counter = 0;
-	
+
 	public MDSModelImpl() {
 		this.setId("model_" + counter++);
 	}
-	
+
 	/**
 	 * MDSElement-Repräsenation des Models
 	 */
@@ -76,9 +76,15 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	 * @see MDSModel#insertElement(MDSElement)
 	 */
 	public String insertElement(MDSElement mdsElement)
-		throws MDSCoreException {
+		throws MDSCoreException, MDSHrefFormatException {
 
 		if (elements.add(mdsElement)) {
+			mdsElement
+				.setHref(
+					new MDSHrefImpl(
+						this.getHref().getModelHref()
+							+ "/"
+							+ mdsElement.getId()));
 			return mdsElement.getId();
 		} else {
 			throw new MDSCoreException("Fehler: MDSModel#insertElement()");
@@ -219,7 +225,7 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 		}
 		throw new MDSCoreException("Fehler: MDSModels#getById()");
 	}
-	
+
 	/**
 	 * @see java.lang.Object#toString()
 	 */
@@ -227,7 +233,7 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 		String retString = "\t\tmodel:" + this.getId() + "\n";
 		Iterator i = elements.iterator();
 		while (i.hasNext()) {
-			retString += ((MDSElement)i.next()).toString();
+			retString += ((MDSElement) i.next()).toString();
 		}
 		return retString;
 	}

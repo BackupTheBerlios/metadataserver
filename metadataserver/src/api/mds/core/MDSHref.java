@@ -31,6 +31,13 @@ public interface MDSHref {
 	public String getServerId() throws MDSHrefFormatException;
 
 	/**
+	 * extrahiert die ServerId aus href
+	 * 
+	 * @return String
+	 */
+	public String getServerHref() throws MDSHrefFormatException;
+	
+	/**
 	 * extrahiert die RepositoryId aus href
 	 * 
 	 * @return String
