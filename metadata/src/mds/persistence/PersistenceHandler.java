@@ -4,7 +4,7 @@ import java.util.*;
 import mds.core.*;
 
 /**
- * stellt Methoden zum dauerhaften Speicherung der Modelle mit einer
+ * stellt Methoden zur dauerhaften Speicherung der Modelle mit einer
  * einfachen Versionierung zur Verfügung
  * 
  * für jede Speicherart muß ein PersistenceHandler implementiert werden
@@ -21,7 +21,8 @@ public interface PersistenceHandler {
 	 * @param model das zu sichernde Modell
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-   	public void save(Model model) throws PersistenceHandlerException;
+   	public void save(Model model)
+   	throws PersistenceHandlerException;
 	
 	/**
 	 * lädt komplettes Model (xmi, [dtd], [xsd]),
@@ -31,7 +32,8 @@ public interface PersistenceHandler {
 	 * @return das geladene Modell
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-   	public Model load(String mdsPfad, String version) throws PersistenceHandlerException;
+   	public Model load(String mdsPfad, String version)
+   	throws PersistenceHandlerException;
 	
 	/**
 	 * löscht komplettes Model (xmi, [dtd], [xsd]),
@@ -40,7 +42,8 @@ public interface PersistenceHandler {
 	 * @param version Versionsnummer, wenn null dann alle Versionen löschen
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-   	public void delete(Model model, String version) throws PersistenceHandlerException;
+   	public void delete(Model model, String version)
+   	throws PersistenceHandlerException;
 	
 	/**
 	 * gibt Liste aller vorhandenen Versionen eines Modells zurück
@@ -48,6 +51,7 @@ public interface PersistenceHandler {
 	 * @param model das betreffende Modell
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-   	public ArrayList getVersions(Model model) throws PersistenceHandlerException;
+   	public ArrayList getVersions(Model model)
+   	throws PersistenceHandlerException;
 }
 
