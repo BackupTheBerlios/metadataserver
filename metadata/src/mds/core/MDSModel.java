@@ -1,6 +1,6 @@
 package mds.core;
 
-public class Model {
+public class MDSModel {
 
 }
 

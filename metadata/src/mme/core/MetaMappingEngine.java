@@ -31,15 +31,15 @@ public interface MetaMappingEngine {
    	throws MetaMappingEngineException;
    	
 	/**
-	 * mappt ein Modell bestimmten Typs auf ein 
-	 * durchs Mapping spezifziertes Modell anderen Typs
+	 * mappt ein MDSModel bestimmten Typs auf ein 
+	 * durchs Mapping spezifziertes MDSModel anderen Typs
 	 *
-	 * @param model das Ausgangs-Modell mit seinen Ressoucen 
+	 * @param model das Ausgangs-MDSModel mit seinen Ressoucen 
 	 * @param mapping das Mapping
-	 * @return des entstandene Modell mit seinen Ressoucen 
+	 * @return des entstandene MDSModel mit seinen Ressoucen 
 	 * @throws MetaMappingEngineException im Fehlerfall
 	 */
-   	public Model map(Model model, Mapping mapping) 
+   	public MDSModel map(MDSModel mdsModel, Mapping mapping) 
    	throws MetaMappingEngineException;
    	
 	/**

@@ -4,7 +4,7 @@ import java.util.*;
 import mds.core.*;
 
 /**
- * stellt Methoden zur dauerhaften Speicherung der Modelle mit einer
+ * stellt Methoden zur dauerhaften Speicherung der MDSModels mit einer
  * einfachen Versionierung zur Verfügung
  * 
  * für jede Speicherart muß ein PersistenceHandler implementiert werden
@@ -14,44 +14,44 @@ import mds.core.*;
 public interface PersistenceHandler {
 	
 	/**
-	 * sichert komplettes Model (xmi, [dtd], [xsd]),
+	 * sichert komplettes MDSModel (xmi, [dtd], [xsd]),
 	 * 
-	 * aktualisiert automatisch die Versionsnummer im Modell
+	 * aktualisiert automatisch die Versionsnummer im MDSModel
 	 *
-	 * @param model das zu sichernde Modell
+	 * @param mdsModel das zu sichernde MDSModel
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-   	public void save(Model model)
+   	public void save(MDSModel mdsModel)
    	throws PersistenceHandlerException;
 	
 	/**
-	 * lädt komplettes Model (xmi, [dtd], [xsd]),
+	 * lädt komplettes MDSModel (xmi, [dtd], [xsd]),
 	 * 
-	 * @param mdsPfad das Modell wird anhand diesen Pfades identifiziert
+	 * @param mdsPfad das MDSModel wird anhand diesen Pfades identifiziert
 	 * @param version Versionsnummer, wenn null dann die aktuellste Version laden
-	 * @return das geladene Modell
+	 * @return das geladene MDSModel
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-   	public Model load(String mdsPfad, String version)
+   	public MDSModel load(String mdsPfad, String version)
    	throws PersistenceHandlerException;
 	
 	/**
-	 * löscht komplettes Model (xmi, [dtd], [xsd]),
+	 * löscht komplettes MDSModel (xmi, [dtd], [xsd]),
 	 * 
-	 * @param model das zu löschende Modell
+	 * @param mdsModel das zu löschende MDSModel
 	 * @param version Versionsnummer, wenn null dann alle Versionen löschen
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-   	public void delete(Model model, String version)
+   	public void delete(MDSModel mdsModel, String version)
    	throws PersistenceHandlerException;
 	
 	/**
 	 * gibt Liste aller vorhandenen Versionen eines Modells zurück
 	 *
-	 * @param model das betreffende Modell
+	 * @param mdsModel das betreffende MDSModel
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
-   	public ArrayList getVersions(Model model)
+   	public ArrayList getVersions(MDSModel mdsModel)
    	throws PersistenceHandlerException;
 }
 
