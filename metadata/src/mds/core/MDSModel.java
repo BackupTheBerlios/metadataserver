@@ -1,6 +1,8 @@
 package mds.core;
 
-public class MDSModel {
+import mds.xmi.*;
+
+public interface MDSModel extends XMIHandler {
 
 }
 

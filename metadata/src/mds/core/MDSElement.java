@@ -1,6 +1,6 @@
 package mds.core;
 
-public class MDSElement {
+public interface MDSElement {
 
 }
 

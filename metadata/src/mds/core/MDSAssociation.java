@@ -1,6 +1,6 @@
 package mds.core;
 
-public class MDSAssociation extends MDSElement {
+public class MDSAssociation implements MDSElement {
 
 }
 

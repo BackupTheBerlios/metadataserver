@@ -1,6 +1,6 @@
 package mds.core;
 
-public class MDSClass extends MDSElement {
+public class MDSClass implements MDSElement {
 
 }
 

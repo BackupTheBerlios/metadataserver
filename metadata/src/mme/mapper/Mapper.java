@@ -1,15 +1,17 @@
-package mme.core;
+package mme.mapper;
 
 import java.util.*;
 import mds.core.*;
+import mme.core.*;
 
 /**
- * bindet die metamapping.engine
- * an den metadata.server an
+ * stellt Methoden zur Transformation der MDSModels
+ * bereit.
+ * Wird vom XML- und UnicodeMapper implementiert
  * 
  * @author Thomas Chille
  */
-public interface MetaMappingEngine {
+public interface Mapper {
 	
 	/**
 	 * meldet neues Mapping bei Mapper an
@@ -53,4 +55,6 @@ public interface MetaMappingEngine {
    	public ArrayList getMappings(String from, String to) 
    	throws MetaMappingEngineException;
 }
+
+
 
