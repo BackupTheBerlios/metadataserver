@@ -193,6 +193,7 @@ public class XMIHandlerImpl implements XMIHandler {
 				n = it.nextNode();
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Fehler beim Erstellen der Datei");
 		}
 
@@ -202,7 +203,7 @@ public class XMIHandlerImpl implements XMIHandler {
 		System.out.println(object.getNodeName() + ":");
 		System.out.println("  attributes:");
 		NamedNodeMap attribs = object.getAttributes();
-		String[] names = null, vals = null;
+		ArrayList names = new ArrayList(), vals = new ArrayList();
 		
 		for (int j = 0; j < attribs.getLength(); ++j) {
 			System.out.println(
@@ -211,8 +212,8 @@ public class XMIHandlerImpl implements XMIHandler {
 					+ ": '"
 					+ attribs.item(j).getNodeValue()
 					+ "'");
-			names[j] = attribs.item(j).getNodeName();
-			vals[j] = attribs.item(j).getNodeValue();
+			names.add(attribs.item(j).getNodeName());
+			vals.add(attribs.item(j).getNodeValue());
 		}
 		/*
 		if (object.getNodeName().equals("Class") {
