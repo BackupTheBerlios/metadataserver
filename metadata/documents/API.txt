@@ -15,7 +15,7 @@
 	queryRepository(href : String, query : String) : ResultList
 		führt eine Abfrage auf einem Repository aus
 	
-	public  insertModel(href : String, model : Model) : Href
+	insertModel(href : String, model : Model) : Href
 		fügt ein Model in Repository ein
 	
 	removeModel(href : String) : Boolean
@@ -77,8 +77,8 @@ XMIHandler API:
 	Stellt Methoden zum Erzeugen und Manipulieren von Models mittels XMI 
 	zur Verfügung
 	
-	createModel(name : String, type : String, metamodel : Model) : Model
-		erzeugt neues Modell, metmodel ist optional
+	generateXMI(model : Model)
+		erzeugt XMI-Repräsentation eines Model
 	
 	insertClass(class : Class, model : Model, id : String) 
 		fügt eine Klasse an der mit id spezifierten Stelle in model ein
@@ -94,7 +94,7 @@ XMIHandler API:
 		erzeugt oder aktualsiert die zum Model gehördende DTD
 	
 	generateSchema(model : Model) 
-	erzeugt oder aktualsiert das zum Model gehöredende Schema
+		erzeugt oder aktualsiert das zum Model gehöredende Schema
 
 	query(model : Model, query : String) : Result
 		führt eine Abfrage auf dem Model aus
