@@ -12,6 +12,7 @@ import org.xml.sax.InputSource;
 
 import de.chille.api.mds.core.MDSModel;
 import de.chille.api.mme.mapper.XMLMapper;
+import de.chille.mds.Util;
 import de.chille.mme.MMEGlobals;
 import de.chille.mme.core.MetaMappingEngineException;
 
@@ -45,13 +46,14 @@ public class XMLMapperImpl extends MDSMapperImpl implements XMLMapper {
 							+ "mapper_"
 							+ getId()
 							+ "/transform.xsl"));
+			tform.setParameter(
+				"outputPath",
+				MMEGlobals.TEMP_PATH + Util.getUniqueID());
 			tform.transform(
 				new StreamSource(
 					new ByteArrayInputStream(
 						mdsModel.getUmlFile().getContent().getBytes())),
-				new StreamResult(
-					new FileOutputStream(
-						MMEGlobals.TEMP_PATH + "result.java")));
+				new StreamResult(System.out));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -136,6 +136,10 @@ public class MDSTest2 {
 		content = model.getDtdFile().getContent();
 		System.out.println(content);
 
+		// dtd des metamodels ausprinten
+		content = model.getXmiFile().getContent();
+		System.out.println(content);
+
 		// vom zweiten die xmi-repräsemtation ausprinten
 		content = model1.getXmiFile().getContent();
 		System.out.println(content);

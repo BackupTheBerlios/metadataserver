@@ -1,42 +1,19 @@
 package de.chille.mds.xmi;
 
 import java.io.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
 import org.apache.xerces.parsers.DOMParser;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.DocumentTraversal;
-import org.w3c.dom.traversal.NodeFilter;
-import org.w3c.dom.traversal.NodeIterator;
+import org.w3c.dom.*;
+import org.w3c.dom.traversal.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import de.chille.mds.MDSGlobals;
-import de.chille.mds.core.MDSAssociationEndImpl;
-import de.chille.mds.core.MDSAssociationImpl;
-import de.chille.mds.core.MDSClassImpl;
-import de.chille.mds.core.MDSCoreException;
-import de.chille.mds.core.MDSFileImpl;
-import de.chille.mds.core.MDSGeneralizationImpl;
-import de.chille.mds.core.MDSHrefFormatException;
-import de.chille.mds.core.MDSHrefImpl;
-import de.chille.mds.core.MDSModelImpl;
-import de.chille.mds.persistence.PersistenceHandlerException;
-
-import de.chille.api.mds.core.MDSAssociationEnd;
-import de.chille.api.mds.core.MDSAssociation;
-import de.chille.api.mds.core.MDSClass;
-import de.chille.api.mds.core.MDSElement;
-import de.chille.api.mds.core.MDSFile;
-import de.chille.api.mds.core.MDSGeneralization;
-import de.chille.api.mds.core.MDSModel;
+import de.chille.api.mds.core.*;
 import de.chille.api.mds.xmi.XMIHandler;
+import de.chille.mds.MDSGlobals;
+import de.chille.mds.core.*;
+import de.chille.mds.persistence.PersistenceHandlerException;
 
 /**
  * @see XMIHandler
@@ -62,6 +39,10 @@ public class XMIHandlerImpl implements XMIHandler {
 		xdoc += "<!DOCTYPE XMI SYSTEM \""
 			+ MDSGlobals.RESOURCES_PATH
 			+ "UMLX13-11.dtd\" [\n";
+		xdoc += "\t<!ELEMENT counter EMPTY>\n";
+		xdoc += "\t<!ATTLIST counter\n";
+		xdoc += "\t\tvalue CDATA #REQUIRED\n";
+		xdoc += "\t>\n";
 		xdoc += "\t<!ELEMENT additionalFiles (file+)>\n";
 		xdoc += "\t<!ELEMENT file EMPTY>\n";
 		xdoc += "\t<!ATTLIST file\n";
@@ -70,7 +51,7 @@ public class XMIHandlerImpl implements XMIHandler {
 		xdoc += "\t\ttype CDATA #REQUIRED\n";
 		xdoc += "\t>\n";
 		xdoc += "]>\n";
-		xdoc += "<XMI xmi.version=\"1.1\" xmlns:UML=\"org.omg/UML1.3\">\n";
+		xdoc += "<XMI xmi.version=\"1.1\" xmlns:UML=\"http://org.omg/UML1.3\">\n";
 		xdoc += "\t<XMI.header>\n";
 		xdoc += "\t\t<XMI.documentation>\n";
 		xdoc += "\t\t\t<XMI.exporter>metadata.server</XMI.exporter>\n";
@@ -486,7 +467,7 @@ public class XMIHandlerImpl implements XMIHandler {
 						newElement =
 							" "
 								+ end2Class.getLabel().toLowerCase()
-								+ "=\""
+								+ "=\"mdsID_"
 								+ end2Class.getId()
 								+ "\"";
 						classAssociations.add(newElement);

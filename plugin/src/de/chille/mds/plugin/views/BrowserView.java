@@ -31,7 +31,7 @@ public class BrowserView extends ViewPart {
 	private DrillDownAdapter drillDownAdapter;
 	private Action createRepository, createModel, createAssociation;
 	private Action createClass, createGeneralization, delete, update;
-	private Action validate;
+	private Action validate, createJava;
 
 	//private Action action2;
 	//private Action doubleClickAction;
@@ -44,7 +44,6 @@ public class BrowserView extends ViewPart {
 			String methodName,
 			String text,
 			ImageDescriptor image) {
-
 			super(text, image);
 			this.methodName = methodName;
 		}
@@ -787,7 +786,7 @@ public class BrowserView extends ViewPart {
 									.getMetamodel()
 									.getBean())
 									.getLabel());
-						} else if (dialog.getMetamodelName() == null){
+						} else if (dialog.getMetamodelName() == null) {
 							bean.setMetamodelHref(null);
 							bean.setMetamodelName(null);
 						}
@@ -833,6 +832,22 @@ public class BrowserView extends ViewPart {
 
 					}
 				}
+			} else if (methodName.equals("createJava")) {
+				String href =
+					((MDSModelBean) ((TreeModel) obj).getBean()).getHref();
+				String[] paramName = { "href" };
+				Class[] paramType = { String.class };
+				Object[] paramValue = { href };
+				try {
+					SOAPClientImpl.call(
+						"test",
+						paramName,
+						paramType,
+						paramValue);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
 			} else
 				showMessage(methodName + "::" + obj.toString());
 			viewer.refresh();
@@ -853,6 +868,7 @@ public class BrowserView extends ViewPart {
 				update.setEnabled(false);
 				delete.setEnabled(false);
 				validate.setEnabled(false);
+				createJava.setEnabled(false);
 			} else if (obj instanceof TreeRepository) {
 				createRepository.setEnabled(false);
 				createModel.setEnabled(true);
@@ -862,6 +878,7 @@ public class BrowserView extends ViewPart {
 				update.setEnabled(true);
 				delete.setEnabled(true);
 				validate.setEnabled(false);
+				createJava.setEnabled(false);
 			} else if (obj instanceof TreeModel) {
 				createRepository.setEnabled(false);
 				createModel.setEnabled(false);
@@ -873,6 +890,8 @@ public class BrowserView extends ViewPart {
 				update.setEnabled(true);
 				delete.setEnabled(true);
 				validate.setEnabled(true);
+				createJava.setEnabled(
+					((TreeModel) obj).getChildren().length > 0);
 			} else if (obj instanceof TreeClass) {
 				createRepository.setEnabled(false);
 				createModel.setEnabled(false);
@@ -887,6 +906,7 @@ public class BrowserView extends ViewPart {
 					delete.setEnabled(false);
 				}
 				validate.setEnabled(false);
+				createJava.setEnabled(false);
 			} else if (obj instanceof TreeAssociation) {
 				createRepository.setEnabled(false);
 				createModel.setEnabled(false);
@@ -896,6 +916,7 @@ public class BrowserView extends ViewPart {
 				update.setEnabled(true);
 				delete.setEnabled(true);
 				validate.setEnabled(false);
+				createJava.setEnabled(false);
 			} else if (obj instanceof TreeGeneralization) {
 				createRepository.setEnabled(false);
 				createModel.setEnabled(false);
@@ -905,16 +926,20 @@ public class BrowserView extends ViewPart {
 				update.setEnabled(true);
 				delete.setEnabled(true);
 				validate.setEnabled(false);
+				createJava.setEnabled(false);
 			}
 		}
-	} /**
-																																		 * The constructor.
-																																		 */
+	}
+	/**
+	 * The constructor.
+	 */
 	public BrowserView() {
-	} /**
-																																		 * This is a callback that will allow us
-																																		 * to create the viewer and initialize it.
-																																		 */
+	}
+
+	/**
+	 * This is a callback that will allow us
+	 * to create the viewer and initialize it.
+	 */
 	public void createPartControl(Composite parent) {
 		viewer =
 			new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -960,6 +985,8 @@ public class BrowserView extends ViewPart {
 		manager.add(update);
 		manager.add(new Separator());
 		manager.add(validate);
+		manager.add(new Separator());
+		manager.add(createJava);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
@@ -973,6 +1000,8 @@ public class BrowserView extends ViewPart {
 		manager.add(update);
 		manager.add(new Separator());
 		manager.add(validate);
+		manager.add(new Separator());
+		manager.add(createJava);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
@@ -989,17 +1018,17 @@ public class BrowserView extends ViewPart {
 	private void makeActions() {
 
 		createRepository =
-			new MDSAction("createRepository", "createRepository", null);
+			new MDSAction("createRepository", "create Repository", null);
 		createRepository.setToolTipText("Create New Repository");
-		createModel = new MDSAction("createModel", "createModel", null);
+		createModel = new MDSAction("createModel", "create Model", null);
 		createModel.setToolTipText("Create New Model");
-		createClass = new MDSAction("createClass", "createClass", null);
+		createClass = new MDSAction("createClass", "create Class", null);
 		createClass.setToolTipText("Create New Class");
 		createAssociation =
-			new MDSAction("createAssociation", "createAssociation", null);
+			new MDSAction("createAssociation", "create Association", null);
 		createAssociation.setToolTipText("Create New Association");
 		createGeneralization =
-			new MDSAction("createGeneralization", "createGeneralization", null);
+			new MDSAction("createGeneralization", "create Generalization", null);
 		createGeneralization.setToolTipText("Create New Generalization");
 		delete = new MDSAction("delete", "delete", null);
 		delete.setToolTipText("Delete");
@@ -1015,7 +1044,10 @@ public class BrowserView extends ViewPart {
 				update.setToolTipText("Update");*/
 
 		validate = new MDSAction("validateModel", "validate", null);
-		update.setToolTipText("Validate This Model");
+		validate.setToolTipText("Validate This Model");
+		createJava = new MDSAction("createJava", "create Javaproject",null);
+		createJava.setToolTipText("Create Javaproject from Model");
+
 
 		/*
 		action2 = new Action() {
@@ -1052,9 +1084,6 @@ public class BrowserView extends ViewPart {
 			message);
 	}
 
-	/**
-											 * Passing the focus request to the viewer's control.
-											 */
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}

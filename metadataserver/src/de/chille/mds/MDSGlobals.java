@@ -2,6 +2,7 @@ package de.chille.mds;
 
 import java.io.*;
 
+
 public class MDSGlobals {
 
 	public static final String TEMP_PATH =
@@ -23,4 +24,6 @@ public class MDSGlobals {
 		} catch (IOException e) {
 		}
 	}
+	
+	
 }

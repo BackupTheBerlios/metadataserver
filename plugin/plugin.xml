@@ -2,7 +2,7 @@
 <plugin
    id="de.chille.mds.plugin"
    name="metadata.plugin"
-   version="1.0.0"
+   version="0.0.1"
    provider-name="metadata.server"
    class="de.chille.mds.plugin.MDSPlugin">
 
@@ -26,12 +26,21 @@
             id="de.chille.mds.plugin">
       </category>
       <view
-            name="metadata.browser2"
+            name="metadata.browser"
             icon="icons/sample.gif"
             category="de.chille.mds.plugin"
-            class="de.chille.mds.plugin.views.MDSView"
-            id="de.chille.mds.plugin.views.MDSView">
+            class="de.chille.mds.plugin.views.BrowserView"
+            id="de.chille.mds.plugin.views.BrowserView">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="metadata.server"
+            class="de.chille.mds.plugin.preferences.MDSPreferencePage"
+            id="de.chille.mds.plugin.preferences.MDSPreferencePage">
+      </page>
+   </extension>
+   
 
 </plugin>

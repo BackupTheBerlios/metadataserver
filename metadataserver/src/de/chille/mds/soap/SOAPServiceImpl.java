@@ -3,21 +3,11 @@ package de.chille.mds.soap;
 import java.util.Iterator;
 import java.util.Vector;
 
+import de.chille.api.mds.core.*;
+import de.chille.api.mds.soap.SOAPService;
 import de.chille.mds.MDSGlobals;
 import de.chille.mds.core.*;
-import de.chille.mds.core.MDSHrefFormatException;
-import de.chille.mds.core.MDSHrefImpl;
-import de.chille.mds.core.MDSModelImpl;
-import de.chille.mds.core.MDSRepositoryImpl;
-import de.chille.mds.core.MetaDataServerImpl;
-import de.chille.mds.persistence.PersistenceHandlerException;
-
-import de.chille.api.mds.core.*;
-import de.chille.api.mds.core.MDSHref;
-import de.chille.api.mds.core.MDSModel;
-import de.chille.api.mds.core.MDSRepository;
-import de.chille.api.mds.core.MetaDataServer;
-import de.chille.api.mds.soap.SOAPService;
+import de.chille.mme.core.MappingImpl;
 
 /**
  * @see SOAPService
@@ -61,19 +51,14 @@ public class SOAPServiceImpl implements SOAPService {
 		validateModel("mds://server_0/repository_0_1/model_0_1_0", 0);
 	}
 
-	public String test() {
-		String ret = "";
+	public void test(String href) {
 		try {
-			MDSGlobals.log("test");
-			metaDataServer = MetaDataServerImpl.getInstance();
-			MDSRepository rep = new MDSRepositoryImpl();
-			//MDSHref rhref = metaDataServer.insertReposititory(rep);
-			//rep.save();
-			ret = metaDataServer.toString();
+			MetaDataServerImpl.getInstance().convertModel(
+			new MDSHrefImpl(href),
+			new MappingImpl("mds", "java"));
 		} catch (Exception e) {
 			MDSGlobals.log(e.getMessage());
 		}
-		return ret;
 	}
 
 	public Vector query() {
