@@ -1,5 +1,8 @@
 package mme.core;
 
+import java.util.*;
+import mds.core.*;
+
 /**
  * bindet die metamapping.engine
  * an den metadata.server an

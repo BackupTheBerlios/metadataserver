@@ -1,5 +1,8 @@
 package mds.persistence;
 
+import java.util.*;
+import mds.core.*;
+
 /**
  * stellt Methoden zum dauerhaften Speicherung der Modelle mit einer
  * einfachen Versionierung zur Verfügung
