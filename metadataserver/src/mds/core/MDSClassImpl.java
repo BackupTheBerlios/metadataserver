@@ -10,5 +10,11 @@ import api.mds.core.MDSClass;
  * @author Thomas Chille
  */
 public class MDSClassImpl extends MDSElementImpl implements MDSClass {
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "\t\t\tclass:" + this.getId() + "\n";
 
+	}
 }

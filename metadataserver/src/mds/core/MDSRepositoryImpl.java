@@ -150,5 +150,17 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 		}
 		throw new MDSCoreException("Fehler: MDSRepository#getModelByHref()");
 	}
+	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		String retString = "\trepository:" + this.getId() + "\n";
+		Iterator i = models.iterator();
+		while (i.hasNext()) {
+			retString += ((MDSModel)i.next()).toString();
+		}
+		return retString;
+	}
 
 }

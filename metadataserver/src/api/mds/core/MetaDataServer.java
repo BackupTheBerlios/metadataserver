@@ -143,27 +143,6 @@ public interface MetaDataServer {
 	public boolean removeElement(MDSHref href);
 
 	/**
-	 * verschiebt ein MDSElement innerhalb eines MDSModel
-	 * oder in ein anderes MDSModel
-	 *
-	 * @param from von spezifierten Stelle 
-	 * @param to an dieser spezifierten Stelle 
-	 * @return Pfad zur neuen MDSElement-Position
-	 */
-	public MDSHref moveElement(MDSHref from, MDSHref to);
-
-	/**
-	 * kopiert ein MDSElement innerhalb eines MDSModel
-	 * oder in ein anderes MDSModel
-	 *
-	 * @param from href spezifierten Stelle 
-	 * @param to an dieser spezifierten Stelle 
-	 * @param label des neuen MDSElement, id wird automatisch vergeben
-	 * @return Pfad zur Kopie des MDSElement
-	 */
-	public MDSHref copyElement(MDSHref from, MDSHref to, String label);
-
-	/**
 	 * validiert MDSModel
 	 *
 	 * @param href Pfad zum zu validierenden MDSModel

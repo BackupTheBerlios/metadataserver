@@ -253,38 +253,6 @@ public class MetaDataServerImpl
 	}
 
 	/**
-	 * @see MetaDataServer#moveElement(MDSHref, MDSHref)
-	 */
-	public MDSHref moveElement(MDSHref from, MDSHref to) {
-		try {
-			MDSRepository mdsRepository = getRepositoryByHref(from);
-			MDSModel mdsModel = mdsRepository.getModelByHref(from);
-			String newHref = mdsModel.moveElement(from, to);
-			return new MDSHrefImpl(this.getId() + "." + newHref);
-		} catch (MDSCoreException e) {
-			return null;
-		} catch (MDSHrefFormatException e) {
-			return null;
-		}
-	}
-
-	/**
-	 * @see MetaDataServer#copyElement(MDSHref, MDSHref, String)
-	 */
-	public MDSHref copyElement(MDSHref from, MDSHref to, String label) {
-		try {
-			MDSRepository mdsRepository = getRepositoryByHref(from);
-			MDSModel mdsModel = mdsRepository.getModelByHref(from);
-			String id = mdsModel.copyElement(from, to, label);
-			return new MDSHrefImpl(to.getHref() + "." + id);
-		} catch (MDSCoreException e) {
-			return null;
-		} catch (MDSHrefFormatException e) {
-			return null;
-		}
-	}
-
-	/**
 	 * @see MetaDataServer#validateModel(MDSHref, int)
 	 */
 	public ArrayList validateModel(MDSHref href, int validateType) {
@@ -423,4 +391,17 @@ public class MetaDataServerImpl
 		}
 		throw new MDSCoreException("Fehler: MetaDataServer#getRepositoryByHref()");
 	}
+		
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		String retString = "server:" + this.getId() + "\n";
+		Iterator i = repositories.iterator();
+		while (i.hasNext()) {
+			retString += ((MDSRepository)i.next()).toString();
+		}
+		return retString;
+	}
+
 }

@@ -70,5 +70,13 @@ public class MDSAggregationImpl
 	public void setComposition(boolean composition) {
 		this.composition = composition;
 	}
+	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "\t\t\taggregation:" + this.getId() + "\n";
+
+	}	
 
 }

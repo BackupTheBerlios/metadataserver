@@ -60,30 +60,6 @@ public interface MDSModel extends MDSObject {
 		throws MDSCoreException, MDSHrefFormatException;
 
 	/**
-	 * verschiebt ein MDSElement in ein anderes MDSModel
-	 *
-	 * @param from href spezifierten Stelle 
-	 * @param to an diese spezifierten Stelle 
-	 * @return id des MDSElement
-	 * @throws MDSCoreException im Fehlerfall
-	 */
-	public String moveElement(MDSHref from, MDSHref to)
-		throws MDSCoreException, MDSHrefFormatException;
-
-	/**
-	 * kopiert ein MDSElement innerhalb eines MDSModel
-	 * oder in ein anderes MDSModel
-	 *
-	 * @param from von spezifierten Stelle 
-	 * @param to an dieser spezifierten Stelle 
-	 * @param label des neuen MDSElement, id wird automatisch vergeben
-	 * @return id der Kopie des MDSElement
-	 * @throws MDSCoreException im Fehlerfall
-	 */
-	public String copyElement(MDSHref from, MDSHref to, String label)
-		throws MDSCoreException;
-
-	/**
 	 * validiert MDSModel
 	 *
 	 * @param href Pfad zum zu validierenden MDSModel

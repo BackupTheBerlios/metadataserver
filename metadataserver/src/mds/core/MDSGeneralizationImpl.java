@@ -47,5 +47,13 @@ public class MDSGeneralizationImpl
 	 */
 	public void setSuperClass(MDSClass superClass) {
 	}
+	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "\t\t\tgeneralization:" + this.getId() + "\n";
+
+	}
 
 }

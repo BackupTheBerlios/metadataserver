@@ -56,5 +56,12 @@ public class MDSAssociationImpl
 	public void setAssociationEnds(ArrayList associationEnds) {
 		this.associationEnds = associationEnds;
 	}
+	
+		/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "\t\t\tassociation:" + this.getId() + "\n";
 
+	}
 }

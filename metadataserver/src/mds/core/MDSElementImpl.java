@@ -8,6 +8,5 @@ import api.mds.core.MDSElement;
  * @author Thomas Chille
  */
 public class MDSElementImpl extends MDSObjectImpl implements MDSElement {
-
 }
 

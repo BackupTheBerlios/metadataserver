@@ -9,12 +9,12 @@ public class MDSTest {
 		MDSRepository rep = new MDSRepositoryImpl();
 		MDSModel model = new MDSModelImpl();
 		MDSClass myclass = new MDSClassImpl();
-		System.out.println(
-			server.insertElement(
-				server.insertModel(
-					server.insertReposititory(rep), 
-					model), 
-				myclass).getHref()
-			);
+		MDSClass myclass2 = new MDSClassImpl();
+		MDSHref href = server.insertModel(server.insertReposititory(rep), model);
+		server.insertElement(href, 	myclass);
+		server.insertElement(href, myclass2);
+		System.out.println(server);
+		model.getXmiFile();
 	}
+	
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import mds.persistence.PersistenceHandlerException;
+import mds.xmi.XMIHandlerException;
 import mds.xmi.XMIHandlerImpl;
 
 import api.mds.core.MDSElement;
@@ -112,47 +113,6 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	}
 
 	/**
-	 * @see MDSModel#moveElement(MDSHref, MDSHref)
-	 */
-	public String moveElement(MDSHref from, MDSHref to)
-		throws MDSCoreException, MDSHrefFormatException {
-			
-		try {
-			MDSElement mdsElement =
-				(MDSElement)this.getPersistenceHandler().load(from, null);
-			this.removeElement(from);
-			MDSModel mdsModel =
-				(MDSModel)this.getPersistenceHandler().load(to, null);
-			String id = mdsModel.insertElement(mdsElement);
-			return id;
-		} catch (PersistenceHandlerException e) {
-			throw new MDSCoreException("Fehler: MDSRepository#moveModel()");
-		}
-	}
-
-	/**
-	 * @see MDSModel#copyElement(MDSHref, MDSHref, String)
-	 */
-	public String copyElement(MDSHref from, MDSHref to, String label)
-		throws MDSCoreException {
-			
-		try {
-			MDSElement mdsElement =
-				(MDSElement)this.getPersistenceHandler().load(from, null);
-			MDSElement copyElement = new MDSElementImpl();
-			copyElement.setPersistenceHandler(mdsElement.getPersistenceHandler());
-			copyElement.setLabel(label);
-			
-			MDSModel mdsModel =
-				(MDSModel)this.getPersistenceHandler().load(to, null);
-			String id = mdsModel.insertElement(mdsElement);
-			return id;
-		} catch (PersistenceHandlerException e) {
-			throw new MDSCoreException("Fehler: MDSRepository#moveModel()");
-		}
-	}
-
-	/**
 	 * @see MDSModel#validateModel(int)
 	 */
 	public ArrayList validateModel(int validateType) throws MDSCoreException {
@@ -170,7 +130,11 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	 * @see MDSModel#getXmiFile()
 	 */
 	public File getXmiFile() {
-		return xmiFile;
+		try {
+			xmiHandler.generateXMI(this);
+		} catch (XMIHandlerException e) {
+		}
+		return null;
 	}
 
 	/**
@@ -277,6 +241,18 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 			}
 		}
 		throw new MDSCoreException("Fehler: MDSModels#getById()");
+	}
+	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		String retString = "\t\tmodel:" + this.getId() + "\n";
+		Iterator i = elements.iterator();
+		while (i.hasNext()) {
+			retString += ((MDSElement)i.next()).toString();
+		}
+		return retString;
 	}
 
 }

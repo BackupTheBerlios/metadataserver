@@ -1,5 +1,7 @@
 package api.mds.xmi;
 
+import java.util.ArrayList;
+
 import mds.xmi.XMIHandlerException;
 
 import api.mds.core.MDSElement;
@@ -22,27 +24,6 @@ public interface XMIHandler {
 	 * @throws XMIHandlerException im Fehlerfall
 	 */
 	public void generateXMI(MDSModel mdsModel) throws XMIHandlerException;
-
-	/**
-	 * fügt ein MDSElement in MDSModel ein
-	 *
-	 * @param mdsModel das betreffende MDSModel
-	 * @param id an dieser spezifierten Stelle 
-	 * @param mdsElement das MDSElement (Klasse, Assoziation,...)
-	 * @throws XMIHandlerException im Fehlerfall
-	 */
-	public void insertElement(MDSModel mdsModel, String id, MDSElement mdsElement)
-		throws XMIHandlerException;
-
-	/**
-	 * entfernt ein MDSElement aus dem MDSModel
-	 *
-	 * @param mdsModel das betreffende MDSModel
-	 * @param id an dieser spezifierten Stelle 
-	 * @throws XMIHandlerException im Fehlerfall
-	 */
-	public void removeElement(MDSModel mdsModel, String id)
-		throws XMIHandlerException;
 
 	/**
 	 * erzeugt oder aktualsiert die zum MDSModel gehörende DTD
@@ -68,6 +49,6 @@ public interface XMIHandler {
 	 * @return das Ergebnis der Abfrage
 	 * @throws XMIHandlerException im Fehlerfall
 	 */
-	public String[] query(MDSModel mdsModel, String query)
+	public ArrayList query(MDSModel mdsModel, String query)
 		throws XMIHandlerException;
 }
