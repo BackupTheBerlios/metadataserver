@@ -375,8 +375,8 @@ public class XMIHandlerImpl implements XMIHandler {
 				.getId()
 				.equals(subClass.getId())) {
 				superClassAssociations.addAll(
-					getClassAssociations(generalization.getSuperClass()));
-			}
+					getSuperClassAssociations(generalization.getSuperClass()));
+			}//getClassAssociations(generalization.getSuperClass()));
 		}
 		return superClassAssociations;
 	}
