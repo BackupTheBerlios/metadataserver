@@ -16,7 +16,7 @@ public class MDSTest {
 		MetaDataServer server = new MetaDataServerImpl();
 
 		MDSRepository rep = new MDSRepositoryImpl();
-		
+		/*
 		// testmodel erstellen
 		MDSModel model = new MDSModelImpl();
 		model.setLabel("erstes");
@@ -88,9 +88,9 @@ public class MDSTest {
 		geni.setLabel("Geni");
 		geni.setSuperClass(myclass5);
 		geni.setSubClass(myclass6);
-		
+		*/
 		MDSHref rhref = server.insertReposititory(rep);
-		
+		/*
 		MDSHref href = server.insertModel(rhref, model);
 		
 		server.insertElement(href, myclass1);
@@ -129,7 +129,7 @@ public class MDSTest {
 		// vom zweiten die xmi-repräsemtation ausprinten
 		xmiContent = model1.getXmiFile().getContent();
 		System.out.println(xmiContent);
-
+		*/
 		// erstes model als sample speichern
 		FileWriter f1;
 		MDSFile file1 = new MDSFileImpl();
@@ -138,15 +138,15 @@ public class MDSTest {
 		String content = "";
 
 		try {
-			
+			/*
 			f1 = new FileWriter("sample.xmi");
 			f1.write(model.getXmiFile().getContent());
 			f1.close();
-			
+			*/
 			// sample laden
 			f =
 				new BufferedReader(
-					new FileReader("sample.xmi"));
+					new FileReader("sample2.xmi"));
 			while ((line = f.readLine()) != null) {
 				content += line + "\n";
 			}
