@@ -285,7 +285,7 @@ public class XMIHandlerImpl implements XMIHandler {
 			// rules 6,6a,6b
 			dtd += "<!ELEMENT " + mdsClass.getLabel() + " (";
 			// rules 6e,6f
-			j = getClassAssociations(mdsClass).iterator();
+			j = getClassAssociations(mdsClass, "all").iterator();
 			while (j.hasNext()) {
 				dtd += ((MDSClassImpl) j.next()).getLabel() + " | ";
 			}
@@ -299,7 +299,7 @@ public class XMIHandlerImpl implements XMIHandler {
 		return mdsFile;
 	}
 
-	private ArrayList getClassAssociations(MDSClass mdsClass) {
+	private ArrayList getClassAssociations(MDSClass mdsClass, String mode) {
 
 		MDSAssociation association = null;
 		AssociationEnd end = null;
@@ -316,10 +316,15 @@ public class XMIHandlerImpl implements XMIHandler {
 					classAssociations.add(
 						((AssociationEndImpl) ends.get(j == 0 ? 1 : 0))
 							.getMdsClass());
-					if (end.getAggregation()
+					if (((AssociationEndImpl) ends.get(j == 0 ? 1 : 0)).getAggregation()
 						== AssociationEnd.COMPOSITE_AGGREGATION) {
-						// rule 6e
-						classAssociations.addAll(getSubClasses(mdsClass));
+						// bei rekursion nur non-composite-refs
+						if (mode.equals("all")) {
+							// rule 6e
+							classAssociations.addAll(getSubClasses(((AssociationEndImpl) ends.get(j == 0 ? 1 : 0))
+							.getMdsClass()));
+							// classAssociations.addAll(getSubClasses(mdsClass));
+						}
 					} else {
 						// rule 6f
 						classAssociations.addAll(
@@ -375,8 +380,10 @@ public class XMIHandlerImpl implements XMIHandler {
 				.getId()
 				.equals(subClass.getId())) {
 				superClassAssociations.addAll(
-					getSuperClassAssociations(generalization.getSuperClass()));
-			}//getClassAssociations(generalization.getSuperClass()));
+					getClassAssociations(
+						generalization.getSuperClass(),
+						"refs only"));
+			} //getClassAssociations(generalization.getSuperClass()));
 		}
 		return superClassAssociations;
 	}

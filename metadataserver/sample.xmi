@@ -20,11 +20,19 @@
 		<UML:Class xmi.id="class_0" name="myclass0"/>
 		<UML:Class xmi.id="class_9" name="myclass9"/>
 		<UML:Class xmi.id="class_1" name="myclass1"/>
-		<UML:Class xmi.id="class_2" name="myclass2"/>
+		<UML:Class xmi.id="class_2" name="myclass2">
+			<UML:Namespace.ownedElement>
+				<UML:Generalization xmi.id="generalization_13" name="geni3" child="class_2" parent="class_1"/>
+			</UML:Namespace.ownedElement>
+		</UML:Class>
 		<UML:Class xmi.id="class_3" name="myclass3"/>
 		<UML:Class xmi.id="class_4" name="myclass4"/>
-		<UML:Class xmi.id="class_6" name="myclass6"/>
 		<UML:Class xmi.id="class_7" name="myclass7"/>
+		<UML:Class xmi.id="class_6" name="myclass6" generalization="class_2">
+			<UML:Namespace.ownedElement>
+				<UML:Generalization xmi.id="generalization_12" name="geni2" child="class_6" parent="class_2"/>
+			</UML:Namespace.ownedElement>
+		</UML:Class>
 		<UML:Class xmi.id="class_5" name="myclass5" generalization="class_0">
 			<UML:Namespace.ownedElement>
 				<UML:Generalization xmi.id="generalization_11" name="geni" child="class_5" parent="class_0"/>
@@ -32,7 +40,7 @@
 		</UML:Class>
 		<UML:Association xmi.id="association_9" name="asso">
 			<UML:Association.connection>
-				<UML:AssociationEnd aggregation="composite" type="class_0"/>
+				<UML:AssociationEnd aggregation="none" type="class_0"/>
 				<UML:AssociationEnd aggregation="none" type="class_1"/>
 			</UML:Association.connection>
 		</UML:Association>
@@ -44,13 +52,13 @@
 		</UML:Association>
 		<UML:Association xmi.id="association_10" name="aggi">
 			<UML:Association.connection>
-				<UML:AssociationEnd aggregation="aggregate" type="class_2"/>
+				<UML:AssociationEnd aggregation="none" type="class_2"/>
 				<UML:AssociationEnd aggregation="none" type="class_3"/>
 			</UML:Association.connection>
 		</UML:Association>
 		<UML:Association xmi.id="association_8" name="compo">
 			<UML:Association.connection>
-				<UML:AssociationEnd aggregation="composite" type="class_6"/>
+				<UML:AssociationEnd aggregation="none" type="class_6"/>
 				<UML:AssociationEnd aggregation="none" type="class_7"/>
 			</UML:Association.connection>
 		</UML:Association>
