@@ -11,50 +11,49 @@ import mds.core.*;
 public class XMIHandlerImpl implements XMIHandler 
 {
 	/**
-	 * @see XMIHandler#createModel(String, MDSModel, String)
+	 * @see XMIHandler#generateXMI(MDSModel)
 	 */
-	public MDSModel createModel(String label, MDSModel metamodel, String type)
-	throws XMIHandlerException 
-	{
-		return null;
-	}
-
-	/**
-	 * @see XMIHandler#insert(String, MDSElement)
-	 */
-	public void insert(String id, MDSElement mdsElement) 
+	public void generateXMI(MDSModel mdsModel) 
 	throws XMIHandlerException 
 	{
 	}
 
 	/**
-	 * @see XMIHandler#remove(MDSModel, String)
+	 * @see XMIHandler#insertElement(MDSModel, String, MDSElement)
 	 */
-	public void remove(MDSModel mdsModel, String id) 
+	public void insertElement(MDSModel mdsModel, String id, MDSElement mdsElement)
 	throws XMIHandlerException 
 	{
 	}
 
 	/**
-	 * @see XMIHandler#generateDTD()
+	 * @see XMIHandler#removeElement(MDSModel, String)
 	 */
-	public void generateDTD() 
+	public void removeElement(MDSModel mdsModel, String id) 
 	throws XMIHandlerException 
 	{
 	}
 
 	/**
-	 * @see XMIHandler#generateSchema()
+	 * @see XMIHandler#generateDTD(MDSModel)
 	 */
-	public void generateSchema() 
+	public void generateDTD(MDSModel mdsModel) 
 	throws XMIHandlerException 
 	{
 	}
 
 	/**
-	 * @see XMIHandler#query(String)
+	 * @see XMIHandler#generateSchema(MDSModel)
 	 */
-	public ArrayList query(String query) 
+	public void generateSchema(MDSModel mdsModel) 
+	throws XMIHandlerException 
+	{
+	}
+
+	/**
+	 * @see XMIHandler#query(MDSModel, String)
+	 */
+	public ArrayList query(MDSModel mdsModel, String query) 
 	throws XMIHandlerException 
 	{
 		return null;
