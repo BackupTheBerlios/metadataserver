@@ -321,8 +321,8 @@ public class XMLMapperProzessor
 
 	/**
 	 * Method ApplyPhase1StyleSheet.
-	 * @param project
-	 * @param filename
+	 * @param project das zu mappende XMI File
+	 * @param filename des xsl Files
 	 * @return Document
 	 * @throws Exception
 	 */
@@ -398,20 +398,59 @@ public class XMLMapperProzessor
 
 	/**
 	 * Method startMapping.
-	 * @param source
-	 * @param goale
+	 * @param source das XMI File
+	 * @param modelNr ein eindeutiger bezeichner für das Model
 	 * @throws MetaMappingEngineException
 	 */
     public ArrayList startMapping(String source, String modelNr) throws MetaMappingEngineException
     {
-//      String project = source;
-        this.home = modelNr + "/src/";
+		String path = modelNr + "/src/";
+    	
+		if(source == null || source.compareTo("") == 0){
+			System.out.println("Source == null");
+			throw new MetaMappingEngineException("no input source to mapp");
+		}
+		
+		/*
+		 *  beseitige die möglichen alten Files aus dem Verzeichniss
+		 */
+        clearPath(path);
+		
+		
+        this.home = path;
         this.doMain(source);
-        System.out.println("alles ok!!");
-        return searchForFilesIn(modelNr + "/src/", new ArrayList());
+        System.out.println("!!alles ok!!");
+        return searchForFilesIn(path, new ArrayList());
         
     }
     
+	/**
+	 * Method clearPath, beseitige die möglichen alten Files aus dem Verzeichniss.
+	 * @param path
+	 */
+    private void clearPath(String path){
+    	System.out.println("clearPath: " + path);
+    	File parent = new File(path);
+    	File[] directoryAndFileList = parent.listFiles();
+    	if(directoryAndFileList != null){
+    	for(int i=0; i<directoryAndFileList.length; i++){
+			if(directoryAndFileList[i].isFile())    		
+    			directoryAndFileList[i].delete();
+			if(directoryAndFileList[i].isDirectory());
+				if(!directoryAndFileList[i].delete()){
+					clearPath(directoryAndFileList[i].getAbsolutePath());
+					directoryAndFileList[i].delete();
+				}
+    		
+    	}}
+    }
+    
+	/**
+	 * Method searchForFilesIn.
+	 * @param path
+	 * @param fileList
+	 * @return ArrayList
+	 */
     private ArrayList searchForFilesIn(String path, ArrayList fileList){
 
 		File parent = new File(path);
