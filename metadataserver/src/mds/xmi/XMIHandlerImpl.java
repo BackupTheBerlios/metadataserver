@@ -44,10 +44,17 @@ import api.mds.xmi.XMIHandler;
  */
 public class XMIHandlerImpl implements XMIHandler {
 
+	private ArrayList classes;
+	private ArrayList associations;
+	private ArrayList generalizations;
 	/**
 	 * @see api.mds.xmi.XMIHandler#mapMDS2XMI(MDSModel)
 	 */
 	public MDSFile mapMDS2XMI(MDSModel mdsModel) throws XMIHandlerException {
+
+		classes = new ArrayList();
+		associations = new ArrayList();
+		generalizations = new ArrayList();
 
 		String xdoc = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 		xdoc += "<!DOCTYPE XMI SYSTEM \"resources/UMLX13-11.dtd\" [\n";
@@ -117,9 +124,6 @@ public class XMIHandlerImpl implements XMIHandler {
 		String xfooter = "\t</XMI.content>\n";
 		xfooter += "</XMI>";
 
-		ArrayList classes = new ArrayList();
-		ArrayList associations = new ArrayList();
-		ArrayList generalizations = new ArrayList();
 		MDSElement element = null;
 		Iterator i, j;
 		MDSClass mdsClass = null, subClass = null;
@@ -243,9 +247,138 @@ public class XMIHandlerImpl implements XMIHandler {
 	 * @see XMIHandler#generateDTD(MDSModel)
 	 */
 	public MDSFile mapMDS2DTD(MDSModel mdsModel) throws XMIHandlerException {
-		MDSFile mdsFile = null;
 
+		String dtd = "";
+
+		classes = new ArrayList();
+		associations = new ArrayList();
+		generalizations = new ArrayList();
+
+		ArrayList classAssociations = new ArrayList();
+		MDSElement element = null;
+		Iterator i, j;
+		MDSClass mdsClass = null, subClass = null;
+
+		i = mdsModel.getElements().iterator();
+		while (i.hasNext()) {
+			element = (MDSElement) i.next();
+			if (element instanceof MDSClassImpl) {
+				classes.add(element);
+			} else if (element instanceof MDSGeneralizationImpl) {
+				subClass = ((MDSGeneralizationImpl) element).getSubClass();
+				j = classes.iterator();
+				while (j.hasNext()) {
+					mdsClass = (MDSClassImpl) j.next();
+					if (mdsClass.getId().equals(subClass.getId())) {
+						break;
+					}
+				}
+				//classes.remove(mdsClass);
+				generalizations.add(element);
+			} else {
+				associations.add(element);
+			}
+		}
+		i = classes.iterator();
+		while (i.hasNext()) {
+			mdsClass = (MDSClassImpl) i.next();
+			// rules 6,6a,6b
+			dtd += "<!ELEMENT " + mdsClass.getLabel() + " (";
+			// rules 6e,6f
+			j = getClassAssociations(mdsClass).iterator();
+			while (j.hasNext()) {
+				dtd += ((MDSClassImpl) j.next()).getLabel() + " | ";
+			}
+			// rule 6c
+			dtd += "XMI.extension)*>\n";
+		}
+
+		MDSFile mdsFile = new MDSFileImpl();
+
+		mdsFile.setContent(dtd);
 		return mdsFile;
+	}
+
+	private ArrayList getClassAssociations(MDSClass mdsClass) {
+
+		MDSAssociation association = null;
+		AssociationEnd end = null;
+		MDSClass endClass = null;
+		ArrayList ends = null, classAssociations = new ArrayList();
+		Iterator i = associations.iterator();
+		while (i.hasNext()) {
+			association = (MDSAssociationImpl) i.next();
+			ends = association.getAssociationEnds();
+			for (int j = 0; j < 2; j++) {
+				end = (AssociationEndImpl) ends.get(j);
+				endClass = end.getMdsClass();
+				if (endClass.getId().equals(mdsClass.getId())) {
+					classAssociations.add(
+						((AssociationEndImpl) ends.get(j == 0 ? 1 : 0))
+							.getMdsClass());
+					if (end.getAggregation()
+						== AssociationEnd.COMPOSITE_AGGREGATION) {
+						// rule 6e
+						classAssociations.addAll(getSubClasses(mdsClass));
+					} else {
+						// rule 6f
+						classAssociations.addAll(
+							getSuperClassAssociations(mdsClass));
+					}
+				}
+			}
+		}
+		return classAssociations;
+	}
+
+	/**
+	 * gibt rekursiv alle subclasses für eine übergebene superclass zurück
+	 * um die xmi-dtd-production-rule 6f zu imlementieren
+	 * 
+	 * @param superClass
+	 * @return ArrayList
+	 */
+	private ArrayList getSubClasses(MDSClass superClass) {
+		ArrayList subClasses = new ArrayList();
+		MDSClass subClass = null;
+		MDSGeneralization generalization = null;
+		Iterator i = generalizations.iterator();
+		while (i.hasNext()) {
+			generalization = (MDSGeneralizationImpl) i.next();
+			if (generalization
+				.getSuperClass()
+				.getId()
+				.equals(superClass.getId())) {
+				subClass = generalization.getSubClass();
+				subClasses.add(subClass);
+				subClasses.addAll(getSubClasses(subClass));
+			}
+		}
+		return subClasses;
+	}
+
+	/**
+	 * gibt rekursiv alle Associationen der superlasses für eine übergebene 
+	 * subclass zurück um die xmi-dtd-production-rule 6e zu imlementieren
+	 * 
+	 * @param subClass
+	 * @return ArrayList
+	 */
+	private ArrayList getSuperClassAssociations(MDSClass subClass) {
+		ArrayList superClassAssociations = new ArrayList();
+		MDSGeneralization generalization = null;
+		Iterator i = generalizations.iterator();
+		while (i.hasNext()) {
+			generalization = (MDSGeneralizationImpl) i.next();
+			if (generalization
+				.getSubClass()
+				.getId()
+				.equals(subClass.getId())) {
+				superClassAssociations.addAll(
+					getClassAssociations(generalization.getSuperClass()));
+			}
+		}
+		return superClassAssociations;
 	}
 
 	/**
@@ -262,6 +395,10 @@ public class XMIHandlerImpl implements XMIHandler {
 	 * @see api.mds.xmi.XMIHandler#mapXMI2MDS(MDSFile)
 	 */
 	public MDSModel mapXMI2MDS(MDSFile mdsFile) throws XMIHandlerException {
+		classes = new ArrayList();
+		associations = new ArrayList();
+		generalizations = new ArrayList();
+
 		MDSModel model = new MDSModelImpl();
 		MDSElement element = null;
 		try {
@@ -280,7 +417,6 @@ public class XMIHandlerImpl implements XMIHandler {
 			Node n = it.nextNode();
 			NamedNodeMap attribs;
 			HashMap nodeAttribs = null;
-			ArrayList classes = new ArrayList();
 			String nodeName = "", attName = "", attValue = "";
 			MDSClass newClass = null;
 			ArrayList files = new ArrayList();
@@ -355,8 +491,6 @@ public class XMIHandlerImpl implements XMIHandler {
 					new ObjectFilter(),
 					true);
 			n = it.nextNode();
-			ArrayList associations = new ArrayList();
-			ArrayList generalizations = new ArrayList();
 			MDSAssociation newAssociation = null;
 			MDSGeneralization newGeneralization = null;
 			AssociationEnd newAssociationEnd = null;
@@ -393,13 +527,9 @@ public class XMIHandlerImpl implements XMIHandler {
 						newGeneralization.setId(
 							(String) nodeAttribs.get("xmi.id"));
 						newGeneralization.setSuperClass(
-							getClassById(
-								classes,
-								(String) nodeAttribs.get("parent")));
+							getClassById((String) nodeAttribs.get("parent")));
 						newGeneralization.setSubClass(
-							getClassById(
-								classes,
-								(String) nodeAttribs.get("child")));
+							getClassById((String) nodeAttribs.get("child")));
 						generalizations.add(newGeneralization);
 					} else {
 						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:Generalization");
@@ -409,9 +539,7 @@ public class XMIHandlerImpl implements XMIHandler {
 						&& nodeAttribs.containsKey("type")) {
 						newAssociationEnd = new AssociationEndImpl();
 						newAssociationEnd.setMdsClass(
-							getClassById(
-								classes,
-								(String) nodeAttribs.get("type")));
+							getClassById((String) nodeAttribs.get("type")));
 						aggregation = (String) nodeAttribs.get("aggregation");
 						if (aggregation.equals("none")) {
 							newAssociationEnd.setAggregation(
@@ -445,8 +573,7 @@ public class XMIHandlerImpl implements XMIHandler {
 		return model;
 	}
 
-	private MDSClass getClassById(ArrayList classes, String id)
-		throws XMIHandlerException {
+	private MDSClass getClassById(String id) throws XMIHandlerException {
 
 		MDSClass mdsClass;
 		Iterator i = classes.iterator();
