@@ -26,7 +26,7 @@
             id="de.chille.mds.plugin">
       </category>
       <view
-            name="metadata.browser"
+            name="metadata.browser2"
             icon="icons/sample.gif"
             category="de.chille.mds.plugin"
             class="de.chille.mds.plugin.views.MDSView"

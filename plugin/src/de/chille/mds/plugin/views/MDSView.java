@@ -8,7 +8,7 @@ import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
-import mds.soap.SOAPClientImpl;
+import de.chille.mds.soap.SOAPClientImpl;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.swt.SWT;
 import java.util.*;
@@ -133,7 +133,7 @@ public class MDSView extends ViewPart {
  * expose its hierarchy.
  */
 		private void initialize() {
-			TreeObject to1 = new TreeObject("Leaf 1" + SOAPClientImpl.call());
+			TreeObject to1 = new TreeObject("qqqqLeaf 1" + SOAPClientImpl.call());
 			TreeObject to2 = new TreeObject("Leaf 2");
 			TreeObject to3 = new TreeObject("Leaf 3");
 			TreeParent p1 = new TreeParent("Parent 1");
