@@ -316,6 +316,13 @@ public class XMIHandlerImpl implements XMIHandler {
 					} else {
 						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:Class");
 					}
+				} else if (nodeName.equals("XMI.model")) {
+					if (nodeAttribs.containsKey("href")
+						&& nodeAttribs.containsKey("xmi.name")) {
+							model.setLabel((String) nodeAttribs.get("xmi.name"));
+					} else {
+						throw new XMIHandlerException("Fehler: XMIHandler#mapXMI2MD#UML:Class");
+					}
 				}
 				n = it.nextNode();
 			}
