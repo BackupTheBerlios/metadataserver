@@ -2,6 +2,7 @@ package de.chille.mds.plugin;
 
 import org.eclipse.ui.plugin.*;
 import org.eclipse.core.runtime.*;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.core.resources.*;
 import java.util.*;
 
@@ -13,7 +14,7 @@ public class MDSPlugin extends AbstractUIPlugin {
 	private static MDSPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
-	
+
 	/**
 	 * The constructor.
 	 */
@@ -21,7 +22,9 @@ public class MDSPlugin extends AbstractUIPlugin {
 		super(descriptor);
 		plugin = this;
 		try {
-			resourceBundle= ResourceBundle.getBundle("de.chille.mds.plugin.MDSPluginResources");
+			resourceBundle =
+				ResourceBundle.getBundle(
+					"de.chille.mds.plugin.MDSPluginResources");
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
@@ -46,7 +49,7 @@ public class MDSPlugin extends AbstractUIPlugin {
 	 * or 'key' if not found.
 	 */
 	public static String getResourceString(String key) {
-		ResourceBundle bundle= MDSPlugin.getDefault().getResourceBundle();
+		ResourceBundle bundle = MDSPlugin.getDefault().getResourceBundle();
 		try {
 			return bundle.getString(key);
 		} catch (MissingResourceException e) {
@@ -60,4 +63,15 @@ public class MDSPlugin extends AbstractUIPlugin {
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;
 	}
+
+	/**
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeDefaultPreferences(IPreferenceStore)
+	 */
+	protected void initializeDefaultPreferences(IPreferenceStore store) {
+		store.setDefault(
+			MDSPluginConstants.P_ENDPOINT,
+			MDSPluginConstants.P_ENDPOINT_VALUE);
+
+	}
+
 }
