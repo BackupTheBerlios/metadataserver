@@ -31,16 +31,14 @@ public class MDSRepositoryImpl extends MDSObjectImpl implements MDSRepository {
 	}
 
 	/**
-	 * Gets the persistenceHandler
-	 * @return Returns a PersistenceHandler
+	 * @see MDSRepository#getPersistenceHandler()
 	 */
 	public PersistenceHandler getPersistenceHandler() {
 		return persistenceHandler;
 	}
 
 	/**
-	 * Sets the persistenceHandler
-	 * @param persistenceHandler The persistenceHandler to set
+	 * @see MDSRepository#setPersistenceHandler(PersistenceHandler)
 	 */
 	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
 		this.persistenceHandler = persistenceHandler;

@@ -41,48 +41,42 @@ public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 	}
 
 	/**
-	 * Gets the mapping
-	 * @return Returns a Mapping
+	 * @see MDSMapper#getMapping()
 	 */
 	public Mapping getMapping() {
 		return mapping;
 	}
 
 	/**
-	 * Sets the mapping
-	 * @param mapping The mapping to set
+	 * @see MDSMapper#setMapping(Mapping)
 	 */
 	public void setMapping(Mapping mapping) {
 		this.mapping = mapping;
 	}
 
 	/**
-	 * Gets the mappingFile
-	 * @return Returns a File
+	 * @see MDSMapper#getMappingFile()
 	 */
 	public File getMappingFile() {
 		return mappingFile;
 	}
 
 	/**
-	 * Sets the mappingFile
-	 * @param mappingFile The mappingFile to set
+	 * @see MDSMapper#setMappingFile(File)
 	 */
 	public void setMappingFile(File mappingFile) {
 		this.mappingFile = mappingFile;
 	}
-	
+
 	/**
-	 * Gets the persistenceHandler
-	 * @return Returns a PersistenceHandler
+	 * @see MDSMapper#getPersistenceHandler()
 	 */
 	public PersistenceHandler getPersistenceHandler() {
 		return persistenceHandler;
 	}
 
 	/**
-	 * Sets the persistenceHandler
-	 * @param persistenceHandler The persistenceHandler to set
+	 * @see MDSMapper#setPersistenceHandler(PersistenceHandler)
 	 */
 	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
 		this.persistenceHandler = persistenceHandler;

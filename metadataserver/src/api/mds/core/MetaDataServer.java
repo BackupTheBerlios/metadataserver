@@ -175,12 +175,12 @@ public interface MetaDataServer {
 	 * wirkt dieses als Importfilter -  
 	 * das MDSModel wird dabei im MDSRepository abgelegt
 	 *
-	 * @param label des neuen MDSModels, id wird automatisch vergeben
+	 * @param href des Zielrepositories
 	 * @param mdsModel das zu importierende MDSModel
 	 * @param mapping das evtl. zu verwendende Mapping
 	 * @return Pfad zum neu entstandenen MDSModel
 	 */
-	public String importModel(String label, MDSModel mdsModel, Mapping mapping);
+	public String importModel(String href, MDSModel mdsModel, Mapping mapping);
 
 	/**
 	 * exportiert MDSModel, wenn ein Mapping angeben wird

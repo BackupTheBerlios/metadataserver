@@ -1,5 +1,7 @@
 package api.mme.core;
 
+import java.util.ArrayList;
+
 import mme.core.MetaMappingEngineException;
 
 import api.mds.core.MDSModel;
@@ -48,6 +50,6 @@ public interface MetaMappingEngine {
 	 * @return die Mappings
 	 * @throws MetaMappingEngineException im Fehlerfall
 	 */
-	public Mapping[] getMappings(String from, String to)
+	public ArrayList getMappings(String from, String to)
 		throws MetaMappingEngineException;
 }

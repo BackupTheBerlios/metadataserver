@@ -1,6 +1,11 @@
 package mme.core;
 
+import java.util.ArrayList;
+
+import mds.persistence.PersistenceHandlerException;
+
 import api.mds.core.MDSModel;
+import api.mds.persistence.PersistenceHandler;
 import api.mme.core.Mapping;
 import api.mme.core.MetaMappingEngine;
 import api.mme.mapper.MDSMapper;
@@ -16,6 +21,21 @@ public class MetaMappingEngineImpl implements MetaMappingEngine {
 	 *alle auf dem Server vorhandenen Mapper
 	 */
 	private MDSMapper[] mapper = null;
+
+	/**
+	 * zum speichern der mapper
+	 */
+	private PersistenceHandler persistenceHandler = null;
+
+	/**
+	 * Constructor for MetaMappingEngineImpl.
+	 */
+	public MetaMappingEngineImpl(PersistenceHandler persistenceHandler) {
+		try {
+			mapper = persistenceHandler.loadMapper();
+		} catch (PersistenceHandlerException e) {
+		}
+	}
 
 	/**
 	 * @see MetaMappingEngine#registerMapper(MDSMapper)
@@ -42,7 +62,7 @@ public class MetaMappingEngineImpl implements MetaMappingEngine {
 	/**
 	 * @see MetaMappingEngine#getMappings(String, String)
 	 */
-	public Mapping[] getMappings(String from, String to)
+	public ArrayList getMappings(String from, String to)
 		throws MetaMappingEngineException {
 		return null;
 	}

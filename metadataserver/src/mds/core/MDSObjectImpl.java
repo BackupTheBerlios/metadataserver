@@ -20,32 +20,28 @@ public class MDSObjectImpl implements MDSObject {
 	private String label = null;
 
 	/**
-	 * Gets the id
-	 * @return Returns a String
+	 * @see api.mds.core.MDSObject#getId()
 	 */
 	public String getId() {
 		return id;
 	}
 	
 	/**
-	 * Sets the id
-	 * @param id The id to set
+	 * @see api.mds.core.MDSObject#setId(String)
 	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 	
 	/**
-	 * Gets the label
-	 * @return Returns a String
+	 * @see api.mds.core.MDSObject#getLabel()
 	 */
 	public String getLabel() {
 		return label;
 	}
 	
 	/**
-	 * Sets the label
-	 * @param label The label to set
+	 * @see api.mds.core.MDSObject#setLabel(String)
 	 */
 	public void setLabel(String label) {
 		this.label = label;

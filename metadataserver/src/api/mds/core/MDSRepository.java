@@ -1,5 +1,7 @@
 package api.mds.core;
 
+import api.mds.persistence.PersistenceHandler;
+
 import mds.core.MDSCoreException;
 
 /**
@@ -32,4 +34,16 @@ public interface MDSRepository extends MDSObject {
 	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public String[] query(String query) throws MDSCoreException;
+	
+	/**
+	 * Gets the persistenceHandler
+	 * @return Returns a PersistenceHandler
+	 */
+	public PersistenceHandler getPersistenceHandler();
+
+	/**
+	 * Sets the persistenceHandler
+	 * @param persistenceHandler The persistenceHandler to set
+	 */
+	public void setPersistenceHandler(PersistenceHandler persistenceHandler);
 }

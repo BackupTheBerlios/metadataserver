@@ -2,6 +2,9 @@ package mds.core;
 
 import java.io.File;
 
+import mds.persistence.PersistenceHandlerException;
+import mds.xmi.XMIHandlerImpl;
+
 import api.mds.core.MDSElement;
 import api.mds.core.MDSModel;
 import api.mds.core.MDSRepository;
@@ -64,13 +67,24 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	 * @see MDSModel#insertModel(String)
 	 */
 	public String insertModel(String href) throws MDSCoreException {
-		return null;
+		this.setXmiHandler(new XMIHandlerImpl());
+		try {
+			MDSRepository mdsRepository =
+				(MDSRepository) persistenceHandler.load(href, null);
+			this.setRepository(mdsRepository);
+			this.setId("neue_unique_id");
+			persistenceHandler.save(this);
+			return href + "." + this.getId();
+		} catch (PersistenceHandlerException e) {
+			return null;
+		}
 	}
 
 	/**
 	 * @see MDSModel#removeModel()
 	 */
 	public void removeModel() throws MDSCoreException {
+		
 	}
 
 	/**
@@ -136,146 +150,133 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	}
 
 	/**
-	 * @see MDSModel#validateModel(String)
+	 * @see MDSModel#validateModel(int)
 	 */
-	public String[] validateModel(String validateType) throws MDSCoreException {
+	public String[] validateModel(int validateType) throws MDSCoreException {
 		return null;
 	}
 
 	/**
-	 * Gets the persistenceHandler
-	 * @return Returns a PersistenceHandler
+	 * @see MDSModel#getPersistenceHandler()
 	 */
 	public PersistenceHandler getPersistenceHandler() {
 		return persistenceHandler;
 	}
 
 	/**
-	 * Sets the persistenceHandler
-	 * @param persistenceHandler The persistenceHandler to set
+	 * @see MDSModel#setPersistenceHandler(PersistenceHandler)
 	 */
 	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
 		this.persistenceHandler = persistenceHandler;
 	}
 
 	/**
-	 * Gets the xmiFile
-	 * @return Returns a File
+	 * @see MDSModel#getXmiFile()
 	 */
 	public File getXmiFile() {
 		return xmiFile;
 	}
 
 	/**
-	 * Sets the xmiFile
-	 * @param xmiFile The xmiFile to set
+	 * @see MDSModel#setXmiFile(File)
 	 */
 	public void setXmiFile(File xmiFile) {
 		this.xmiFile = xmiFile;
 	}
+	
 	/**
-	 * Gets the dtdFile
-	 * @return Returns a File
+	 * @see MDSModel#getDtdFile()
 	 */
 	public File getDtdFile() {
 		return dtdFile;
 	}
 
 	/**
-	 * Sets the dtdFile
-	 * @param dtdFile The dtdFile to set
+	 * @see MDSModel#setDtdFile(File)
 	 */
 	public void setDtdFile(File dtdFile) {
 		this.dtdFile = dtdFile;
 	}
 
 	/**
-	 * Gets the schemaFile
-	 * @return Returns a File
+	 * @see MDSModel#getSchemaFile()
 	 */
 	public File getSchemaFile() {
 		return schemaFile;
 	}
 
 	/**
-	 * Sets the schemaFile
-	 * @param schemaFile The schemaFile to set
+	 * @see MDSModel#setSchemaFile(File)
 	 */
 	public void setSchemaFile(File schemaFile) {
 		this.schemaFile = schemaFile;
 	}
+	
 	/**
-	 * Gets the metamodel
-	 * @return Returns a MDSModel
+	 * @see MDSModel#getMetamodel()
 	 */
 	public MDSModel getMetamodel() {
 		return metamodel;
 	}
 
 	/**
-	 * Sets the metamodel
-	 * @param metamodel The metamodel to set
+	 * @see MDSModel#setMetamodel(MDSModel)
 	 */
 	public void setMetamodel(MDSModel metamodel) {
 		this.metamodel = metamodel;
 	}
+	
 	/**
-	 * Gets the repository
-	 * @return Returns a MDSRepository
+	 * @see MDSModel#getRepository()
 	 */
 	public MDSRepository getRepository() {
 		return repository;
 	}
 
 	/**
-	 * Sets the repository
-	 * @param repository The repository to set
+	 * @see MDSModel#setRepository(MDSRepository)
 	 */
 	public void setRepository(MDSRepository repository) {
 		this.repository = repository;
 	}
+	
 	/**
-	 * Gets the additionalFiles
-	 * @return Returns a File[]
+	 * @see MDSModel#getAdditionalFiles()
 	 */
 	public File[] getAdditionalFiles() {
 		return additionalFiles;
 	}
 
 	/**
-	 * Sets the additionalFiles
-	 * @param additionalFiles The additionalFiles to set
+	 * @see MDSModel#setAdditionalFiles(File[])
 	 */
 	public void setAdditionalFiles(File[] additionalFiles) {
 		this.additionalFiles = additionalFiles;
 	}
+	
 	/**
-	 * Gets the xmiHandler
-	 * @return Returns a XMIHandler
+	 * @see MDSModel#getXmiHandler()
 	 */
 	public XMIHandler getXmiHandler() {
 		return xmiHandler;
 	}
 
 	/**
-	 * Sets the xmiHandler
-	 * @param xmiHandler The xmiHandler to set
+	 * @see MDSModel#setXmiHandler(XMIHandler)
 	 */
 	public void setXmiHandler(XMIHandler xmiHandler) {
 		this.xmiHandler = xmiHandler;
 	}
 	
 	/**
-	 * Gets the elements
-	 * @return Returns a MDSElement[]
+	 * @see MDSModel#getElements()
 	 */
 	public MDSElement[] getElements() {
 		return elements;
 	}
 	
 	/**
-	 * Sets the elements
-	 * @param elements The elements to set
+	 * @see MDSModel#setElements(MDSElement[])
 	 */
 	public void setElements(MDSElement[] elements) {
 		this.elements = elements;
