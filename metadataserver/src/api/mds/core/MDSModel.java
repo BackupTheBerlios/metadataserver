@@ -16,43 +16,6 @@ import mds.core.MDSCoreException;
 public interface MDSModel extends MDSObject {
 
 	/**
-	 * fügt in MDSModel in MDSRepository ein
-	 *
-	 * @param href Pfad des MDSRepository
-	 * @return Pfad zum neu MDSModel
-	 * @throws MDSCoreException im Fehlerfall
-	 */
-	public String insertModel(String href) throws MDSCoreException;
-
-	/**
-	 * löscht MDSModel
-	 * 
-	 * @throws MDSCoreException im Fehlerfall
-	 */
-	public void removeModel() throws MDSCoreException;
-
-	/**
-	 * verschiebt MDSModel in ein anderes MDSRepository
-	 *
-	 * @param from href spezifierten Stelle 
-	 * @param to an dieser spezifierten Stelle 
-	 * @return Pfad zur neuen MDSModel-Position
-	 * @throws MDSCoreException im Fehlerfall
-	 */
-	public String moveModel(String to) throws MDSCoreException;
-
-	/**
-	 * kopiert MDSModel
-	 *
-	 * @param from href spezifizierten Stelle 
-	 * @param to an diese spezifizierten Stelle 
-	 * @param label des neuen MDSModels, id wird automatisch vergeben
-	 * @return Pfad zur Kopie des MDSModel
-	 * @throws MDSCoreException im Fehlerfall
-	 */
-	public String copyModel(String to, String label) throws MDSCoreException;
-
-	/**
 	 * umbenennen des MDSModel
 	 *
 	 * @param label neuer Name
@@ -187,18 +150,6 @@ public interface MDSModel extends MDSObject {
 	 * @param metamodel The metamodel to set
 	 */
 	public void setMetamodel(MDSModel metamodel);
-	
-	/**
-	 * Gets the repository
-	 * @return Returns a MDSRepository
-	 */
-	public MDSRepository getRepository();
-
-	/**
-	 * Sets the repository
-	 * @param repository The repository to set
-	 */
-	public void setRepository(MDSRepository repository);
 	
 	/**
 	 * Gets the additionalFiles

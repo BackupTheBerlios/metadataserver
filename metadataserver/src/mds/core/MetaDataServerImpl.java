@@ -57,7 +57,7 @@ public class MetaDataServerImpl
 			mdsRepository.setPersistenceHandler(persistenceHandler);
 			String href = mdsRepository.insert();
 			if (repositories.add(mdsRepository)) {
-				return href;
+				return this.getId() + "." + href;
 			} else {
 				return null;
 			}
@@ -122,9 +122,13 @@ public class MetaDataServerImpl
 	public String insertModel(String href, MDSModel mdsModel) {
 		try {
 			mdsModel.setPersistenceHandler(persistenceHandler);
-			String modelHref = mdsModel.insertModel(href);
-			return modelHref;
+			MDSRepository mdsRepository =
+				(MDSRepository) persistenceHandler.load(href, null);
+			String modelHref = mdsRepository.insertModel(href, mdsModel);
+			return this.getId() + "." + modelHref;
 		} catch (MDSCoreException e) {
+			return null;
+		}catch (PersistenceHandlerException e) {
 			return null;
 		}
 	}
@@ -134,8 +138,11 @@ public class MetaDataServerImpl
 	 */
 	public boolean removeModel(String href) {
 		try {
-			MDSModel mdsModel = (MDSModel) persistenceHandler.load(href, null);
-			mdsModel.removeModel();
+			String[] hrefParts = href.split(".");
+			String rHref = hrefParts[0] + "." + hrefParts[1] ;
+			MDSRepository mdsRepository =
+				(MDSRepository) persistenceHandler.load(rHref, null);
+			mdsRepository.removeModel(href);
 			return true;
 		} catch (MDSCoreException e) {
 			return false;
@@ -149,8 +156,11 @@ public class MetaDataServerImpl
 	 */
 	public String moveModel(String from, String to) {
 		try {
-			MDSModel mdsModel = (MDSModel) persistenceHandler.load(from, null);
-			String newHref = mdsModel.moveModel(to);
+			String[] hrefParts = from.split(".");
+			String rHref = hrefParts[0] + "." + hrefParts[1] ;
+			MDSRepository mdsRepository =
+				(MDSRepository) persistenceHandler.load(rHref, null);
+			String newHref = mdsRepository.moveModel(from, to);
 			return newHref;
 		} catch (MDSCoreException e) {
 			return null;
@@ -164,8 +174,11 @@ public class MetaDataServerImpl
 	 */
 	public String copyModel(String from, String to, String label) {
 		try {
-			MDSModel mdsModel = (MDSModel) persistenceHandler.load(from, null);
-			String newHref = mdsModel.copyModel(to, label);
+			String[] hrefParts = from.split(".");
+			String rHref = hrefParts[0] + "." + hrefParts[1] ;
+			MDSRepository mdsRepository =
+				(MDSRepository) persistenceHandler.load(rHref, null);
+			String newHref = mdsRepository.copyModel(from, to, label);
 			return newHref;
 		} catch (MDSCoreException e) {
 			return null;

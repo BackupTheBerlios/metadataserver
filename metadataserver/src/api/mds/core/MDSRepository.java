@@ -34,7 +34,7 @@ public interface MDSRepository extends MDSObject {
 	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public String[] query(String query) throws MDSCoreException;
-	
+
 	/**
 	 * Gets the persistenceHandler
 	 * @return Returns a PersistenceHandler
@@ -46,4 +46,46 @@ public interface MDSRepository extends MDSObject {
 	 * @param persistenceHandler The persistenceHandler to set
 	 */
 	public void setPersistenceHandler(PersistenceHandler persistenceHandler);
+
+	/**
+	 * fügt in MDSModel in MDSRepository ein
+	 *
+	 * @param href Pfad des MDSRepository
+	 * @param mdsModel das einzufügende Model
+	 * @return Pfad zum neu MDSModel
+	 * @throws MDSCoreException im Fehlerfall
+	 */
+	public String insertModel(String href, MDSModel mdsModel)
+		throws MDSCoreException;
+
+	/**
+	 * löscht MDSModel
+	 * 
+	 * @param href Pfad des zu löschenden Model
+	 * @throws MDSCoreException im Fehlerfall
+	 */
+	public void removeModel(String href) throws MDSCoreException;
+
+	/**
+	 * verschiebt MDSModel in ein anderes MDSRepository
+	 *
+	 * @param from href spezifierten Stelle 
+	 * @param to an dieser spezifierten Stelle 
+	 * @return Pfad zur neuen MDSModel-Position
+	 * @throws MDSCoreException im Fehlerfall
+	 */
+	public String moveModel(String from, String to) throws MDSCoreException;
+
+	/**
+	 * kopiert MDSModel
+	 *
+	 * @param from href spezifizierten Stelle 
+	 * @param to an diese spezifizierten Stelle 
+	 * @param label des neuen MDSModels, id wird automatisch vergeben
+	 * @return Pfad zur Kopie des MDSModel
+	 * @throws MDSCoreException im Fehlerfall
+	 */
+	public String copyModel(String from, String to, String label)
+		throws MDSCoreException;
+
 }
