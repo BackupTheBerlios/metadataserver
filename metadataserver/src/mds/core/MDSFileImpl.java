@@ -1,5 +1,7 @@
 package mds.core;
 
+import java.io.FileWriter;
+
 import api.mds.core.MDSFile;
 
 /**
@@ -73,4 +75,18 @@ public class MDSFileImpl implements MDSFile {
 		this.path = path;
 	}
 
+	/**
+	 * @see api.mds.core.MDSFile#save(String)
+	 */
+	public boolean save(String path) {
+		try {
+			FileWriter f1 = new FileWriter(path);
+			f1.write(getContent());
+			f1.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 }

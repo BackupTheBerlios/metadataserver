@@ -20,6 +20,12 @@ public interface MDSFile {
 	public void setContent(String content);
 	
 	/**
+	 * speichert content im filesystem
+	 * @param path speicherplatz
+	 */
+	public boolean save(String path);
+	
+	/**
 	 * Returns the name.
 	 * @return String
 	 */

@@ -122,20 +122,33 @@ public class MDSTest2 {
 		href = server.insertModel(rhref, model1);
 		server.insertElement(href, myclass1);
 		
+		// fehler simulieren
+		MDSClass wrongClass = new MDSClassImpl();
+		wrongClass.setLabel("wrongClass");
+		server.insertElement(href, wrongClass);
+		
+		// vom ersten die uml-xmi-repräsentation ausprinten
+		String content = model.getUmlFile().getContent();
+		System.out.println(content);
+		
+		// dtd des metamodels ausprinten
+		content = model.getDtdFile().getContent();
+		System.out.println(content);
+		
+		// vom zweiten die xmi-repräsemtation ausprinten
+		content = model1.getXmiFile().getContent();
+		System.out.println(content);
+		
+		model1.validateModel(0);
+		
+		System.out.println("ready!!");
+		
+		/*
 		try {
 			model.save();
 			model1.save();
 		} catch (PersistenceHandlerException e) {
 		}
-		
-		// vom ersten die xmi-repräsentation ausprinten
-		String xmiContent = model.getXmiFile().getContent();
-		System.out.println(xmiContent);
-
-		// vom zweiten die xmi-repräsemtation ausprinten
-		xmiContent = model1.getXmiFile().getContent();
-		System.out.println(xmiContent);
-
 		// erstes model als sample speichern
 		FileWriter f1;
 		MDSFile file1 = new MDSFileImpl();
@@ -171,7 +184,7 @@ public class MDSTest2 {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+*/
 		//System.out.println(server);
 
 		//System.out.println(model.getSchemaFile().getContent());

@@ -35,13 +35,13 @@ public class MDSTest {
 			f.close();
 			file1.setContent(content);
 			// sample-inhalt nach mds konvertieren
-			MDSModel model2 = new XMIHandlerImpl().mapXMI2MDS(file1);
+			MDSModel model2 = new XMIHandlerImpl().mapUML2MDS(file1);
 			
 			// dabei neu entstandenes model auf server ablegen
 			server.insertModel(rhref, model2);
 			
 			// und xmi-repräsentation ausprinten
-			System.out.println(model2.getXmiFile().getContent());
+			System.out.println(model2.getUmlFile().getContent());
 			
 			// und dtd-repräsentation ausprinten
 			System.out.println(model2.getDtdFile().getContent());

@@ -99,7 +99,7 @@ public class FilesystemHandlerImpl implements PersistenceHandler {
 				path += "/";
 				FileWriter fw;
 				fw = new FileWriter(path + "model.xmi");
-				fw.write(mdsModel.getXmiFile().getContent());
+				fw.write(mdsModel.getUmlFile().getContent());
 				fw.close();
 			} catch (IOException e) {
 				e.printStackTrace();

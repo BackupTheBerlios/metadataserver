@@ -78,6 +78,12 @@ public interface MDSModel extends MDSPersistentObject {
 	public ArrayList query(String query) throws MDSCoreException;
 
 	/**
+	 * Gets the umlFile
+	 * @return Returns a MDSFile
+	 */
+	public MDSFile getUmlFile();
+
+	/**
 	 * Gets the xmiFile
 	 * @return Returns a MDSFile
 	 */

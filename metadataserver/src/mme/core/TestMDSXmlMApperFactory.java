@@ -58,7 +58,7 @@ public class TestMDSXmlMApperFactory {
 //		System.out.println("mdsFile: " + mdsFile.getContent());		
 		try{
 			MDSMapper mdsMapper = mappingEngine.getMDSMapperForMapping((Mapping)mappingEngine.getMappings("xmi-argo", "java").get(0));
-			System.out.println("testMain: " + testModel.getXmiFile().getContent());
+			System.out.println("testMain: " + testModel.getUmlFile().getContent());
 			mdsMapper.map(testModel);
 			ArrayList aList = testModel.getAdditionalFiles();
 			for(int i=0; i<aList.size(); i++){

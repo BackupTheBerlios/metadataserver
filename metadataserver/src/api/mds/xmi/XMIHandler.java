@@ -19,13 +19,23 @@ import api.mds.core.MDSModel;
 public interface XMIHandler {
 
 	/**
-	 * erzeugt XMI-Repräsentation eines MDSModel
+	 * erzeugt UML-XMI-Repräsentation eines MDSModel
 	 *
 	 * @param mdsModel das betreffende MDSModel
 	 * @return MDSFile
 	 * @throws XMIHandlerException im Fehlerfall
 	 */
-	public MDSFile mapMDS2XMI(MDSModel mdsModel) throws XMIHandlerException;
+	public MDSFile mapMDS2UML(MDSModel mdsModel) throws XMIHandlerException;
+
+	/**
+	 * erzeugt XMI-Repräsentation eines MDSModel
+	 *
+	 * @param mdsModel das betreffende MDSModel
+	 * @param dtdPath wenn not null pfad zur dtd, doctype wird erzeugt
+	 * @return MDSFile
+	 * @throws XMIHandlerException im Fehlerfall
+	 */
+	public MDSFile mapMDS2XMI(MDSModel mdsModel, String dtdPath) throws XMIHandlerException;
 
 	/**
 	 * erzeugt die zum MDSModel gehörende DTD
@@ -52,6 +62,6 @@ public interface XMIHandler {
 	 * @return MDSModel
 	 * @throws XMIHandlerException im Fehlerfall
 	 */
-	public MDSModel mapXMI2MDS(MDSFile mdsFile) throws XMIHandlerException;
+	public MDSModel mapUML2MDS(MDSFile mdsFile) throws XMIHandlerException;
 
 }

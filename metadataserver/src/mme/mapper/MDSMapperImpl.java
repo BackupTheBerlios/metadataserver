@@ -56,7 +56,7 @@ public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 	 */
 	public MDSModel map(MDSModel mdsModel)
 		throws MetaMappingEngineException {
-		String xmlContend = mdsModel.getXmiFile().getContent();
+		String xmlContend = mdsModel.getUmlFile().getContent();
 		System.out.println("map: " + xmlContend);
 		ArrayList fileList = null;
 		if(xmlMapper != null){

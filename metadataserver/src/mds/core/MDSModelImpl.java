@@ -1,8 +1,24 @@
 package mds.core;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.apache.xerces.parsers.DOMParser;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+
+import mds.MDSGlobals;
 import mds.persistence.PersistenceHandlerException;
 import mds.xmi.XMIHandlerException;
 import mds.xmi.XMIHandlerImpl;
@@ -79,12 +95,9 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 		throws MDSCoreException, MDSHrefFormatException {
 
 		if (elements.add(mdsElement)) {
-			mdsElement
-				.setHref(
-					new MDSHrefImpl(
-						this.getHref().getModelHref()
-							+ "/"
-							+ mdsElement.getId()));
+			mdsElement.setHref(
+				new MDSHrefImpl(
+					this.getHref().getModelHref() + "/" + mdsElement.getId()));
 			return mdsElement.getId();
 		} else {
 			throw new MDSCoreException("Fehler: MDSModel#insertElement()");
@@ -112,7 +125,46 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 	 * @see MDSModel#validateModel(int)
 	 */
 	public ArrayList validateModel(int validateType) throws MDSCoreException {
-		return null;
+		// ohne metamodel gibt es nichts zu validieren
+		if (getMetamodel() != null) {
+			try {
+				// dtd des metamodels erzeugen und temporär im filesystem ablegen
+				MDSFile dtdFile = xmiHandler.mapMDS2DTD(getMetamodel());
+				dtdFile.save(MDSGlobals.TEMP_PATH + "validate.dtd");
+				// xmi des models mit doctype-element erzeugen
+				MDSFile xmiFile =
+					xmiHandler.mapMDS2XMI(
+						this,
+						MDSGlobals.TEMP_PATH + "validate.dtd");
+				// debug
+				System.out.println(xmiFile.getContent());
+				
+				// mittels SAXParser validieren
+				SAXParserFactory spf = SAXParserFactory.newInstance();
+				spf.setValidating(true);
+				XMLReader xmlReader = null;
+				SAXParser saxParser = spf.newSAXParser();
+				xmlReader = saxParser.getXMLReader();
+				//xmlReader.setContentHandler(new validate());
+				xmlReader.setErrorHandler(new MyErrorHandler(System.err));
+				xmlReader.parse(
+					new InputSource(
+						new ByteArrayInputStream(
+							xmiFile.getContent().getBytes())));
+							
+			} catch (XMIHandlerException e) {
+				e.printStackTrace();
+			} catch (SAXException e) {
+				e.printStackTrace();
+			} catch (ParserConfigurationException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -123,12 +175,25 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 	}
 
 	/**
+	 * @see MDSModel#getUmlFile()
+	 */
+	public MDSFile getUmlFile() {
+		try {
+			return xmiHandler.mapMDS2UML(this);
+		} catch (XMIHandlerException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
 	 * @see MDSModel#getXmiFile()
 	 */
 	public MDSFile getXmiFile() {
 		try {
-			return xmiHandler.mapMDS2XMI(this);
+			return xmiHandler.mapMDS2XMI(this, null);
 		} catch (XMIHandlerException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -140,6 +205,7 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 		try {
 			return xmiHandler.mapMDS2DTD(this);
 		} catch (XMIHandlerException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -151,6 +217,7 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 		try {
 			return xmiHandler.mapMDS2Schema(this);
 		} catch (XMIHandlerException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -238,4 +305,43 @@ public class MDSModelImpl extends MDSPersistentObjectImpl implements MDSModel {
 		return retString;
 	}
 
+	// Error handler to report errors and warnings
+	private class MyErrorHandler implements ErrorHandler {
+		/** Error handler output goes here */
+		private PrintStream out;
+		MyErrorHandler(PrintStream out) {
+			this.out = out;
+		}
+		/**
+		 * Returns a string describing parse exception details
+		 */
+		private String getParseExceptionInfo(SAXParseException spe) {
+			String systemId = spe.getSystemId();
+			if (systemId == null) {
+				systemId = "null";
+			}
+			String info =
+				"URI="
+					+ systemId
+					+ " Line="
+					+ spe.getLineNumber()
+					+ ": "
+					+ spe.getMessage();
+			return info;
+		}
+		// The following methods are standard SAX ErrorHandler methods.
+		// See SAX documentation for more info.
+		public void warning(SAXParseException spe) throws SAXException {
+			out.println("Warning: " + getParseExceptionInfo(spe));
+		}
+		public void error(SAXParseException spe) throws SAXException {
+			String message = "Error: " + getParseExceptionInfo(spe);
+			System.out.println(message);
+			//throw new SAXException(message);
+		}
+		public void fatalError(SAXParseException spe) throws SAXException {
+			String message = "Fatal Error: " + getParseExceptionInfo(spe);
+			//throw new SAXException(message);
+		}
+	}
 }
