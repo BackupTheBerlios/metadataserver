@@ -19,6 +19,14 @@ import java.util.ArrayList;
  */
 public class XMLMapperImpl extends MDSMapperImpl implements XMLMapper {
 
+	/**
+	 * soll dieser Mapper die Packetstrucktur nachbilden
+	 */
+	private boolean buildPackage = true;
+
+	/**
+	 * was kann dieser Mapper mappen
+	 */
 	private Mapping mapping = null;
 
 	/**
@@ -33,8 +41,8 @@ public class XMLMapperImpl extends MDSMapperImpl implements XMLMapper {
 	private File configXml = null;
 
 	public XMLMapperImpl(File configXml){
-		this(configXml, "");
-		this.configXml = configXml;
+		this(configXml, null);
+//		this.configXml = configXml;
 	}
 
 	/**
@@ -115,13 +123,32 @@ public class XMLMapperImpl extends MDSMapperImpl implements XMLMapper {
 	public ArrayList doMapping(String xmi)throws MetaMappingEngineException{
 		XMLMapperProzessor  trans = new XMLMapperProzessor ();
 		trans.setConfigXml(configXml.getAbsolutePath());
+		trans.setBuildPackage(this.getBuildPackage());
 		ArrayList fileList;
-		if(outputPath != null)
+		System.out.println("doMapping: " + xmi);
+		if(outputPath != null){
+			System.out.println("doMapping: outputPath: " + outputPath);			
 			fileList = trans.startMapping(xmi ,outputPath);
-		else
+		}else{
+			System.out.println("doMapping: default: " + MmeGlobals.OUTPUT_PATH);			
 			fileList = trans.startMapping(xmi, MmeGlobals.OUTPUT_PATH);
+		}
 		return fileList;
 	}
-	
+
+	/**
+	 * @see api.mme.mapper.MDSMapper#setBuildPackage(boolean)
+	 */
+	public void setBuildPackage(boolean buildPackage){
+		this.buildPackage = buildPackage;
+	}
+
+
+	/**
+	 * @see api.mme.mapper.MDSMapper#getBuildPackage()
+	 */
+	public boolean getBuildPackage(){
+		return buildPackage;
+	}
 
 }

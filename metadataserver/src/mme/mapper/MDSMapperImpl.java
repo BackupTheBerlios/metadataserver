@@ -22,6 +22,11 @@ import java.util.ArrayList;
 public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 
 	/**
+	 * soll dieser Mapper die Packetstrucktur nachbilden
+	 */
+	private boolean buildPackage = true;
+
+	/**
 	 * das von diesem Mapper durchführbare Mapping
 	 */
 	private Mapping mapping = null;
@@ -49,15 +54,20 @@ public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 	/**
 	 * @see Mapper#map(MDSModel, Mapping)
 	 */
-	public MDSModel map(MDSModel mdsModel, Mapping mapping)
+	public MDSModel map(MDSModel mdsModel)
 		throws MetaMappingEngineException {
 		String xmlContend = mdsModel.getXmiFile().getContent();
+		System.out.println("map: " + xmlContend);
 		ArrayList fileList = null;
-		if(xmlMapper != null)
+		if(xmlMapper != null){
+			this.xmlMapper.setBuildPackage(this.getBuildPackage());
 			fileList = this.xmlMapper.doMapping(xmlContend);
 			// dann handelt es sich um einen XmlMapper
-		if(unicodeMapper != null)
+		}else{
+			if(unicodeMapper != null)
 			// dann handelt es sich um einen unicodeMapper
+			this.unicodeMapper.setBuildPackage(this.getBuildPackage());
+		}
 		mdsModel.setAdditionalFiles(fileList);
 		return mdsModel;
 	}
@@ -109,4 +119,19 @@ public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
 		this.persistenceHandler = persistenceHandler;
 	}
+	
+	/**
+	 * @see api.mme.mapper.MDSMapper#setBuildPackage(boolean)
+	 */
+	public void setBuildPackage(boolean buildPackage){
+		this.buildPackage = buildPackage;
+	}
+
+
+	/**
+	 * @see api.mme.mapper.MDSMapper#getBuildPackage()
+	 */
+	public boolean getBuildPackage(){
+		return buildPackage;
+	}	
 }

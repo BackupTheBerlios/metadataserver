@@ -25,12 +25,17 @@ public class MDSXmlMapperFactory {
 	private static List srearchPath(){
 		List xmlMapperList = new Vector();
 		File parent = new File(MmeGlobals.XML_MAPPER_PFAD);
+		System.out.println("Factory path abso:" + parent.getAbsolutePath());
 		File[] mapperPath = parent.listFiles();
-		for(int i=0; i<mapperPath.length; i++){
+		for(int i=0; i<mapperPath.length; i++){	
 			File xmlMapperConfigFile = new File(mapperPath[i], MmeGlobals.XML_MAPPER_CONFIG_FILE_NAME);
-			XMLMapperImpl mapper = new XMLMapperImpl(xmlMapperConfigFile);
-			xmlMapperList.add(mapper);
+			if(xmlMapperConfigFile.exists()){
+				System.out.println("Factory sub path: " + xmlMapperConfigFile.getAbsolutePath());
+				XMLMapperImpl mapper = new XMLMapperImpl(xmlMapperConfigFile);
+				xmlMapperList.add(mapper);
+			}
 		}
+		System.out.println("länge: " + xmlMapperList.size());
 		return xmlMapperList;
 	}
 	
@@ -46,6 +51,7 @@ public class MDSXmlMapperFactory {
 	public static void registerAllXmlMapper(MetaMappingEngine mmeengine)throws MetaMappingEngineException{
 		List xmlMapperList = srearchPath();
 		for(int i=0; i<xmlMapperList.size(); i++){
+			System.out.println("register: " + ((MDSMapper)xmlMapperList.get(i)).getClass());
 			mmeengine.registerMapper((MDSMapper)xmlMapperList.get(i));
 		}
 	}

@@ -25,7 +25,7 @@ public interface MDSMapper extends MDSObject {
 	 * @return des entstandene MDSModel mit seinen Ressoucen 
 	 * @throws MetaMappingEngineException im Fehlerfall
 	 */
-	public MDSModel map(MDSModel mdsModel, Mapping mapping)
+	public MDSModel map(MDSModel mdsModel)
 		throws MetaMappingEngineException;
 		
 	/**
@@ -45,5 +45,17 @@ public interface MDSMapper extends MDSObject {
 	 * @return File
 	 */
 	public File getMappingFile();
+	
+	/**
+	 * Method setBuildPackage.
+	 * @param buildPackage
+	 */
+	public void setBuildPackage(boolean buildPackage);
+
+	/**
+	 * Method getBuildPackage.
+	 * @return boolean
+	 */
+	public boolean getBuildPackage();
 		
 }

@@ -52,4 +52,12 @@ public interface MetaMappingEngine {
 	 */
 	public ArrayList getMappings(String from, String to)
 		throws MetaMappingEngineException;
+		
+	/**
+	 * gibt einen zum Mapping passenden Mapper zurück
+	 * Method getMDSMapperForMapping.
+	 * @param mapping
+	 * @return MDSMapper
+	 */
+	public MDSMapper getMDSMapperForMapping(Mapping mapping);	
 }

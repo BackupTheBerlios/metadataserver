@@ -18,7 +18,7 @@ public class MmeGlobals {
 	/**
 	 * pfad zum XMLMapperConfig File
 	 */
-	public static final String XML_MAPPER_CONFIG_PATH = "src/mme/config/XMLMapper/xsl-templates/java/XMLMapperConfig.xml";
+	public static final String XML_MAPPER_CONFIG_PATH = "src/mme/config/XMLMapper/xsl-templates/java/";
 
 	/**
 	 * Name des Config Files

@@ -25,6 +25,7 @@ public class MetaMappingEngineImpl implements MetaMappingEngine {
 	 */
 	public void registerMapper(MDSMapper mapper)
 		throws MetaMappingEngineException {
+			System.out.println("register mapper!!" + " size: " + mdsMapperVec.size());
 			mdsMapperVec.add(mapper);
 			
 	}
@@ -44,8 +45,8 @@ public class MetaMappingEngineImpl implements MetaMappingEngine {
 		throws MetaMappingEngineException {
 		MDSMapper mdsMapper = getMDSMapperForMapping(mapping);
 		if(mdsMapper != null)
-			return mdsMapper.map(mdsModel, mapping);
-		return null;
+			return mdsMapper.map(mdsModel);
+		return mdsModel;
 	}
 
 	/**
@@ -58,12 +59,10 @@ public class MetaMappingEngineImpl implements MetaMappingEngine {
 
 		if(from == null && to == null){
 			for(int i=0; i<mdsMapperVec.size(); i++){
-				Object currentMapping1 = mdsMapperVec.get(i);				
 				Mapping currentMapping = ((MDSMapper)mdsMapperVec.get(i)).getMapping();
-				String mappingTo = currentMapping.getTo();
-				String mappingFrom = currentMapping.getFrom();
 				mappingList.add( currentMapping );
 			}
+			return mappingList;			
 		}
 
 		if(from == null && to != null){
@@ -74,18 +73,31 @@ public class MetaMappingEngineImpl implements MetaMappingEngine {
 					mappingList.add( currentMapping);
 				}
 			}
+			return mappingList;
 		}
-
+			
 		if(from != null && to == null){
 			for(int i=0; i<mdsMapperVec.size(); i++){
-				Mapping currentMapping = ((MDSMapper)mdsMapperVec.get(i)).getMapping();
+			Mapping currentMapping = ((MDSMapper)mdsMapperVec.get(i)).getMapping();
 				String mappingFrom = currentMapping.getFrom();
 				if(from.compareToIgnoreCase(mappingFrom) == 0){
 					mappingList.add( currentMapping);
 				}
 			}
+			return mappingList;
 		}
 
+		if(from != null && to != null){
+			for(int i=0; i<mdsMapperVec.size(); i++){
+				Mapping currentMapping = ((MDSMapper)mdsMapperVec.get(i)).getMapping();
+				String mappingTo = currentMapping.getTo();
+				String mappingFrom = currentMapping.getFrom();
+				if(from.compareToIgnoreCase(mappingFrom) == 0){
+					mappingList.add( currentMapping);
+				}
+			}
+			return mappingList;
+		}
 		return mappingList;
 	}
 	
@@ -95,7 +107,7 @@ public class MetaMappingEngineImpl implements MetaMappingEngine {
 	 * @param mapping
 	 * @return MDSMapper
 	 */
-	private MDSMapper getMDSMapperForMapping(Mapping mapping){
+	public MDSMapper getMDSMapperForMapping(Mapping mapping){
 		for(int i=0; i<mdsMapperVec.size(); i++){			
 			MDSMapper  mdsMapper = (MDSMapper)mdsMapperVec.get(i);
 			Mapping mapp = mdsMapper.getMapping();

@@ -13,6 +13,12 @@ import api.mme.mapper.UnicodeMapper;
  */
 public class UnicodeMapperImpl extends MDSMapperImpl implements UnicodeMapper {
 
+
+	/**
+	 * soll die Packetstrucktur nachgebildet werden.
+	 */
+	private boolean buildPackage = true;
+
 	/**
 	 * *.jj - Datei um parserFile zu generieren
 	 */
@@ -66,6 +72,20 @@ public class UnicodeMapperImpl extends MDSMapperImpl implements UnicodeMapper {
 	 */
 	public String doMapping(String xmi)throws MetaMappingEngineException{
 		return null;
+	}
+	
+	/**
+	 * @see api.mme.mapper.MDSMapper#setBuildPackage(boolean)
+	 */
+	public void setBuildPackage(boolean buildPackage){
+		this.buildPackage = buildPackage;
+	}
+
+	/**
+	 * @see api.mme.mapper.MDSMapper#getBuildPackage()
+	 */
+	public boolean getBuildPackage(){
+		return buildPackage;
 	}
 
 }

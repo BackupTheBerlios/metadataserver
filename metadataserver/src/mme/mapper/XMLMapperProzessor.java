@@ -35,9 +35,27 @@ import java.util.ArrayList;
  */
 public class XMLMapperProzessor
 {
-    private String home = "output/src/";
-    private String xmlMapperConfigPath = "src/mme/config/XMLMapper/xsl-templates/java/XMLMapperConfig.xml";
+	private String home = null;
+	
+	private String xmlMapperConfigPath = MmeGlobals.XML_MAPPER_CONFIG_PATH + MmeGlobals.XML_MAPPER_CONFIG_FILE_NAME;
+	
+	private boolean buildPackage = true;
     
+	/**
+	 * Method setBuildPackageSturckt.
+	 * @param buildPackageSturckt
+	 */
+    public void setBuildPackage(boolean buildPackage){
+    	this.buildPackage = buildPackage;
+    }
+    
+	/**
+	 * Method getBuildPackageSturckt.
+	 * @return boolean
+	 */
+    public boolean getBuildPackage(){
+    	return buildPackage;
+    }
 
 	/**
 	 * Method setConfigXml.
@@ -63,32 +81,36 @@ public class XMLMapperProzessor
     {
         try
         {
+        	
             String filename = "";
-
-            //load the config file
+			System.out.println("Prozessor: " + project + "!!!!!!!!!!!!!!!!!");
+            /*
+             * lade das Config File
+             */
             DocumentBuilderFactory dFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dFactory.newDocumentBuilder();
-            //config File laden und parsen!!
+
+			/*
+			 * parse das Config File
+			 */
             Document ds = dBuilder.parse(xmlMapperConfigPath);
             Element config = ds.getDocumentElement();
             NodeList ssList = config.getChildNodes();
 
-            //find phase1_stylesheet
+            /*
+             * das Stylesheet für die Phase1 
+             */
             for (int i = 0; i < ssList.getLength(); i++)
             {
-            	System.out.println("für Phase1 durchlauf: " + i );
                 String name = ssList.item(i).getNodeName();
-            	System.out.println("für Phase1 durchlauf: " + i + " Name: " + name + " value: " + ssList.item(i).getNodeValue());
                 String scope = "";
                 if (ssList.item(i).getAttributes()!=null && ssList.item(i).getAttributes().getNamedItem("scope") != null)
                         scope=ssList.item(i).getAttributes().getNamedItem("scope").getNodeValue();
-				System.out.println("name: " + name + " scope: " + scope);
                 if ("stylesheet".equals(name) && "phase1".equals(scope))
                 {
                     NodeList sschildList = ssList.item(i).getChildNodes();
                     for (int j = 0; j < sschildList.getLength(); j++)
                     {
-						System.out.println("2:::::::::::name: " + sschildList.item(j).getNodeName() + " value: " + sschildList.item(j).getNodeValue());
                         String childname = sschildList.item(j).getNodeName();
                         if ("filename".equals(childname))
                         {
@@ -98,7 +120,9 @@ public class XMLMapperProzessor
                 }
             }
 
-            //transform XMI to a simple-to-use XML
+            /*
+             * das xmi File in ein leichter zu lesendes xml umwandeln
+             */
             Document doc = ApplyPhase1StyleSheet(project, filename);
             System.out.println("ApplyPhase1StyleSheet projekt: " + project + " Fielname: " +filename );
             
@@ -106,7 +130,8 @@ public class XMLMapperProzessor
             rootElement.normalize();
 
             //find all global_stylesheets
-            // wird nicht gebraucht !!!!!
+            // wird nicht gebraucht !
+            // nur zum debugen um zu sehen wie das umgewandelte xmi aussieht
 	        for (int i = 0; i < ssList.getLength(); i++)
             {
                 String global_filename = "";
@@ -131,7 +156,9 @@ public class XMLMapperProzessor
                         }
                     }
 
-                    //Apply global stylesheets
+                    /*
+                     * das stylesheet anwenden
+                     */
                     ApplyStyleSheet(global_filename, home, result, rootElement);
                 }
             }
@@ -229,7 +256,9 @@ public class XMLMapperProzessor
             String packagename = pkg;
             String packagepath = path;
 
-            //load the config file
+            /*
+             * config File laden
+             */
             DocumentBuilderFactory dFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dFactory.newDocumentBuilder();
             Document ds = dBuilder.parse(xmlMapperConfigPath);
@@ -237,7 +266,9 @@ public class XMLMapperProzessor
             NodeList ssList = config.getChildNodes();
 
 
-            //find stylesheets to apply to each type
+            /*
+             * für jeden Type die stylesheets anwenden
+             */
             for (int i = 0; i < ssList.getLength(); i++)
             {
                 String name = ssList.item(i).getNodeName();
@@ -264,11 +295,17 @@ public class XMLMapperProzessor
 	                            String stereotype = sschildList.item(j).getFirstChild().getNodeValue();
 	                            if (stereotype.equals(currentpackage)){
 	                            	System.out.println("CC -> applySyleSheet filename: " + filename + " home + packagepath: " + packagepath + " className + result_ext: " + getClassName(e,type) + "+" + result_ext );
-	                                ApplyStyleSheet(filename, home + packagepath,  getClassName(e,type) + result_ext, e);
+	                            	if(this.getBuildPackage())
+		                                ApplyStyleSheet(filename, home + packagepath,  getClassName(e,type) + result_ext, e);
+		                            else
+		                                ApplyStyleSheet(filename, home,  getClassName(e,type) + result_ext, e);		                            
 	                            }
                         	}else{
                         		System.out.println("!!!!!!!! so is es !!!");
-	                        	ApplyStyleSheet(filename, home + packagepath,  getClassName(e,type) + result_ext, e);
+                        		if(this.getBuildPackage())
+		                        	ApplyStyleSheet(filename, home + packagepath,  getClassName(e,type) + result_ext, e);
+		                        else
+		                        	ApplyStyleSheet(filename, home,  getClassName(e,type) + result_ext, e);		                        
                         	}
                         }
                     }
@@ -295,7 +332,7 @@ public class XMLMapperProzessor
         DOMResult dr = new DOMResult();
         TransformerFactory tFactory = TransformerFactory.newInstance();
         Transformer transformer = tFactory.newTransformer(new StreamSource(filename));
-        transformer.transform(new StreamSource(project), dr);
+        transformer.transform(new StreamSource(new StringBufferInputStream(project)), dr);
         return (Document) dr.getNode();
     }
 
