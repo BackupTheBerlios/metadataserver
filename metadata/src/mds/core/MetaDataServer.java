@@ -84,11 +84,27 @@ public interface MetaDataServer {
 	/**
 	 * umbenennen eines MDSModel
 	 *
-	 * @param Pfad zum MDSModel
+	 * @param href Pfad zum MDSModel
 	 * @param label neuer Name
 	 * @return true bei Erfolg
 	 */
    	public boolean renameModel(String href, String label);
+	
+	/**
+	 * gibt Liste aller vorhandenen Versionen eines MDSModel zurück
+	 *
+	 * @param href Pfad zum MDSModel
+	 * @return Liste aller Versionen
+	 */
+   	public ArrayList getModelVersions(String href);
+	
+	/**
+	 * macht Änderungen an einem MDSModel rückgängig
+	 *
+	 * @param version Versionsnummer
+	 * @return true bei Erfolg
+	 */
+   	public boolean restoreModel(String href, String version);
 	
 	/**
 	 * fügt ein MDSElement in MDSModel ein

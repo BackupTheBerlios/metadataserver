@@ -46,9 +46,10 @@ public interface PersistenceHandler {
    	throws PersistenceHandlerException;
 	
 	/**
-	 * gibt Liste aller vorhandenen Versionen eines Modells zurück
+	 * gibt Liste aller vorhandenen Versionen eines MDSModel zurück
 	 *
 	 * @param mdsModel das betreffende MDSModel
+	 * @return Liste aller Versionen
 	 * @throws PersistenceHandlerException im Fehlerfall
 	 */
    	public ArrayList getVersions(MDSModel mdsModel)
