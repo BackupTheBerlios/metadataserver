@@ -12,6 +12,11 @@ public class MDSFileImpl implements MDSFile {
 	private String content = null;
 	
 	private String name = null;
+	
+	private String path = null;
+	
+	private String type = null;
+	
 	/**
 	 * @see api.mds.core.MDSFile#getContent()
 	 */
@@ -38,6 +43,34 @@ public class MDSFileImpl implements MDSFile {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * @see api.mds.core.MDSFile#getType()
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @see api.mds.core.MDSFile#setType(String)
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	/**
+	 * @see api.mds.core.MDSFile#getPath()
+	 */
+	public String getPath() {
+		return path;
+	}
+
+	/**
+	 * @see api.mds.core.MDSFile#setPath(String)
+	 */
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 }

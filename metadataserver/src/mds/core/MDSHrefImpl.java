@@ -16,7 +16,7 @@ public class MDSHrefImpl implements MDSHref {
 	/**
 	 * @see api.mds.core.MDSHref#getHref()
 	 */
-	public String getHref() {
+	public String getHrefString() {
 		return href;
 	}
 

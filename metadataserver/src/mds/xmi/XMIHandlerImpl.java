@@ -40,28 +40,55 @@ public class XMIHandlerImpl implements XMIHandler {
 	public MDSFile mapMDS2XMI(MDSModel mdsModel) throws XMIHandlerException {
 
 		String xdoc = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-		//xdoc += "<!DOCTYPE XMI SYSTEM \"file:///D:/Eigene Dateien/diplom/metadataserver/uml1998.dtd\">\n";
+		xdoc += "<!DOCTYPE XMI SYSTEM \"uml13_xmi11.dtd\" [\n";
+		xdoc += "\t<!ELEMENT additionalFiles (file+)>\n";
+		xdoc += "\t<!ELEMENT file EMPTY>\n";
+		xdoc += "\t<!ATTLIST file\n";
+		xdoc += "\t\tname CDATA #REQUIRED\n";
+		xdoc += "\t\tpath CDATA #REQUIRED\n";
+		xdoc += "\t\ttype CDATA #REQUIRED\n";
+		xdoc += "\t>\n";
+		xdoc += "]>\n";
 		xdoc += "<XMI xmi.version=\"1.1\" xmlns:UML=\"org.omg/UML1.3\">\n";
 		xdoc += "\t<XMI.header>\n";
-		xdoc += "\t\t<XMI.model xmi.name=\"testmodel\" href=\"test.xmi\"/>\n";
-		xdoc += "\t\t<XMI.metamodel xmi.name=\"UML\" href=\"uml.xml\"/>\n";
+		xdoc += "\t\t<XMI.documentation>\n";
+		xdoc += "\t\t\t<XMI.exporter>metadata.server</XMI.exporter>\n";
+		xdoc += "\t\t\t<XMI.exporterVersion>0.1</XMI.exporterVersion\n";
+		xdoc += "\t\t</XMI.documentation>\n";
+		xdoc += "\t\t<XMI.model xmi.name=\""
+			+ mdsModel.getId()
+			+ "\" href=\""
+			+ mdsModel.getHref().getHrefString()
+			+ "\"/>\n";
+		xdoc
+			+= "\t\t<XMI.metamodel xmi.name=\"UML1.3\" href=\"mds://server_0/repository_0/model_1\"/>\n";
 		xdoc += "\t</XMI.header>\n";
 		xdoc += "\t<XMI.content>\n";
 
-		String xclass = "\t<UML:Class xmi:id=\"#id#\" name=\"#id#\"/>\n";
+		String xclass = "\t\t<UML:Class xmi.id=\"#id#\" name=\"#id#\"/>\n";
 
 		String xgeneralization =
-			"\t<UML:Class xmi:id=\"#id#\" name=\"#id#\" generalization=\"#superId#\"/>\n";
+			"\t\t<UML:Class xmi.id=\"#id#\" name=\"#id#\" generalization=\"#superId#\"/>\n";
 
-		String xassociation1 = "\t<UML:Association>\n";
-		xassociation1 += "\t\t<UML:Association.connection>\n";
+		String xassociation1 = "\t\t<UML:Association name=\"#id#\">\n";
+		xassociation1 += "\t\t\t<UML:Association.connection>\n";
 		xassociation1
-			+= "\t\t\t<UML:AssociationEnd name=\"#id#\" aggregation=\"#aggregation#\" type=\"#endId#\"/>\n";
+			+= "\t\t\t\t<UML:AssociationEnd aggregation=\"#aggregation#\" type=\"#endId#\"/>\n";
 
 		String xassociation2 =
-			"\t\t\t<UML:AssociationEnd name=\"#id#\" aggregation=\"#aggregation#\" type=\"#endId#\"/>\n";
-		xassociation2 += "\t\t</UML:Association.connection>\n";
-		xassociation2 += "\t</UML:Association>\n";
+			"\t\t\t\t<UML:AssociationEnd aggregation=\"#aggregation#\" type=\"#endId#\"/>\n";
+		xassociation2 += "\t\t\t</UML:Association.connection>\n";
+		xassociation2 += "\t\t</UML:Association>\n";
+
+		String xextensions1 =
+			"\t\t<XMI.extensions xmi.extender=\"metadata.server\">\n";
+		xextensions1 += "\t\t\t<additionalFiles>\n";
+
+		String xextensions2 =
+			"\t\t\t\t<file name=\"#name#\" path=\"#path#\" type=\"#type#\"/>\n";
+
+		String xextensions3 = "\t\t\t</additionalFiles>\n";
+		xextensions3 += "\t\t</XMI.extensions>\n";
 
 		String xfooter = "\t</XMI.content>\n";
 		xfooter += "</XMI>";
@@ -70,10 +97,10 @@ public class XMIHandlerImpl implements XMIHandler {
 		ArrayList associations = new ArrayList();
 		ArrayList generalizations = new ArrayList();
 		MDSElement element = null;
-		Iterator i = mdsModel.getElements().iterator();
-		Iterator j;
+		Iterator i, j;
 		MDSClass mdsClass = null, subClass = null;
 
+		i = mdsModel.getElements().iterator();
 		while (i.hasNext()) {
 			element = (MDSElement) i.next();
 			if (element instanceof MDSClassImpl) {
@@ -84,18 +111,19 @@ public class XMIHandlerImpl implements XMIHandler {
 				while (j.hasNext()) {
 					mdsClass = (MDSClassImpl) j.next();
 					if (mdsClass.getId().equals(subClass.getId())) {
-						classes.remove(subClass);
+						break;
 					}
-					generalizations.add(element);
-					break;
+
 				}
+				classes.remove(mdsClass);
+				generalizations.add(element);
 			} else {
 				associations.add(element);
 			}
 		}
 
 		ArrayList ends;
-		api.mds.core.AssociationEnd end1, end2;
+		AssociationEnd end1, end2;
 		i = classes.iterator();
 		while (i.hasNext()) {
 			xdoc += xclass.replaceAll("#id#", ((MDSElement) i.next()).getId());
@@ -145,7 +173,17 @@ public class XMIHandlerImpl implements XMIHandler {
 					.replaceAll("#endId#", end2.getMdsClass().getId())
 					.replaceAll("#aggregation#", aggregation);
 		}
-
+		i = mdsModel.getAdditionalFiles().iterator();
+		while (i.hasNext()) {
+			MDSFile file = (MDSFileImpl) i.next();
+			xdoc += xextensions1;
+			xdoc
+				+= xextensions2
+					.replaceAll("#name#", file.getName())
+					.replaceAll("#path#", file.getPath())
+					.replaceAll("#type#", file.getType());
+			xdoc += xextensions3;
+		}
 		xdoc += xfooter;
 		MDSFile mdsFile = new MDSFileImpl();
 		mdsFile.setContent(xdoc);

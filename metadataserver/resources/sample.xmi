@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSPY v5 U (http://www.xmlspy.com) by thomas chille (tfh-berlin) -->
 <!DOCTYPE XMI SYSTEM "uml13_xmi11.dtd" [
 	<!ELEMENT additionalFiles (file+)>
 	<!ELEMENT file EMPTY>
 	<!ATTLIST file
-	href CDATA #REQUIRED
-	type CDATA #REQUIRED
->
+		name CDATA #REQUIRED
+		path CDATA #REQUIRED
+		type CDATA #REQUIRED
+	>
 ]>
 <XMI xmi.version="1.1" xmlns:UML="org.omg/UML1.3">
 	<XMI.header>
@@ -14,8 +14,8 @@
 			<XMI.exporter>metadata.server</XMI.exporter>
 			<XMI.exporterVersion>0.1</XMI.exporterVersion>
 		</XMI.documentation>
-		<XMI.model xmi.name="sample" href="server_0/repository_1/model_0"/>
-		<XMI.metamodel xmi.name="UML" xmi.version="1.3" href="server_0/repository_0/model_0"/>
+		<XMI.model xmi.name="model_0" href="mds://server_0/repository_0/model_0"/>
+		<XMI.metamodel xmi.name="UML1.3" href="mds://server_0/repository_0/model_1"/>
 	</XMI.header>
 	<XMI.content>
 		<UML:Class xmi.id="class_0" name="class_0"/>
@@ -23,31 +23,33 @@
 		<UML:Class xmi.id="class_2" name="class_2"/>
 		<UML:Class xmi.id="class_3" name="class_3"/>
 		<UML:Class xmi.id="class_4" name="class_4"/>
-		<UML:Class xmi.id="class_5" name="class_5" generalization="class_5"/>
-		<UML:Association>
+		<UML:Class xmi.id="class_6" name="class_6"/>
+		<UML:Class xmi.id="class_7" name="class_7"/>
+		<UML:Class xmi.id="class_5" name="class_5" generalization="class_4"/>
+		<UML:Association name="association_9">
 			<UML:Association.connection>
-				<UML:AssociationEnd name="association_6" aggregation="none" type="class_0"/>
-				<UML:AssociationEnd name="association_6" aggregation="none" type="class_1"/>
+				<UML:AssociationEnd aggregation="none" type="class_0"/>
+				<UML:AssociationEnd aggregation="none" type="class_1"/>
 			</UML:Association.connection>
 		</UML:Association>
-		<UML:Association>
+		<UML:Association name="association_10">
 			<UML:Association.connection>
-				<UML:AssociationEnd name="aggregation_7" aggregation="shared" type="class_3"/>
-				<UML:AssociationEnd name="aggregation_7" aggregation="shared" type="class_2"/>
+				<UML:AssociationEnd aggregation="shared" type="class_2"/>
+				<UML:AssociationEnd aggregation="shared" type="class_3"/>
 			</UML:Association.connection>
 		</UML:Association>
-		<UML:Association>
+		<UML:Association name="association_8">
 			<UML:Association.connection>
-				<UML:AssociationEnd name="aggregation_8" aggregation="composite" type="class_0"/>
-				<UML:AssociationEnd name="aggregation_8" aggregation="composite" type="class_5"/>
+				<UML:AssociationEnd aggregation="composite" type="class_6"/>
+				<UML:AssociationEnd aggregation="composite" type="class_7"/>
 			</UML:Association.connection>
 		</UML:Association>
+		<XMI.extensions xmi.extender="metadata.server">
+			<additionalFiles>
+				<file name="test" path="." type="plain_text"/>
+				<file name="test1" path="dir/" type="plain_text"/>
+				<file name="test2" path="dir/dir/" type="plain_text"/>
+			</additionalFiles>
+		</XMI.extensions>
 	</XMI.content>
-	<XMI.extensions xmi.extender="metadata.server">
-		<additionalFiles>
-			<file href="directory/sample1.java" type="java_source"/>
-			<file href="directory/directory/sample2.java" type="java_source"/>
-			<file href="directory/directory/sample3.java" type="java_source"/>
-		</additionalFiles>
-	</XMI.extensions>
 </XMI>

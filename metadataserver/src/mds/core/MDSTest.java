@@ -1,5 +1,7 @@
 package mds.core;
 
+import java.util.ArrayList;
+
 import api.mds.core.*;
 
 public class MDSTest {
@@ -94,13 +96,21 @@ public class MDSTest {
 		server.insertElement(href, geni);
 		server.insertElement(href, compo);
 
+		ArrayList files = new ArrayList();
+		MDSFile file = new MDSFileImpl();
+		file.setName("test");
+		file.setPath(".");
+		file.setType("plain_text");
+		files.add(file);
+		model.setAdditionalFiles(files);
+		
 		//MDSModel model1 = new MDSModelImpl();
 		//model1.setMetamodel(model);
 		
 		//href = server.insertModel(erver.insertReposititory(rep), model1);
 		//server.insertElement(href, myclass1);
 		
-		System.out.println(server);
+		//System.out.println(server);
 
 		System.out.println(model.getXmiFile().getContent());
 		//System.out.println(model.getDtdFile().getContent());

@@ -15,7 +15,7 @@ public interface MDSHref {
 	 * Returns the href.
 	 * @return String
 	 */
-	public String getHref();
+	public String getHrefString();
 
 	/**
 	 * Sets the href.

@@ -132,7 +132,7 @@ public class MetaDataServerImpl
 		try {
 			MDSRepository mdsRepository = getRepositoryByHref(href);
 			String id = mdsRepository.insertModel(mdsModel);
-			return new MDSHrefImpl(href.getHref() + "/" + id);
+			return new MDSHrefImpl(href.getHrefString() + "/" + id);
 		} catch (MDSCoreException e) {
 			return null;
 		} catch (MDSHrefFormatException e) {
@@ -162,7 +162,7 @@ public class MetaDataServerImpl
 		try {
 			MDSRepository mdsRepository = getRepositoryByHref(from);
 			String id = mdsRepository.moveModel(from, to);
-			return new MDSHrefImpl(to.getHref() + "/" + id);
+			return new MDSHrefImpl(to.getHrefString() + "/" + id);
 		} catch (MDSCoreException e) {
 			return null;
 		} catch (MDSHrefFormatException e) {
@@ -177,7 +177,7 @@ public class MetaDataServerImpl
 		try {
 			MDSRepository mdsRepository = getRepositoryByHref(from);
 			String id = mdsRepository.copyModel(from, to, label);
-			return new MDSHrefImpl(to.getHref() + "/" + id);
+			return new MDSHrefImpl(to.getHrefString() + "/" + id);
 		} catch (MDSCoreException e) {
 			return null;
 		} catch (MDSHrefFormatException e) {
@@ -241,7 +241,7 @@ public class MetaDataServerImpl
 			MDSRepository mdsRepository = getRepositoryByHref(href);
 			MDSModel mdsModel = mdsRepository.getModelByHref(href);
 			String id = mdsModel.insertElement(mdsElement);
-			return new MDSHrefImpl(href.getHref() + "/" + id);
+			return new MDSHrefImpl(href.getHrefString() + "/" + id);
 		} catch (MDSCoreException e) {
 			return null;
 		} catch (MDSHrefFormatException e) {
