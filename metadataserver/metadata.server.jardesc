@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jardesc>
+    <jar path="C:/Programme/Apache Group/Tomcat 4.1/common/lib/metadata.server.jar"/>
+    <options overwrite="false" compress="true" exportErrors="false"
+        exportWarnings="false" saveDescription="true"
+        descriptionLocation="/metadata.server/metadata.server.jardesc"
+        useSourceFolders="false" buildIfNeeded="true"/>
+    <manifest manifestVersion="1.0" usesManifest="true"
+        reuseManifest="false" saveManifest="false"
+        generateManifest="true" manifestLocation="/metadataserver/mani.txt">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="true">
+        <javaElement handleIdentifier="=metadata.server/src"/>
+    </selectedElements>
+</jardesc>
