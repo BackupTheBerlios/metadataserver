@@ -8,7 +8,7 @@
 
    <runtime>
       <library name="plugin.jar"/>
-      <library name="lib/mds.soap.client.jar"/>
+      <library name="lib/metadata.client.jar"/>
       <library name="lib/soap.jar"/>
       <library name="lib/mail.jar"/>
       <library name="lib/activation.jar"/>

@@ -17,6 +17,7 @@
     <classpathentry kind="lib" path="lib/activation.jar"/>
     <classpathentry kind="lib" path="lib/mail.jar"/>
     <classpathentry kind="lib" path="lib/soap.jar"/>
-    <classpathentry kind="lib" path="lib/mds.soap.client.jar"/>
+    <classpathentry kind="lib" path="lib/metadata.client.jar"/>
+    <classpathentry kind="lib" path="plugin.jar"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>
