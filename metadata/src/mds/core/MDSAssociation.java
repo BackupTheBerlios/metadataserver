@@ -1,6 +1,6 @@
 package mds.core;
 
-public class MDSAssociation implements MDSElement {
+public interface MDSAssociation extends MDSElement {
 
 }
 

@@ -1,6 +1,6 @@
 package mds.core;
 
-public interface MDSElement {
+public interface MDSElement extends MDSObject {
 
 }
 
