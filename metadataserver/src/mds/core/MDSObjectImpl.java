@@ -1,6 +1,9 @@
 package mds.core;
 
+import mds.persistence.FilesystemHandlerImpl;
+
 import api.mds.core.MDSObject;
+import api.mds.persistence.PersistenceHandler;
 
 /**
  * @see MDSObject
@@ -8,6 +11,11 @@ import api.mds.core.MDSObject;
  * @author Thomas Chille
  */
 public class MDSObjectImpl implements MDSObject {
+
+	/**
+	 * zum speichern 
+	 */
+	private PersistenceHandler persistenceHandler = new FilesystemHandlerImpl();
 
 	/**
 	 * in Hierarchieebene eindeutige Kennung
@@ -45,6 +53,20 @@ public class MDSObjectImpl implements MDSObject {
 	 */
 	public void setLabel(String label) {
 		this.label = label;
+	}
+	
+	/**
+	 * @see MDSObject#getPersistenceHandler()
+	 */
+	public PersistenceHandler getPersistenceHandler() {
+		return persistenceHandler;
+	}
+
+	/**
+	 * @see MDSObject#setPersistenceHandler(PersistenceHandler)
+	 */
+	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
+		this.persistenceHandler = persistenceHandler;
 	}
 }
 

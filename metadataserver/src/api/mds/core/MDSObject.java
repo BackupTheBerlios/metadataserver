@@ -1,5 +1,7 @@
 package api.mds.core;
 
+import api.mds.persistence.PersistenceHandler;
+
 /**
  * Superinterface aller MDS-Datatypes
  * 
@@ -30,4 +32,18 @@ public interface MDSObject {
 	 * @param label The label to set
 	 */
 	public void setLabel(String label);
+	
+	/**
+	 * Gets the persistenceHandler
+	 * @return Returns a PersistenceHandler
+	 */
+	public PersistenceHandler getPersistenceHandler();
+
+	/**
+	 * Sets the persistenceHandler
+	 * @param persistenceHandler The persistenceHandler to set
+	 */
+	public void setPersistenceHandler(PersistenceHandler persistenceHandler);
+
+	
 }

@@ -38,18 +38,6 @@ public interface MDSRepository extends MDSObject {
 	public ArrayList query(String query) throws MDSCoreException;
 
 	/**
-	 * Gets the persistenceHandler
-	 * @return Returns a PersistenceHandler
-	 */
-	public PersistenceHandler getPersistenceHandler();
-
-	/**
-	 * Sets the persistenceHandler
-	 * @param persistenceHandler The persistenceHandler to set
-	 */
-	public void setPersistenceHandler(PersistenceHandler persistenceHandler);
-
-	/**
 	 * fügt in MDSModel in MDSRepository ein
 	 *
 	 * @param mdsModel das einzufügende Model
@@ -87,6 +75,9 @@ public interface MDSRepository extends MDSObject {
 	 * @throws MDSCoreException im Fehlerfall
 	 */
 	public String copyModel(String from, String to, String label)
+		throws MDSCoreException;
+	
+	public MDSModel getModelByHref(String href)
 		throws MDSCoreException;
 
 }

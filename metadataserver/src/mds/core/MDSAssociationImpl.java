@@ -17,7 +17,7 @@ public class MDSAssociationImpl
 	/**
 	 * die beiden associationEnds einer association
 	 */
-	private ArrayList associationEnds = null;
+	private ArrayList associationEnds = new ArrayList();
 
 	/**
 	 * @see MDSAssociationImpl#addAssociationEnd(AssociationEnd)

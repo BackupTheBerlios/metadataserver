@@ -1,6 +1,7 @@
 package mds.core;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import mds.persistence.FilesystemHandlerImpl;
 import mds.persistence.PersistenceHandlerException;
@@ -33,20 +34,14 @@ public class MetaDataServerImpl
 	/**
 	 * alle auf dem Server vorhandenen Reposititories
 	 */
-	private ArrayList repositories = null;
-
-	/**
-	 * muﬂ beim deployen hier gesetzt werden
-	 */
-	private PersistenceHandler persistenceHandler = null;
+	private ArrayList repositories = new ArrayList();
 
 	/**
 	 * Constructor for MetaDataServerImpl.
 	 */
 	public MetaDataServerImpl() {
-		PersistenceHandler persistenceHandler = new FilesystemHandlerImpl();
-		MetaMappingEngine metaMappingEngine =
-			new MetaMappingEngineImpl(persistenceHandler);
+		this.setId("server");
+		MetaMappingEngine metaMappingEngine = new MetaMappingEngineImpl();
 	}
 
 	/**
@@ -54,7 +49,6 @@ public class MetaDataServerImpl
 	 */
 	public String insertReposititory(MDSRepository mdsRepository) {
 		try {
-			mdsRepository.setPersistenceHandler(persistenceHandler);
 			String href = mdsRepository.insert();
 			if (repositories.add(mdsRepository)) {
 				return this.getId() + "." + href;
@@ -71,8 +65,7 @@ public class MetaDataServerImpl
 	 */
 	public boolean deleteRepository(String href) {
 		try {
-			MDSRepository mdsRepository =
-				(MDSRepository) persistenceHandler.load(href, null);
+			MDSRepository mdsRepository = getRepositoryByHref(href);
 			mdsRepository.delete();
 			if (repositories.remove(mdsRepository)) {
 				return true;
@@ -80,8 +73,6 @@ public class MetaDataServerImpl
 				return false;
 			}
 		} catch (MDSCoreException e) {
-			return false;
-		} catch (PersistenceHandlerException e) {
 			return false;
 		}
 	}
@@ -91,11 +82,10 @@ public class MetaDataServerImpl
 	 */
 	public boolean renameRepository(String href, String label) {
 		try {
-			MDSRepository mdsRepository =
-				(MDSRepository) persistenceHandler.load(href, null);
+			MDSRepository mdsRepository = getRepositoryByHref(href);
 			mdsRepository.setLabel(label);
 			return true;
-		} catch (PersistenceHandlerException e) {
+		} catch (MDSCoreException e) {
 			return false;
 		}
 	}
@@ -105,13 +95,10 @@ public class MetaDataServerImpl
 	 */
 	public ArrayList queryRepository(String href, String query) {
 		try {
-			MDSRepository mdsRepository =
-				(MDSRepository) persistenceHandler.load(href, null);
+			MDSRepository mdsRepository = getRepositoryByHref(href);
 			ArrayList result = mdsRepository.query(query);
 			return result;
 		} catch (MDSCoreException e) {
-			return null;
-		} catch (PersistenceHandlerException e) {
 			return null;
 		}
 	}
@@ -121,14 +108,10 @@ public class MetaDataServerImpl
 	 */
 	public String insertModel(String href, MDSModel mdsModel) {
 		try {
-			mdsModel.setPersistenceHandler(persistenceHandler);
-			MDSRepository mdsRepository =
-				(MDSRepository) persistenceHandler.load(href, null);
+			MDSRepository mdsRepository = getRepositoryByHref(href);
 			String modelHref = mdsRepository.insertModel(mdsModel);
 			return this.getId() + "." + modelHref;
 		} catch (MDSCoreException e) {
-			return null;
-		}catch (PersistenceHandlerException e) {
 			return null;
 		}
 	}
@@ -139,14 +122,11 @@ public class MetaDataServerImpl
 	public boolean removeModel(String href) {
 		try {
 			String[] hrefParts = href.split(".");
-			String rHref = hrefParts[0] + "." + hrefParts[1] ;
-			MDSRepository mdsRepository =
-				(MDSRepository) persistenceHandler.load(rHref, null);
+			String rHref = hrefParts[0] + "." + hrefParts[1];
+			MDSRepository mdsRepository = getRepositoryByHref(rHref);
 			mdsRepository.removeModel(href);
 			return true;
 		} catch (MDSCoreException e) {
-			return false;
-		} catch (PersistenceHandlerException e) {
 			return false;
 		}
 	}
@@ -157,14 +137,11 @@ public class MetaDataServerImpl
 	public String moveModel(String from, String to) {
 		try {
 			String[] hrefParts = from.split(".");
-			String rHref = hrefParts[0] + "." + hrefParts[1] ;
-			MDSRepository mdsRepository =
-				(MDSRepository) persistenceHandler.load(rHref, null);
+			String rHref = hrefParts[0] + "." + hrefParts[1];
+			MDSRepository mdsRepository = getRepositoryByHref(rHref);
 			String newHref = mdsRepository.moveModel(from, to);
 			return newHref;
 		} catch (MDSCoreException e) {
-			return null;
-		} catch (PersistenceHandlerException e) {
 			return null;
 		}
 	}
@@ -175,14 +152,11 @@ public class MetaDataServerImpl
 	public String copyModel(String from, String to, String label) {
 		try {
 			String[] hrefParts = from.split(".");
-			String rHref = hrefParts[0] + "." + hrefParts[1] ;
-			MDSRepository mdsRepository =
-				(MDSRepository) persistenceHandler.load(rHref, null);
+			String rHref = hrefParts[0] + "." + hrefParts[1];
+			MDSRepository mdsRepository = getRepositoryByHref(rHref);
 			String newHref = mdsRepository.copyModel(from, to, label);
 			return newHref;
 		} catch (MDSCoreException e) {
-			return null;
-		} catch (PersistenceHandlerException e) {
 			return null;
 		}
 	}
@@ -192,12 +166,13 @@ public class MetaDataServerImpl
 	 */
 	public boolean renameModel(String href, String label) {
 		try {
-			MDSModel mdsModel = (MDSModel) persistenceHandler.load(href, null);
+			String[] hrefParts = href.split(".");
+			String rHref = hrefParts[0] + "." + hrefParts[1];
+			MDSRepository mdsRepository = getRepositoryByHref(rHref);
+			MDSModel mdsModel = mdsRepository.getModelByHref(href);
 			mdsModel.renameModel(label);
 			return true;
 		} catch (MDSCoreException e) {
-			return false;
-		} catch (PersistenceHandlerException e) {
 			return false;
 		}
 	}
@@ -207,12 +182,13 @@ public class MetaDataServerImpl
 	 */
 	public ArrayList getModelVersions(String href) {
 		try {
-			MDSModel mdsModel = (MDSModel) persistenceHandler.load(href, null);
+			String[] hrefParts = href.split(".");
+			String rHref = hrefParts[0] + "." + hrefParts[1];
+			MDSRepository mdsRepository = getRepositoryByHref(rHref);
+			MDSModel mdsModel = mdsRepository.getModelByHref(href);
 			ArrayList versions = mdsModel.getModelVersions();
 			return versions;
 		} catch (MDSCoreException e) {
-			return null;
-		} catch (PersistenceHandlerException e) {
 			return null;
 		}
 	}
@@ -222,12 +198,13 @@ public class MetaDataServerImpl
 	 */
 	public boolean restoreModel(String href, String version) {
 		try {
-			MDSModel mdsModel = (MDSModel) persistenceHandler.load(href, null);
+			String[] hrefParts = href.split(".");
+			String rHref = hrefParts[0] + "." + hrefParts[1];
+			MDSRepository mdsRepository = getRepositoryByHref(rHref);
+			MDSModel mdsModel = mdsRepository.getModelByHref(href);
 			mdsModel.restoreModel(version);
 			return true;
 		} catch (MDSCoreException e) {
-			return false;
-		} catch (PersistenceHandlerException e) {
 			return false;
 		}
 	}
@@ -237,12 +214,13 @@ public class MetaDataServerImpl
 	 */
 	public String insertElement(String href, MDSElement mdsElement) {
 		try {
-			MDSModel mdsModel = (MDSModel) persistenceHandler.load(href, null);
+			String[] hrefParts = href.split(".");
+			String rHref = hrefParts[0] + "." + hrefParts[1];
+			MDSRepository mdsRepository = getRepositoryByHref(rHref);
+			MDSModel mdsModel = mdsRepository.getModelByHref(href);
 			String newHref = mdsModel.insertElement(mdsElement);
 			return newHref;
 		} catch (MDSCoreException e) {
-			return null;
-		} catch (PersistenceHandlerException e) {
 			return null;
 		}
 	}
@@ -253,14 +231,14 @@ public class MetaDataServerImpl
 	public boolean removeElement(String href) {
 		try {
 			String[] hrefParts = href.split(".");
+			String rHref = hrefParts[0] + "." + hrefParts[1];
 			String mHref =
 				hrefParts[0] + "." + hrefParts[1] + "." + hrefParts[2];
-			MDSModel mdsModel = (MDSModel) persistenceHandler.load(mHref, null);
+			MDSRepository mdsRepository = getRepositoryByHref(rHref);
+			MDSModel mdsModel = mdsRepository.getModelByHref(mHref);
 			mdsModel.removeElement(href);
 			return true;
 		} catch (MDSCoreException e) {
-			return false;
-		} catch (PersistenceHandlerException e) {
 			return false;
 		}
 	}
@@ -271,14 +249,14 @@ public class MetaDataServerImpl
 	public String moveElement(String from, String to) {
 		try {
 			String[] hrefParts = from.split(".");
+			String rHref = hrefParts[0] + "." + hrefParts[1];
 			String mHref =
 				hrefParts[0] + "." + hrefParts[1] + "." + hrefParts[2];
-			MDSModel mdsModel = (MDSModel) persistenceHandler.load(mHref, null);
+			MDSRepository mdsRepository = getRepositoryByHref(rHref);
+			MDSModel mdsModel = mdsRepository.getModelByHref(mHref);
 			String newHref = mdsModel.moveElement(from, to);
 			return newHref;
 		} catch (MDSCoreException e) {
-			return null;
-		} catch (PersistenceHandlerException e) {
 			return null;
 		}
 	}
@@ -289,14 +267,14 @@ public class MetaDataServerImpl
 	public String copyElement(String from, String to, String label) {
 		try {
 			String[] hrefParts = from.split(".");
+			String rHref = hrefParts[0] + "." + hrefParts[1];
 			String mHref =
 				hrefParts[0] + "." + hrefParts[1] + "." + hrefParts[2];
-			MDSModel mdsModel = (MDSModel) persistenceHandler.load(mHref, null);
+			MDSRepository mdsRepository = getRepositoryByHref(rHref);
+			MDSModel mdsModel = mdsRepository.getModelByHref(mHref);
 			String newHref = mdsModel.copyElement(from, to, label);
 			return newHref;
 		} catch (MDSCoreException e) {
-			return null;
-		} catch (PersistenceHandlerException e) {
 			return null;
 		}
 	}
@@ -306,12 +284,13 @@ public class MetaDataServerImpl
 	 */
 	public ArrayList validateModel(String href, int validateType) {
 		try {
-			MDSModel mdsModel = (MDSModel) persistenceHandler.load(href, null);
+			String[] hrefParts = href.split(".");
+			String rHref = hrefParts[0] + "." + hrefParts[1];
+			MDSRepository mdsRepository = getRepositoryByHref(rHref);
+			MDSModel mdsModel = mdsRepository.getModelByHref(href);
 			ArrayList result = mdsModel.validateModel(validateType);
 			return result;
 		} catch (MDSCoreException e) {
-			return null;
-		} catch (PersistenceHandlerException e) {
 			return null;
 		}
 	}
@@ -340,12 +319,15 @@ public class MetaDataServerImpl
 	 */
 	public MDSModel exportModel(String href, Mapping mapping) {
 		try {
-			MDSModel mdsModel = (MDSModel) persistenceHandler.load(href, null);
+			String[] hrefParts = href.split(".");
+			String rHref = hrefParts[0] + "." + hrefParts[1];
+			MDSRepository mdsRepository = getRepositoryByHref(rHref);
+			MDSModel mdsModel = mdsRepository.getModelByHref(href);
 			if (mapping != null) {
 				mdsModel = metaMappingEngine.map(mdsModel, mapping);
 			}
 			return mdsModel;
-		} catch (PersistenceHandlerException e) {
+		} catch (MDSCoreException e) {
 			return null;
 		} catch (MetaMappingEngineException e) {
 			return null;
@@ -393,12 +375,15 @@ public class MetaDataServerImpl
 	 */
 	public String convertModel(String href, Mapping mapping, String label) {
 		try {
-			MDSModel mdsModel = (MDSModel) persistenceHandler.load(href, null);
+			String[] hrefParts = href.split(".");
+			String rHref = hrefParts[0] + "." + hrefParts[1];
+			MDSRepository mdsRepository = getRepositoryByHref(rHref);
+			MDSModel mdsModel = mdsRepository.getModelByHref(href);
 			MDSModel newModel = metaMappingEngine.map(mdsModel, mapping);
 			newModel.setLabel(label);
 			String newHref = this.insertModel(href, mdsModel);
 			return newHref;
-		} catch (PersistenceHandlerException e) {
+		} catch (MDSCoreException e) {
 			return null;
 		} catch (MetaMappingEngineException e) {
 			return null;
@@ -406,34 +391,32 @@ public class MetaDataServerImpl
 	}
 
 	/**
-	 * Gets the persistenceHandler
-	 * @return Returns a PersistenceHandler
-	 */
-	public PersistenceHandler getPersistenceHandler() {
-		return persistenceHandler;
-	}
-
-	/**
-	 * Sets the persistenceHandler
-	 * @param persistenceHandler The persistenceHandler to set
-	 */
-	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
-		this.persistenceHandler = persistenceHandler;
-	}
-
-	/**
-	 * Gets the metaMappingEngine
-	 * @return Returns a MetaMappingEngine
+	 * @see MetaDataServer#getMetaMappingEngine()
 	 */
 	public MetaMappingEngine getMetaMappingEngine() {
 		return metaMappingEngine;
 	}
 
 	/**
-	 * Sets the metaMappingEngine
-	 * @param metaMappingEngine The metaMappingEngine to set
+	 * @see MetaDataServer#setMetaMappingEngine(MetaMappingEngine)
 	 */
 	public void setMetaMappingEngine(MetaMappingEngine metaMappingEngine) {
 		this.metaMappingEngine = metaMappingEngine;
+	}
+
+	private MDSRepository getRepositoryByHref(String href)
+		throws MDSCoreException {
+
+		String[] hrefParts = href.split("[.]");
+		String id = hrefParts[1];
+		MDSRepository mdsRepository;
+		Iterator i = repositories.iterator();
+		while (i.hasNext()) {
+			mdsRepository = (MDSRepository) i.next();
+			if (mdsRepository.getId().equals(id)) {
+				return mdsRepository;
+			}
+		}
+		throw new MDSCoreException("Fehler: MetaDataServer#getRepositoryByHref()");
 	}
 }

@@ -2,7 +2,9 @@ package api.mds.core;
 
 import java.util.ArrayList;
 
+import api.mds.persistence.PersistenceHandler;
 import api.mme.core.Mapping;
+import api.mme.core.MetaMappingEngine;
 import api.mme.mapper.MDSMapper;
 
 /**
@@ -230,4 +232,16 @@ public interface MetaDataServer {
 	 * @return Pfad zum neu entstandenen MDSModel
 	 */
 	public String convertModel(String href, Mapping mapping, String label);
+		
+	/**
+	 * Gets the metaMappingEngine
+	 * @return Returns a MetaMappingEngine
+	 */
+	public MetaMappingEngine getMetaMappingEngine();
+
+	/**
+	 * Sets the metaMappingEngine
+	 * @param metaMappingEngine The metaMappingEngine to set
+	 */
+	public void setMetaMappingEngine(MetaMappingEngine metaMappingEngine);
 }

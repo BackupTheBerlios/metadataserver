@@ -23,7 +23,7 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	/**
 	 * MDSElement-Repräsenation des Models
 	 */
-	private ArrayList elements = null;
+	private ArrayList elements = new ArrayList();
 
 	/**
 	 * xmi-repräsenation des Models
@@ -53,12 +53,7 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	/**
 	 * Zusätzliche Dateien, welche das model formen (Quelltexte)
 	 */
-	private ArrayList additionalFiles = null;
-
-	/**
-	 * zum speichern des models
-	 */
-	private PersistenceHandler persistenceHandler = null;
+	private ArrayList additionalFiles = new ArrayList();
 
 	/**
 	 * zum manipulieren des models
@@ -140,20 +135,6 @@ public class MDSModelImpl extends MDSObjectImpl implements MDSModel {
 	 */
 	public ArrayList query(String query) throws MDSCoreException {
 		return null;
-	}
-
-	/**
-	 * @see MDSModel#getPersistenceHandler()
-	 */
-	public PersistenceHandler getPersistenceHandler() {
-		return persistenceHandler;
-	}
-
-	/**
-	 * @see MDSModel#setPersistenceHandler(PersistenceHandler)
-	 */
-	public void setPersistenceHandler(PersistenceHandler persistenceHandler) {
-		this.persistenceHandler = persistenceHandler;
 	}
 
 	/**
