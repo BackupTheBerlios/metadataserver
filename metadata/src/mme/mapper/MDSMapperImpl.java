@@ -13,7 +13,7 @@ import api.mme.mapper.MDSMapper;
 /**
  * @see MDSMapper
  * 
- * @author Thomas Chille
+ * @author Christian Sterr
  */
 public class MDSMapperImpl extends MDSObjectImpl implements MDSMapper {
 

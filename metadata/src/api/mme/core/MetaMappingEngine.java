@@ -4,12 +4,13 @@ import mme.core.MetaMappingEngineException;
 
 import api.mds.core.MDSModel;
 import api.mme.mapper.MDSMapper;
+import java.util.List;
 
 /**
  * bindet die metamapping.engine
  * an den metadata.server an
  * 
- * @author Thomas Chille
+ * @author Christain Sterr
  */
 public interface MetaMappingEngine {
 
@@ -48,6 +49,6 @@ public interface MetaMappingEngine {
 	 * @return die Mappings
 	 * @throws MetaMappingEngineException im Fehlerfall
 	 */
-	public Mapping[] getMappings(String from, String to)
+	public List getMappings(String from, String to)
 		throws MetaMappingEngineException;
 }

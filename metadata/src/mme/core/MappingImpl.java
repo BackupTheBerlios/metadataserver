@@ -1,11 +1,12 @@
 package mme.core;
 
 import api.mme.core.Mapping;
+import api.mme.mapper.MDSMapper;
 
 /**
- * @see Mapping
- * 
- * @author Thomas Chille
+ *	@see Mapping
+ *  @author Christian Sterr
+ *
  */
 public class MappingImpl implements Mapping {
 
@@ -49,5 +50,19 @@ public class MappingImpl implements Mapping {
 	public void setTo(String to) {
 		this.to = to;
 	}
+	
+	/**
+	 * @see java.lang.Object#equals(Object)
+	 */
+	public boolean equals(Object o){
+		System.out.println("-> equals Test!");
+		Mapping mapping = (Mapping)o;
+		if( mapping.getFrom().compareToIgnoreCase(this.getFrom()) == 0 &&
+			mapping.getTo().compareToIgnoreCase(this.getTo()) == 0 ){
+			return true;
+		}
+		return false;
+	}
+	
 }
 

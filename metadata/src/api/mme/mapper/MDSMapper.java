@@ -5,13 +5,14 @@ import mme.core.MetaMappingEngineException;
 import api.mds.core.MDSModel;
 import api.mds.core.MDSObject;
 import api.mme.core.Mapping;
+import java.io.File;
 
 /**
  * stellt Methoden zur Transformation der MDSModels
  * bereit.
  * Wird vom XML- und UnicodeMapper erweitert
  * 
- * @author Thomas Chille
+ * @author Christian Sterr
  */
 public interface MDSMapper extends MDSObject {
 
@@ -26,4 +27,23 @@ public interface MDSMapper extends MDSObject {
 	 */
 	public MDSModel map(MDSModel mdsModel, Mapping mapping)
 		throws MetaMappingEngineException;
+		
+	/**
+	 * Method getMapping.
+	 * @return Mapping
+	 */
+	public Mapping getMapping();
+	
+	/**
+	 * Method setMappingFile.
+	 * @param mappingFile
+	 */
+	public void setMappingFile(File mappingFile);
+	
+	/**
+	 * Method getMappingFile.
+	 * @return File
+	 */
+	public File getMappingFile();
+		
 }
