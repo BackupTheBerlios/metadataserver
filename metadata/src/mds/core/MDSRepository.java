@@ -1,6 +1,6 @@
 package mds.core;
 
-public interface MDSRepository extends MDSObject {
-
+public interface MDSRepository extends MDSObject 
+{
 }
 

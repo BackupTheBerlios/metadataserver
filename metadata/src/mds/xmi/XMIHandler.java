@@ -11,8 +11,8 @@ import mds.core.*;
  * 
  * @author Thomas Chille
  */
-public interface XMIHandler {
-
+public interface XMIHandler 
+{
 	/**
 	 * erzeugt ein MDSModel, inklusive seiner XMI-Repräsentation
 	 *

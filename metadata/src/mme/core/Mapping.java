@@ -1,6 +1,5 @@
 package mme.core;
 
-public class Mapping {
-
+public interface Mapping 
+{
 }
-

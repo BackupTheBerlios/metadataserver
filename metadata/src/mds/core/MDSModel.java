@@ -1,6 +1,6 @@
 package mds.core;
 
-public interface MDSModel extends MDSObject {
-
+public interface MDSModel extends MDSObject 
+{
 }
 

@@ -9,8 +9,8 @@ import mds.core.*;
  * 
  * @author Thomas Chille
  */
-public interface MetaMappingEngine {
-	
+public interface MetaMappingEngine
+{
 	/**
 	 * meldet neues Mapping bei Mapper an
 	 *

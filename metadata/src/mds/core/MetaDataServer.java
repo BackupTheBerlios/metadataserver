@@ -9,8 +9,8 @@ import mme.core.*;
  * 
  * @author Thomas Chille
  */
-public interface MetaDataServer {
-	
+public interface MetaDataServer 
+{
 	/**
 	 * erzeugt neues MDSRepository
 	 *

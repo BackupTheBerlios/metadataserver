@@ -1,6 +1,6 @@
 package mds.core;
 
-public interface MDSObject {
-
+public interface MDSObject 
+{
 }
 

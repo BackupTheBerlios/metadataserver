@@ -11,8 +11,8 @@ import mme.core.*;
  * 
  * @author Thomas Chille
  */
-public interface Mapper {
-	
+public interface Mapper 
+{	
 	/**
 	 * meldet neues Mapping bei Mapper an
 	 *

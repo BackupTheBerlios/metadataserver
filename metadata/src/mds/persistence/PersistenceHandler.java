@@ -11,8 +11,8 @@ import mds.core.*;
  * 
  * @author Thomas Chille
  */
-public interface PersistenceHandler {
-	
+public interface PersistenceHandler 
+{
 	/**
 	 * sichert komplettes MDSModel (xmi, [dtd], [xsd]),
 	 * 

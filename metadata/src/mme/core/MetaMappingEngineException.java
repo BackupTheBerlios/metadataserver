@@ -6,12 +6,13 @@ package mme.core;
  * 
  * @author Thomas Chille
  */
-public class MetaMappingEngineException extends Exception {
-	
+public class MetaMappingEngineException extends Exception 
+{
 	/**
      * ohne Nachricht
      */
-    public MetaMappingEngineException() {
+    public MetaMappingEngineException() 
+    {
     }
 
     /**
@@ -19,7 +20,8 @@ public class MetaMappingEngineException extends Exception {
      * 
      * @param msg die Nachricht
      */
-    public MetaMappingEngineException(String msg) {
+    public MetaMappingEngineException(String msg) 
+    {
         super(msg);
     }
 }
