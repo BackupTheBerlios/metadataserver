@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE XMI SYSTEM "uml13_xmi11.dtd" [
+<!DOCTYPE XMI SYSTEM "resources/uml13_xmi11.dtd" [
 	<!ELEMENT additionalFiles (file+)>
 	<!ELEMENT file EMPTY>
 	<!ATTLIST file

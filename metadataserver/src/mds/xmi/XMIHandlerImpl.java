@@ -13,11 +13,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.traversal.DocumentTraversal;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.NodeIterator;
+import org.xml.sax.InputSource;
 
 import mds.core.MDSAssociationImpl;
 import mds.core.MDSClassImpl;
 import mds.core.MDSFileImpl;
 import mds.core.MDSGeneralizationImpl;
+import mds.core.MDSModelImpl;
 
 import api.mds.core.AssociationEnd;
 import api.mds.core.MDSAssociation;
@@ -211,14 +213,18 @@ public class XMIHandlerImpl implements XMIHandler {
 	}
 
 	/**
-	 * @see api.mds.xmi.XMIHandler#mapXMI2MDS(MDSModel)
+	 * @see api.mds.xmi.XMIHandler#mapXMI2MDS(MDSFile)
 	 */
-	public MDSFile mapXMI2MDS(MDSModel mdsModel, MDSFile mdsFile)
-		throws XMIHandlerException {
+	public MDSModel mapXMI2MDS(MDSFile mdsFile) throws XMIHandlerException {
 
+		MDSModel model = new MDSModelImpl();
+		MDSElement element = null;
+		
 		try {
 			DOMParser parser = new DOMParser();
-			parser.parse(mdsFile.getContent());
+			parser.parse(
+				new InputSource(
+					new ByteArrayInputStream(mdsFile.getContent().getBytes())));
 
 			Document d = parser.getDocument();
 			DocumentTraversal dt = (DocumentTraversal) d;
@@ -257,13 +263,15 @@ public class XMIHandlerImpl implements XMIHandler {
 				}
 				/*
 				if (n.getNodeName().equals("Class") {
-					xmiObject = new XMIObjectImpl(*/
+					element = new MDSClassImpl();
+				
+				element.setId(id)*/
 				n = it.nextNode();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return model;
 	}
 
 	private static class ObjectFilter implements NodeFilter {

@@ -28,7 +28,7 @@ public interface XMIHandler {
 	public MDSFile mapMDS2XMI(MDSModel mdsModel) throws XMIHandlerException;
 
 	/**
-	 * erzeugt oder aktualsiert die zum MDSModel gehörende DTD
+	 * erzeugt die zum MDSModel gehörende DTD
 	 *
 	 * @param mdsModel das betreffende MDSModel
 	 * @return MDSFile
@@ -37,12 +37,21 @@ public interface XMIHandler {
 	public MDSFile mapMDS2DTD(MDSModel mdsModel) throws XMIHandlerException;
 
 	/**
-	 * erzeugt oder aktualsiert das zum MDSModel gehörende Schema
+	 * erzeugt das zum MDSModel gehörende Schema
 	 *
 	 * @param mdsModel das betreffende MDSModel
 	 * @return MDSFile
 	 * @throws XMIHandlerException im Fehlerfall
 	 */
 	public MDSFile mapMDS2Schema(MDSModel mdsModel) throws XMIHandlerException;
+
+	/**
+	 * erzeugt aus xmi ein mds-model
+	 *
+	 * @param mdsFile das betreffende MDSFile
+	 * @return MDSModel
+	 * @throws XMIHandlerException im Fehlerfall
+	 */
+	public MDSModel mapXMI2MDS(MDSFile mdsFile) throws XMIHandlerException;
 
 }
